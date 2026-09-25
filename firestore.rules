@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    // Cada profissional só lê e escreve os próprios dados.
+    match /users/{uid} {
+      allow read, write: if logado() && request.auth.uid == uid;
+
+      match /{document=**} {
+        allow read, write: if logado() && request.auth.uid == uid;
+      }
+    }
+
+    // Cópia pública de um orçamento, aberta pelo cliente através do link.
+    // O id do documento é aleatório e funciona como senha do link.
+    match /compartilhamentos/{id} {
+      // Qualquer pessoa com o link abre o orçamento. Ninguém lista os links de outros.
+      allow get: if true;
+      allow list: if logado() && resource.data.uid == request.auth.uid;
+
+      allow create: if logado()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.resposta == null
+        && request.resource.data.pendenteSync == false;
+
+      // O dono atualiza o conteúdo, sem mudar o dono nem forjar uma resposta.
+      allow update: if logado()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.resposta == resource.data.resposta;
+
+      // O cliente, sem login, responde uma única vez e só mexe nos campos da resposta.
+      allow update: if resource.data.resposta == null
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['resposta', 'nomeResposta', 'respondidoEm', 'pendenteSync'])
+        && request.resource.data.resposta in ['aprovado', 'recusado']
+        && request.resource.data.pendenteSync == true
+        && request.resource.data.nomeResposta is string
+        && request.resource.data.nomeResposta.size() <= 100
+        && request.resource.data.respondidoEm is int;
+
+      allow delete: if logado() && resource.data.uid == request.auth.uid;
+    }
+  }
+}

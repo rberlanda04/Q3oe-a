@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/*
+ * Identidade visual Q3 Orça. O manual completo está em /marca.
+ * Paleta "Brasa": laranja de obra, grafite, areia e verde de aprovado.
+ */
+@theme {
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Figtree", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brasa: a cor da marca. 500 para o símbolo e destaques, 700 para botões e links (contraste AA com branco). */
+  --color-brasa-50: #fff4ed;
+  --color-brasa-100: #ffe4d3;
+  --color-brasa-200: #ffc5a6;
+  --color-brasa-300: #ff9b6b;
+  --color-brasa-400: #ff7a45;
+  --color-brasa-500: #ff5a1f;
+  --color-brasa-600: #e64a12;
+  --color-brasa-700: #c43e0c;
+  --color-brasa-800: #9c330e;
+  --color-brasa-900: #6e2106;
+
+  /* Grafite: textos e superfícies escuras. */
+  --color-grafite-50: #f4f5f7;
+  --color-grafite-100: #e6e8ec;
+  --color-grafite-200: #c9cdd6;
+  --color-grafite-300: #a3a9b6;
+  --color-grafite-400: #7a8292;
+  --color-grafite-500: #5b6372;
+  --color-grafite-600: #454c59;
+  --color-grafite-700: #343a45;
+  --color-grafite-800: #252a33;
+  --color-grafite-900: #1b1f2a;
+  --color-grafite-950: #11141b;
+
+  /* Areia: fundos quentes. */
+  --color-areia-50: #fdfbf8;
+  --color-areia-100: #faf6f0;
+  --color-areia-200: #f3ece1;
+  --color-areia-300: #e7ddcd;
+  --color-areia-400: #d6c7af;
+
+  /* Aprovado: sucesso, pagamento recebido, WhatsApp. */
+  --color-aprovado-50: #edfaf2;
+  --color-aprovado-100: #d3f3df;
+  --color-aprovado-500: #22a55a;
+  --color-aprovado-600: #167c42;
+  --color-aprovado-700: #15703d;
+
+  /* Régua: amarelo de trena, para realces pontuais. */
+  --color-regua-100: #fff3cc;
+  --color-regua-300: #ffd966;
+  --color-regua-400: #ffc53d;
+  --color-regua-600: #b8860b;
+
+  /* Planta: azul de projeto, para informação. */
+  --color-planta-50: #eef3fd;
+  --color-planta-500: #2b59c3;
+  --color-planta-700: #1f418f;
+
+  /* Alerta. */
+  --color-alerta-50: #fdf0ef;
+  --color-alerta-600: #c8342b;
+
+  --radius-cartao: 1.25rem;
+  --shadow-cartao: 0 1px 2px rgb(27 31 42 / 0.04), 0 4px 16px rgb(27 31 42 / 0.06);
+  --shadow-flutuante: 0 8px 30px rgb(27 31 42 / 0.16);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-areia-100 font-sans text-grafite-900 antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  .titulo {
+    @apply font-display tracking-tight;
+  }
+  input,
+  select,
+  textarea {
+    @apply w-full rounded-xl border border-areia-300 bg-white px-3.5 py-2.5 text-base text-grafite-900 outline-none transition placeholder:text-grafite-300 focus:border-brasa-500 focus:ring-4 focus:ring-brasa-100;
+  }
+  input:disabled {
+    @apply bg-areia-100 text-grafite-400;
+  }
+  label {
+    @apply mb-1.5 block text-sm font-semibold text-grafite-700;
+  }
+  ::selection {
+    @apply bg-brasa-200 text-grafite-900;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-brasa-700 text-white shadow-sm hover:bg-brasa-800;
+}
+
+@utility btn-secondary {
+  @apply btn border border-areia-300 bg-white text-grafite-800 hover:border-grafite-300 hover:bg-areia-50;
+}
+
+@utility btn-escuro {
+  @apply btn bg-grafite-900 text-white hover:bg-grafite-800;
+}
+
+@utility btn-whatsapp {
+  @apply btn bg-aprovado-600 text-white shadow-sm hover:bg-aprovado-700;
+}
+
+@utility card {
+  @apply rounded-cartao border border-areia-200 bg-white p-5 shadow-cartao;
+}
+
+@utility chip {
+  @apply inline-flex items-center gap-1.5 rounded-full border border-areia-300 bg-white px-3.5 py-1.5 text-sm font-medium text-grafite-700 transition hover:border-brasa-400 hover:text-brasa-700;
+}
+
+@utility rotulo {
+  @apply text-xs font-bold tracking-wider text-grafite-400 uppercase;
+}
