@@ -77,7 +77,7 @@ export function RodapeSite() {
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 sm:grid-cols-[1.5fr_1fr_1fr]">
         <div className="space-y-3">
           <Logo tamanho={32} claro />
-          <p className="max-w-xs text-sm">Orçamento bonito, aprovado pelo celular. Feito no Brasil para quem trabalha com as mãos.</p>
+          <p className="max-w-xs text-sm">Orçamento rápido, aprovado pelo celular. Feito no Brasil para quem trabalha com as mãos.</p>
         </div>
         <Coluna titulo="Produto">
           <a href={`${base}#como-funciona`}>Como funciona</a>

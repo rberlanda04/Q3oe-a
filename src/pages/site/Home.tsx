@@ -17,7 +17,7 @@ import { Regua } from '../../ui/Regua'
 import { CabecalhoSite, RodapeSite, useTitulo } from './Moldura'
 
 export function Home() {
-  useTitulo('Q3 Orça · Orçamento bonito, aprovado pelo celular')
+  useTitulo('Q3 Orça · Orçamento rápido, aprovado pelo celular')
   return (
     <div className="overflow-x-hidden">
       <CabecalhoSite />
@@ -43,7 +43,7 @@ function Hero() {
             <span className="h-2 w-2 rounded-full bg-aprovado-500" /> Cliente aprova pelo link e paga no Pix
           </p>
           <h1 className="mt-6 text-5xl leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl">
-            Orçamento bonito,{' '}
+            Orçamento rápido,{' '}
             <span className="relative whitespace-nowrap text-brasa-600">
               aprovado
               <svg className="absolute -bottom-2 left-0 h-3 w-full" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden>
