@@ -7,6 +7,7 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { Route, Routes, StaticRouter } from 'react-router-dom'
 import { Home } from './pages/site/Home'
+import { Privacidade, Termos } from './pages/site/Legal'
 import { Marca } from './pages/site/Marca'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 
@@ -19,6 +20,8 @@ export function render(url: string): string {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/marca" element={<Marca />} />
+          <Route path="/termos" element={<Termos />} />
+          <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/modelos-de-orcamento" element={<ModelosIndice />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
         </Routes>

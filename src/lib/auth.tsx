@@ -1,6 +1,6 @@
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ouvirAssinatura, ouvirPerfil, PERFIL_VAZIO, perfilPublico, sincronizarRespostas } from '../data/repo'
+import { ouvirAssinatura, ouvirPerfil, ouvirSouAdmin, PERFIL_VAZIO, perfilPublico, sincronizarRespostas } from '../data/repo'
 import { situacaoPlano, type Assinatura, type SituacaoPlano } from '../domain/plano'
 import type { Perfil, PerfilPublico } from '../domain/types'
 import { auth } from './firebase'
@@ -12,6 +12,8 @@ interface Sessao {
   plano: SituacaoPlano
   /** O que o cliente vê nos documentos e no link, já com a marca própria quando há Pro. */
   publico: PerfilPublico
+  /** Tem acesso ao painel administrativo (/admin). */
+  admin: boolean
   carregando: boolean
 }
 
@@ -22,6 +24,7 @@ const SessaoContext = createContext<Sessao>({
   perfil: PERFIL_VAZIO,
   plano: GRATIS,
   publico: perfilPublico(PERFIL_VAZIO, false),
+  admin: false,
   carregando: true,
 })
 
@@ -29,6 +32,7 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [perfil, setPerfil] = useState<Perfil>(PERFIL_VAZIO)
   const [assinatura, setAssinatura] = useState<Assinatura | null>(null)
+  const [admin, setAdmin] = useState(false)
   const [carregando, setCarregando] = useState(true)
   // Recalcula o plano de hora em hora, para o fim do teste valer sem recarregar a página.
   const [agora, setAgora] = useState(() => Date.now())
@@ -42,13 +46,16 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
     let pararPerfil: (() => void) | undefined
     let pararSync: (() => void) | undefined
     let pararAssinatura: (() => void) | undefined
+    let pararAdmin: (() => void) | undefined
     const pararAuth = onAuthStateChanged(auth, (novo) => {
       pararPerfil?.()
       pararSync?.()
       pararAssinatura?.()
-      pararPerfil = pararSync = pararAssinatura = undefined
+      pararAdmin?.()
+      pararPerfil = pararSync = pararAssinatura = pararAdmin = undefined
       setUser(novo)
       setAssinatura(null)
+      setAdmin(false)
       try {
         if (novo) localStorage.setItem('q3:logado', '1')
         else localStorage.removeItem('q3:logado')
@@ -62,6 +69,7 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
         })
         pararSync = sincronizarRespostas(novo.uid)
         pararAssinatura = ouvirAssinatura(novo.uid, setAssinatura)
+        pararAdmin = ouvirSouAdmin(novo.uid, setAdmin)
       } else {
         setPerfil(PERFIL_VAZIO)
         setCarregando(false)
@@ -72,14 +80,15 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
       pararPerfil?.()
       pararSync?.()
       pararAssinatura?.()
+      pararAdmin?.()
     }
   }, [])
 
   const valor = useMemo(() => {
     const criadaEm = user?.metadata.creationTime ? new Date(user.metadata.creationTime).getTime() : 0
     const plano = user ? situacaoPlano(assinatura, criadaEm, agora) : GRATIS
-    return { user, perfil, plano, publico: perfilPublico(perfil, plano.pro), carregando }
-  }, [user, perfil, assinatura, agora, carregando])
+    return { user, perfil, plano, publico: perfilPublico(perfil, plano.pro), admin, carregando }
+  }, [user, perfil, assinatura, admin, agora, carregando])
 
   return <SessaoContext.Provider value={valor}>{children}</SessaoContext.Provider>
 }

@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build && vite build --ssr src/ssg.tsx --outDir dist-ssg && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:regras": "firebase emulators:exec --only firestore --project demo-q3orca \"node tests/regras-firestore.mjs\"",
+    "checar-lancamento": "node scripts/checar-lancamento.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",
@@ -19,6 +21,7 @@
     "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/qrcode": "^1.5.6",

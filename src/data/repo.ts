@@ -9,6 +9,7 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
   type Unsubscribe,
 } from 'firebase/firestore'
 import { chaveCatalogo, formatarNumero, normalizarOrcamento, PIX_PADRAO, proximaSequencia } from '../domain/calc'
@@ -384,6 +385,87 @@ export function ouvirAssinatura(uid: string, callback: (assinatura: Assinatura |
 /** Registra que o profissional quer assinar o Pro, para o time de vendas entrar em contato. */
 export async function registrarInteressePro(uid: string, dados: { nome: string; email: string; telefone: string; plano: 'mensal' | 'anual' }) {
   await setDoc(doc(db, 'interesses', uid), { ...dados, uid, criadoEm: Date.now() })
+}
+
+/* ---------- Administração ---------- */
+
+/** O usuário é administrador se existir admins/{uid}, criado só pelo console do Firebase. */
+export function ouvirSouAdmin(uid: string, callback: (admin: boolean) => void): Unsubscribe {
+  return onSnapshot(
+    doc(db, 'admins', uid),
+    (snap) => callback(snap.exists()),
+    () => callback(false),
+  )
+}
+
+export interface PedidoPro {
+  uid: string
+  nome: string
+  email: string
+  telefone: string
+  plano: 'mensal' | 'anual'
+  criadoEm: number
+}
+
+export function ouvirPedidosPro(callback: (lista: PedidoPro[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(
+    query(collection(db, 'interesses'), orderBy('criadoEm', 'desc')),
+    (snap) => callback(snap.docs.map((d) => d.data() as PedidoPro)),
+    erro,
+  )
+}
+
+export type AssinaturaAdmin = Assinatura & { uid: string }
+
+export function ouvirAssinaturas(callback: (lista: AssinaturaAdmin[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(
+    collection(db, 'assinaturas'),
+    (snap) =>
+      callback(
+        snap.docs
+          .map((d) => {
+            const dados = d.data() as { validoAte?: number | { toMillis: () => number } } & Omit<Assinatura, 'validoAte'>
+            const validoAte = typeof dados.validoAte === 'number' ? dados.validoAte : (dados.validoAte?.toMillis?.() ?? 0)
+            return { ...dados, validoAte, uid: d.id }
+          })
+          .sort((a, b) => b.validoAte - a.validoAte),
+      ),
+    erro,
+  )
+}
+
+/** Grava a assinatura Pro. Espera o servidor, para o admin ter certeza de que valeu. */
+export async function gravarAssinatura(
+  uid: string,
+  dados: { validoAte: number; nome: string; email: string; periodo?: 'mensal' | 'anual' },
+) {
+  await setDoc(doc(db, 'assinaturas', uid), { plano: 'pro', ...dados, atualizadoEm: Date.now() }, { merge: true })
+}
+
+export async function excluirPedidoPro(uid: string) {
+  await deleteDoc(doc(db, 'interesses', uid))
+}
+
+/* ---------- Exclusão da conta (LGPD) ---------- */
+
+/**
+ * Apaga todos os dados do profissional. Espera o servidor confirmar cada etapa.
+ * A conta de login é apagada depois, pela tela, porque pode exigir login recente.
+ */
+export async function excluirDadosDaConta(uid: string) {
+  const refs = []
+  for (const col of [orcamentosCol(uid), clientesCol(uid), catalogoCol(uid)]) {
+    refs.push(...(await getDocs(col)).docs.map((d) => d.ref))
+  }
+  refs.push(...(await getDocs(query(compartilhamentosCol, where('uid', '==', uid)))).docs.map((d) => d.ref))
+  // Lotes de até 500 gravações, o limite do Firestore.
+  for (let i = 0; i < refs.length; i += 450) {
+    const lote = writeBatch(db)
+    for (const ref of refs.slice(i, i + 450)) lote.delete(ref)
+    await lote.commit()
+  }
+  await deleteDoc(doc(db, 'interesses', uid))
+  await deleteDoc(perfilRef(uid))
 }
 
 /* ---------- Exportação (LGPD e backup) ---------- */

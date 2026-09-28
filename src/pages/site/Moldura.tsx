@@ -88,6 +88,8 @@ export function RodapeSite() {
         </Coluna>
         <Coluna titulo="Marca">
           <Link to="/marca">Manual da marca</Link>
+          <Link to="/termos">Termos de uso</Link>
+          <Link to="/privacidade">Privacidade</Link>
           <a href="/favicon.svg" download="q3-orca-simbolo.svg">
             Baixar símbolo
           </a>

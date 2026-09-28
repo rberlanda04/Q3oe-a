@@ -113,6 +113,10 @@ export function Login() {
           </p>
 
           <div className="mt-8 space-y-4">
+            <p className="text-center text-xs text-grafite-500">
+              Entrando com Google, você concorda com os <Link to="/termos" className="underline">Termos</Link> e a{' '}
+              <Link to="/privacidade" className="underline">Privacidade</Link>.
+            </p>
             <button
               className="btn-secondary w-full"
               disabled={enviando}
@@ -153,6 +157,19 @@ export function Login() {
               <button className="btn-primary w-full" disabled={enviando}>
                 {modo === 'entrar' ? 'Entrar' : 'Criar conta grátis'}
               </button>
+              {modo === 'criar' && (
+                <p className="text-center text-xs text-grafite-500">
+                  Ao criar a conta, você concorda com os{' '}
+                  <Link to="/termos" className="font-semibold text-grafite-700 underline">
+                    Termos de uso
+                  </Link>{' '}
+                  e a{' '}
+                  <Link to="/privacidade" className="font-semibold text-grafite-700 underline">
+                    Política de privacidade
+                  </Link>
+                  .
+                </p>
+              )}
             </form>
 
             <div className="flex justify-between text-sm">

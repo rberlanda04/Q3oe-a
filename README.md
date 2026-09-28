@@ -13,19 +13,29 @@ Contas novas ganham 14 dias de Pro grátis, contados da criação da conta. Com 
 
 **Pedidos de assinatura** ficam em Firestore, na coleção `interesses`, com nome, e-mail, telefone e plano escolhido.
 
-**Para ativar o Pro de alguém** (enquanto a cobrança automática não existe):
-1. Em Authentication, copie o UID do usuário.
-2. Em Firestore, crie o documento `assinaturas/{UID}` com os campos:
-   - `plano`: texto `pro`
-   - `validoAte`: carimbo de data (timestamp) com o fim do período pago
-3. O app do profissional reconhece na hora, sem precisar sair e entrar.
+**Para ativar o Pro de alguém,** use o painel em `/admin`. Ele lista os pedidos, ativa 1 mês ou 1 ano, renova, encerra e apaga pedidos. O app do profissional reconhece na hora.
 
-Só o administrador consegue gravar em `assinaturas`. As regras do Firestore impedem que o próprio usuário se promova.
+**Para ter acesso ao painel admin** (uma vez só):
+1. Entre no app e abra `/admin`. A página mostra o seu UID.
+2. No console do Firebase, em Firestore, crie a coleção `admins` com um documento cujo ID é esse UID. Qualquer campo serve, por exemplo `nome`.
+
+Só administradores gravam em `assinaturas`, e ninguém consegue se tornar admin pelo app.
+
+## Antes do lançamento
+
+```bash
+npm run checar-lancamento
+```
+
+Lista o que falta configurar: empresa, contatos, pagamento e passos fora do código.
 
 ## Configuração do negócio
 
 Em `src/config.ts`:
 - `SITE_URL`: endereço público. Troque ao ter domínio próprio.
+- `EMPRESA_RAZAO_SOCIAL`, `EMPRESA_CNPJ`, `EMPRESA_CIDADE`: aparecem nos termos de uso e na política de privacidade.
+- `EMAIL_CONTATO` e `WHATSAPP_SUPORTE`: canais de atendimento e do encarregado de dados (LGPD).
+- `VIGENCIA_DOCUMENTOS_LEGAIS`: atualize sempre que mudar os termos ou a política.
 - `WHATSAPP_VENDAS`: número que recebe os pedidos de Pro.
 - `LINK_PAGAMENTO_MENSAL` e `LINK_PAGAMENTO_ANUAL`: links de checkout do provedor de pagamento.
 
@@ -63,7 +73,8 @@ No [console do Firebase](https://console.firebase.google.com/project/q3orca):
 ```bash
 npm install
 npm run dev      # abre em http://localhost:5173
-npm test         # testes de cálculo e de geração do PDF
+npm test         # testes de cálculo, Pix, SEO e geração do PDF
+npm run test:regras  # testes das regras de segurança no emulador (requer Java 11+)
 npm run build    # build de produção em dist/
 ```
 
@@ -103,6 +114,9 @@ src/
 | `/modelos-de-orcamento` | Índice de modelos por profissão |
 | `/modelo-de-orcamento/:profissao` | Modelo de orçamento de uma profissão, para SEO |
 | `/planos` | Plano Pro e pedido de assinatura |
+| `/admin` | Painel de administração: pedidos e assinaturas |
+| `/termos` | Termos de uso |
+| `/privacidade` | Política de privacidade |
 | `/site` | Site, acessível também para quem está logado |
 | `/novo` | Escolha da profissão |
 | `/orcamento/:id` | Editor do orçamento |
@@ -121,6 +135,7 @@ users/{uid}/catalogo/{id}          itens salvos com preço
 compartilhamentos/{id}             cópia pública do orçamento, aberta pelo link
 assinaturas/{uid}                  assinatura Pro, gravada só pelo administrador
 interesses/{uid}                   pedidos de assinatura do Pro
+admins/{uid}                       quem acessa o painel admin (criado só pelo console)
 ```
 
 As regras em `firestore.rules` só permitem que cada usuário leia e escreva os próprios dados.

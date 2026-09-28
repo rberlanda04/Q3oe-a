@@ -5,10 +5,13 @@ import { contraste, coresDoDocumento, hexValido } from '../domain/cores'
 import { cnpjValido } from '../domain/empresa'
 import { detectarTipoChave, gerarPixCopiaECola, TIPOS_CHAVE, type TipoChavePix } from '../domain/pix'
 import type { Perfil as PerfilTipo } from '../domain/types'
-import { useUsuario } from '../lib/auth'
+import { EMAIL_CONTATO, WHATSAPP_SUPORTE } from '../config'
+import { useSessao, useUsuario } from '../lib/auth'
+import { linkWhatsApp } from '../pdf/compartilhar'
 import { buscarEmpresa } from '../lib/cnpj'
 import { ErroImagem, prepararLogo } from '../lib/imagem'
-import { IconeBusca, IconeCheck, IconeEscudo, IconeLixeira } from '../ui/Icones'
+import { ExcluirConta } from '../ui/ExcluirConta'
+import { IconeBusca, IconeCheck, IconeEscudo, IconeLixeira, IconeWhatsApp } from '../ui/Icones'
 import { SeloPlano } from '../ui/SeloPlano'
 
 type Campos = Pick<
@@ -51,6 +54,7 @@ const CORES_SUGERIDAS = ['#c43e0c', '#1f418f', '#15703d', '#6d28d9', '#b91c1c', 
 
 export function Perfil() {
   const { user, perfil, plano } = useUsuario()
+  const { admin } = useSessao()
   const [dados, setDados] = useState<Campos>(() => {
     const inicial = {} as Campos
     for (const chave of CHAVES) inicial[chave] = perfil[chave] ?? ''
@@ -372,15 +376,54 @@ export function Perfil() {
         </div>
       </form>
 
-      <section className="card space-y-2">
+      {(WHATSAPP_SUPORTE || EMAIL_CONTATO) && (
+        <section className="card space-y-3">
+          <h2 className="text-lg font-bold">Precisa de ajuda?</h2>
+          <p className="text-sm text-grafite-600">Fale com a gente. Respondemos em horário comercial.</p>
+          <div className="flex flex-wrap gap-2">
+            {WHATSAPP_SUPORTE && (
+              <a
+                className="btn-whatsapp !py-2.5 text-sm"
+                href={linkWhatsApp(WHATSAPP_SUPORTE, 'Olá! Preciso de ajuda com o Q3 Orça.')}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <IconeWhatsApp tamanho={16} /> WhatsApp
+              </a>
+            )}
+            {EMAIL_CONTATO && (
+              <a className="btn-secondary !py-2.5 text-sm" href={`mailto:${EMAIL_CONTATO}?subject=Ajuda com o Q3 Orça`}>
+                {EMAIL_CONTATO}
+              </a>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="card space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
           <IconeEscudo tamanho={20} /> Seus dados são seus
         </h2>
-        <p className="text-sm text-grafite-600">Baixe uma cópia completa de orçamentos, clientes e itens, em formato JSON.</p>
+        <p className="text-sm text-grafite-600">
+          Baixe uma cópia completa de orçamentos, clientes e itens, em formato JSON. Veja como cuidamos deles na{' '}
+          <Link to="/privacidade" className="font-semibold text-brasa-700">
+            política de privacidade
+          </Link>
+          .
+        </p>
         <button className="btn-secondary w-full" disabled={exportando} onClick={exportar}>
           {exportando ? 'Preparando...' : 'Baixar meus dados'}
         </button>
+        <div className="border-t border-areia-200 pt-4">
+          <ExcluirConta />
+        </div>
       </section>
+
+      {admin && (
+        <Link to="/admin" className="btn-escuro w-full">
+          Abrir painel de administração
+        </Link>
+      )}
     </div>
   )
 }

@@ -43,9 +43,9 @@ Sem estes itens, não dá para cobrar nem crescer com segurança.
 
 1. **Domínio próprio.** Registre q3orca.com.br no Registro.br, por cerca de R$ 40 por ano, e conecte no Firebase Hosting. Depois, troque `SITE_URL` em `src/config.ts`. Domínio próprio passa confiança e concentra a autoridade de SEO.
 2. **Google Search Console.** Verifique o domínio e envie o `sitemap.xml`. Acompanhe as buscas que trazem visitas.
-3. **Termos de uso e política de privacidade.** São obrigatórios pela LGPD, porque o app guarda dados de clientes dos profissionais. Crie as páginas e ponha o link no rodapé e no cadastro.
+3. **Termos de uso e política de privacidade.** Já estão no ar, em /termos e /privacidade, com aceite no cadastro e exclusão de conta pelo próprio usuário. Faltam os dados da empresa em `src/config.ts` e a revisão de um advogado.
 4. **Empresa para receber.** A maioria das atividades de software não é permitida no MEI. Confirme com um contador o melhor enquadramento, normalmente uma ME no Simples Nacional.
-5. **Cobrança do Pro.** Crie links de assinatura recorrente no Mercado Pago ou no Asaas. Preencha `LINK_PAGAMENTO_MENSAL`, `LINK_PAGAMENTO_ANUAL` e `WHATSAPP_VENDAS` em `src/config.ts`. No começo, a ativação é manual, como descrito no README.
+5. **Cobrança do Pro.** Crie links de assinatura recorrente no Mercado Pago ou no Asaas. Preencha `LINK_PAGAMENTO_MENSAL`, `LINK_PAGAMENTO_ANUAL` e `WHATSAPP_VENDAS` em `src/config.ts`. A ativação é feita no painel `/admin`, que já está pronto.
 6. **Eventos no Analytics.** Os eventos `conta_criada`, `orcamento_enviado`, `link_aprovado` e `pro_pedido` já são registrados. No Google Analytics, marque `orcamento_enviado` e `pro_pedido` como eventos principais (conversões) para acompanhar o funil.
 
 ## 5. Fase 1: validação com profissionais reais (semanas 3 a 8)

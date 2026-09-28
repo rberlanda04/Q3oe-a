@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import './index.css'
 import { SessaoProvider, useSessao } from './lib/auth'
+import { monitorarErros } from './lib/eventos'
+import { Admin } from './pages/Admin'
 import { Catalogo } from './pages/Catalogo'
 import { Clientes } from './pages/Clientes'
 import { Editor } from './pages/Editor'
@@ -14,6 +16,7 @@ import { Perfil } from './pages/Perfil'
 import { Planos } from './pages/Planos'
 import { Home } from './pages/site/Home'
 import { Marca } from './pages/site/Marca'
+import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { Layout } from './ui/Layout'
 import { Simbolo } from './ui/Logo'
@@ -59,11 +62,14 @@ function Raiz() {
         <Route path="catalogo" element={<Catalogo />} />
         <Route path="perfil" element={<Perfil />} />
         <Route path="planos" element={<Planos />} />
+        <Route path="admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   )
 }
+
+monitorarErros()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -74,6 +80,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/o/:id" element={<OrcamentoPublico />} />
           <Route path="/marca" element={<Marca />} />
           <Route path="/modelos-de-orcamento" element={<ModelosIndice />} />
+          <Route path="/termos" element={<Termos />} />
+          <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />

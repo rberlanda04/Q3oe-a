@@ -7,6 +7,16 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Administrador: existe admins/{uid}. Esse documento só é criado pelo console do Firebase.
+    function admin() {
+      return logado() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read: if logado() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
     // Cada profissional só lê e escreve os próprios dados.
     match /users/{uid} {
       allow read, write: if logado() && request.auth.uid == uid;
@@ -16,22 +26,26 @@ service cloud.firestore {
       }
     }
 
-    // Assinatura Pro. Só o administrador grava (console do Firebase ou Admin SDK),
-    // para ninguém conseguir se promover a Pro sozinho.
+    // Assinatura Pro. Só o administrador grava, para ninguém se promover a Pro sozinho.
     match /assinaturas/{uid} {
-      allow read: if logado() && request.auth.uid == uid;
-      allow write: if false;
+      allow read: if (logado() && request.auth.uid == uid) || admin();
+      allow write: if admin()
+        && request.resource.data.plano == 'pro'
+        && request.resource.data.validoAte is number;
+      allow delete: if admin();
     }
 
     // Pedido de assinatura do Pro, para o time de vendas entrar em contato.
     match /interesses/{uid} {
-      allow read: if logado() && request.auth.uid == uid;
+      allow get: if (logado() && request.auth.uid == uid) || admin();
+      allow list: if admin();
       allow create, update: if logado()
         && request.auth.uid == uid
         && request.resource.data.uid == uid
         && request.resource.data.plano in ['mensal', 'anual']
         && request.resource.data.keys().hasOnly(['uid', 'nome', 'email', 'telefone', 'plano', 'criadoEm']);
-      allow delete: if false;
+      // O próprio usuário apaga ao excluir a conta; o admin apaga pedidos já atendidos.
+      allow delete: if (logado() && request.auth.uid == uid) || admin();
     }
 
     // Cópia pública de um orçamento, aberta pelo cliente através do link.

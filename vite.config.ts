@@ -54,7 +54,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: '/app.html',
         // Páginas do site pré-renderizadas vêm da rede, para o Google e o visitante verem o HTML completo.
-        navigateFallbackDenylist: [/^\/$/, /^\/marca/, /^\/modelo/],
+        navigateFallbackDenylist: [/^\/$/, /^\/marca/, /^\/modelo/, /^\/termos/, /^\/privacidade/],
         // Fontes da marca ficam guardadas para o app abrir bonito também sem internet.
         runtimeCaching: [
           {

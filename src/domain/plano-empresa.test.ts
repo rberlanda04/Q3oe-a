@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { capitalizar, cnpjValido, empresaDaResposta, formatarCnpj } from './empresa'
-import { situacaoPlano } from './plano'
+import { novaValidade, situacaoPlano } from './plano'
 
 const DIA = 24 * 60 * 60 * 1000
 const agora = Date.UTC(2026, 8, 28)
@@ -18,6 +18,20 @@ describe('plano', () => {
     const antiga = agora - 60 * DIA
     expect(situacaoPlano({ plano: 'pro', validoAte: agora + DIA }, antiga, agora).motivo).toBe('assinatura')
     expect(situacaoPlano({ plano: 'pro', validoAte: agora - DIA }, antiga, agora).pro).toBe(false)
+  })
+})
+
+describe('validade do Pro', () => {
+  it('soma meses a partir de agora ou do fim do período pago', () => {
+    const hoje = new Date(2026, 8, 28, 12).getTime()
+    expect(new Date(novaValidade(null, hoje, 1)).toDateString()).toBe(new Date(2026, 9, 28).toDateString())
+    const vence = new Date(2026, 9, 10, 12).getTime()
+    expect(new Date(novaValidade(vence, hoje, 12)).toDateString()).toBe(new Date(2027, 9, 10).toDateString())
+  })
+
+  it('não pula mês em datas de fim de mês', () => {
+    const jan31 = new Date(2027, 0, 31, 12).getTime()
+    expect(new Date(novaValidade(null, jan31, 1)).toDateString()).toBe(new Date(2027, 1, 28).toDateString())
   })
 })
 

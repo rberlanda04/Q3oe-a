@@ -18,7 +18,7 @@ function saudacao(): string {
 }
 
 export function Orcamentos() {
-  const { user, perfil } = useUsuario()
+  const { user, perfil, plano } = useUsuario()
   const [lista, setLista] = useState<Orcamento[] | null>(null)
   const [filtro, setFiltro] = useState<StatusOrcamento | 'todos'>('todos')
   const [busca, setBusca] = useState('')
@@ -77,6 +77,18 @@ export function Orcamentos() {
           {primeiroNome ? `, ${primeiroNome}` : ''}!
         </h1>
       </div>
+
+      {plano.motivo === 'teste' && plano.diasRestantes <= 5 && (
+        <Link to="/planos" className="flex items-center justify-between gap-3 rounded-cartao bg-regua-300 p-4 text-grafite-900">
+          <span className="text-sm">
+            <strong>
+              Seu teste do Pro acaba em {plano.diasRestantes} {plano.diasRestantes === 1 ? 'dia' : 'dias'}.
+            </strong>{' '}
+            Depois, os documentos voltam a sair sem seu logo.
+          </span>
+          <IconeSeta tamanho={18} className="shrink-0" />
+        </Link>
+      )}
 
       {onboarding && (
         <section className="card overflow-hidden !p-0">

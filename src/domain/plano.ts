@@ -8,6 +8,25 @@ export interface Assinatura {
   plano: 'pro'
   /** Fim do período pago, em milissegundos. */
   validoAte: number
+  /** Para o painel admin identificar o assinante. */
+  nome?: string
+  email?: string
+  /** Último período vendido, para estimar a receita mensal no painel admin. */
+  periodo?: 'mensal' | 'anual'
+  atualizadoEm?: number
+}
+
+/**
+ * Nova data de validade ao ativar ou renovar o Pro por alguns meses.
+ * Se ainda houver período pago, soma a partir do fim dele; senão, a partir de agora.
+ */
+export function novaValidade(validoAteAtual: number | null | undefined, agora: number, meses: number): number {
+  const base = new Date(Math.max(validoAteAtual ?? 0, agora))
+  const dia = base.getDate()
+  base.setMonth(base.getMonth() + meses)
+  // 31 de janeiro + 1 mês não pode virar 3 de março: fica no último dia de fevereiro.
+  if (base.getDate() < dia) base.setDate(0)
+  return base.getTime()
 }
 
 export type SituacaoPlano =
