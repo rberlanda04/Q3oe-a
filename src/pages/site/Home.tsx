@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
-import { MODELOS } from '../../domain/templates'
+import { MODELOS, modeloPorId } from '../../domain/templates'
+import { caminhoProfissao, PERGUNTAS_HOME } from '../../seo/paginas'
+import { PROFISSOES_SEO } from '../../seo/profissoes'
 import {
   IconeCheck,
   IconeDocumento,
@@ -26,6 +28,7 @@ export function Home() {
       <ComoFunciona />
       <AntesDepois />
       <Recursos />
+      <ModelosPorProfissao />
       <Precos />
       <Duvidas />
       <ChamadaFinal />
@@ -290,6 +293,27 @@ function Recursos() {
   )
 }
 
+function ModelosPorProfissao() {
+  return (
+    <section id="modelos" className="mx-auto max-w-6xl scroll-mt-20 px-5 pb-20">
+      <p className="rotulo !text-brasa-700">Modelos prontos</p>
+      <h2 className="mt-2 max-w-2xl text-4xl font-extrabold sm:text-5xl">Um modelo de orçamento para cada profissão.</h2>
+      <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {PROFISSOES_SEO.map((p) => (
+          <li key={p.slug}>
+            <Link to={caminhoProfissao(p)} className="card flex items-center gap-3 !p-4 transition hover:border-brasa-300">
+              <span className="text-2xl" aria-hidden>
+                {modeloPorId(p.id).icone}
+              </span>
+              <span className="text-sm font-semibold">Orçamento para {p.para}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function Precos() {
   return (
     <section id="precos" className="scroll-mt-20 bg-areia-200/60 py-20">
@@ -319,11 +343,17 @@ function Precos() {
             nome="Pro"
             preco="R$ 14,90"
             periodo="por mês, ou R$ 99 por ano"
-            itens={['Tudo do plano Grátis', 'Seu logo e assinatura no PDF', 'Sem a marca Q3 Orça', 'Layouts de PDF extras', 'Relatórios do mês']}
+            itens={[
+              'Tudo do plano Grátis',
+              'Seu logo e sua cor nos documentos',
+              'Nome da empresa e dados do CNPJ no cabeçalho',
+              'Página de aprovação com a sua marca',
+              'Sem a marca Q3 Orça',
+            ]}
             chamada={
-              <span className="btn w-full cursor-default bg-white/10 text-white" aria-disabled>
-                Em breve
-              </span>
+              <Link to="/entrar?modo=criar" className="btn w-full bg-white text-grafite-900 hover:bg-areia-100">
+                Testar grátis por 14 dias
+              </Link>
             }
           />
         </div>
@@ -356,13 +386,7 @@ function Plano(props: { nome: string; preco: string; periodo: string; itens: str
 }
 
 function Duvidas() {
-  const perguntas = [
-    ['Preciso instalar alguma coisa?', 'Não. O Q3 Orça abre no navegador do celular. Se quiser, adicione à tela inicial e ele vira um app.'],
-    ['Meu cliente precisa ter o app?', 'Não. Ele recebe um PDF ou um link no WhatsApp e abre em qualquer celular, sem cadastro.'],
-    ['O Pix passa por vocês?', 'Não. O QR Code aponta direto para a sua chave Pix. O dinheiro cai na sua conta, sem intermediário e sem taxa.'],
-    ['O orçamento tem valor fiscal?', 'Orçamento, recibo e garantia são documentos comerciais. Eles não substituem a nota fiscal quando ela for obrigatória.'],
-    ['E se eu trocar de celular?', 'Seus dados ficam guardados na nuvem, ligados à sua conta. É só entrar de novo. Você também pode baixar uma cópia completa.'],
-  ]
+  const perguntas = PERGUNTAS_HOME
   return (
     <section id="duvidas" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-20">
       <h2 className="text-center text-4xl font-extrabold">Dúvidas frequentes</h2>

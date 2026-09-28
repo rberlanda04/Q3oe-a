@@ -2,7 +2,7 @@ import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/render
 import { calcularTotais, dataValidade, subtotalItem } from '../domain/calc'
 import { formatarBRL, formatarQuantidade } from '../domain/money'
 import type { Orcamento, PerfilPublico } from '../domain/types'
-import { Assinaturas, Cabecalho, CINZA, dataBR, Rodape, Secao, st } from './base'
+import { Assinaturas, Cabecalho, CINZA, cores, dataBR, Rodape, Secao, st } from './base'
 
 const t = StyleSheet.create({
   tabelaCab: { flexDirection: 'row', backgroundColor: '#fff4ed', paddingVertical: 6, paddingHorizontal: 6, fontFamily: 'Helvetica-Bold', fontSize: 9 },
@@ -41,6 +41,7 @@ interface Props {
 
 export function OrcamentoPdf({ orcamento: o, perfil: p, marcaDagua, tipo = 'orcamento', pix, geradoEm }: Props) {
   const totais = calcularTotais(o)
+  const cor = cores(p)
   const ordem = tipo === 'ordem'
   const temMaterial = totais.materiais > 0 && totais.servicos > 0
   const linhas = ordem
@@ -60,7 +61,7 @@ export function OrcamentoPdf({ orcamento: o, perfil: p, marcaDagua, tipo = 'orca
         </View>
 
         <View style={st.bloco}>
-          <View style={t.tabelaCab} fixed>
+          <View style={[t.tabelaCab, { backgroundColor: cor.suave }]} fixed>
             <Text style={t.cDesc}>Descrição</Text>
             <Text style={t.cQtd}>Qtd.</Text>
             <Text style={t.cUnit}>Valor unit.</Text>
@@ -91,7 +92,7 @@ export function OrcamentoPdf({ orcamento: o, perfil: p, marcaDagua, tipo = 'orca
           <Linha rotulo="Subtotal" valor={totais.subtotal} />
           {totais.desconto > 0 && <Linha rotulo="Desconto" valor={-totais.desconto} />}
           {totais.deslocamento > 0 && <Linha rotulo="Deslocamento" valor={totais.deslocamento} />}
-          <View style={t.totalFinal}>
+          <View style={[t.totalFinal, { borderTopColor: cor.destaque }]}>
             <Text>TOTAL</Text>
             <Text>{formatarBRL(totais.total)}</Text>
           </View>

@@ -102,23 +102,44 @@ export interface Orcamento {
 }
 
 export interface Perfil {
+  /** Nome da empresa (nome fantasia) ou do profissional. */
   nome: string
+  razaoSocial: string
   documento: string
   telefone: string
   email: string
   endereco: string
   cidade: string
+  site: string
+  instagram: string
   pix: string
   pixTipo?: TipoChavePix
+  /** Logo em PNG, como data URL comprimida. Recurso Pro. */
+  logo: string
+  /** Cor da marca do profissional, em hexadecimal. Recurso Pro. */
+  corMarca: string
   textoPagamento: string
   textoGarantia: string
+  /**
+   * Legado: contador incrementado a partir de zero, ou seja, a quantidade de
+   * orçamentos já numerados. Equivale ao último número usado.
+   */
   proximoNumero: number
+  /** Último número sequencial usado. Substitui o contador legado. */
+  ultimoNumero?: number
   /** Legado da primeira versão. O catálogo substitui este campo. */
   precosSalvos: Record<string, number>
 }
 
 /** Dados do profissional que aparecem para o cliente no link público. */
-export type PerfilPublico = Pick<Perfil, 'nome' | 'documento' | 'telefone' | 'email' | 'endereco' | 'cidade' | 'pix' | 'pixTipo'>
+export type PerfilPublico = Pick<
+  Perfil,
+  'nome' | 'documento' | 'telefone' | 'email' | 'endereco' | 'cidade' | 'pix' | 'pixTipo'
+> &
+  Partial<Pick<Perfil, 'razaoSocial' | 'site' | 'instagram' | 'logo' | 'corMarca'>> & {
+    /** Com Pro, os documentos saem com a marca do profissional e sem a marca Q3 Orça. */
+    pro?: boolean
+  }
 
 export type RespostaCliente = 'aprovado' | 'recusado'
 

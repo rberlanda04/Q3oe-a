@@ -4,6 +4,7 @@ import {
   chaveCatalogo,
   formatarNumero,
   normalizarOrcamento,
+  proximaSequencia,
   subtotalItem,
   totalRecebido,
   valorDesconto,
@@ -71,6 +72,15 @@ describe('cálculos', () => {
       deslocamento: 3000,
       total: 18750,
     })
+  })
+
+  it('não repete número de orçamento', () => {
+    // Conta nova: começa em 1.
+    expect(proximaSequencia({ proximoNumero: 0 })).toBe(1)
+    // Conta antiga com 3 orçamentos pelo contador legado: o próximo é 4.
+    expect(proximaSequencia({ proximoNumero: 3 })).toBe(4)
+    // Depois da correção, o último número usado manda.
+    expect(proximaSequencia({ proximoNumero: 3, ultimoNumero: 7 })).toBe(8)
   })
 
   it('numera orçamentos com o ano', () => {

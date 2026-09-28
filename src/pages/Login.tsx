@@ -1,6 +1,7 @@
 import { FirebaseError } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
+  getAdditionalUserInfo,
   GoogleAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -8,6 +9,7 @@ import {
 } from 'firebase/auth'
 import { useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { registrarEvento } from '../lib/eventos'
 import { auth } from '../lib/firebase'
 import { IconeCheck } from '../ui/Icones'
 import { Logo } from '../ui/Logo'
@@ -67,7 +69,7 @@ export function Login() {
     executar(() =>
       modo === 'entrar'
         ? signInWithEmailAndPassword(auth, email, senha)
-        : createUserWithEmailAndPassword(auth, email, senha),
+        : createUserWithEmailAndPassword(auth, email, senha).then(() => registrarEvento('conta_criada', { metodo: 'email' })),
     )
   }
 
@@ -114,7 +116,12 @@ export function Login() {
             <button
               className="btn-secondary w-full"
               disabled={enviando}
-              onClick={() => executar(() => signInWithPopup(auth, new GoogleAuthProvider()))}
+              onClick={() =>
+                executar(async () => {
+                  const resultado = await signInWithPopup(auth, new GoogleAuthProvider())
+                  if (getAdditionalUserInfo(resultado)?.isNewUser) registrarEvento('conta_criada', { metodo: 'google' })
+                })
+              }
             >
               <IconeGoogle /> Entrar com Google
             </button>

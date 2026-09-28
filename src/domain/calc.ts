@@ -33,6 +33,14 @@ export function formatarNumero(ano: number, sequencia: number): string {
   return `${ano}-${String(sequencia).padStart(4, '0')}`
 }
 
+/**
+ * Próximo número sequencial do orçamento. Usa o último número salvo; em contas
+ * antigas, o contador legado já guarda essa mesma informação.
+ */
+export function proximaSequencia(perfil: { ultimoNumero?: number; proximoNumero?: number }): number {
+  return Math.max(perfil.ultimoNumero ?? perfil.proximoNumero ?? 0, 0) + 1
+}
+
 export function dataValidade(criadoEm: number, validadeDias: number): Date {
   const data = new Date(criadoEm)
   data.setDate(data.getDate() + Math.max(validadeDias, 0))

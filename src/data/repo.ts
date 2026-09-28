@@ -3,7 +3,6 @@ import {
   deleteDoc,
   doc,
   getDocs,
-  increment,
   onSnapshot,
   orderBy,
   query,
@@ -12,7 +11,7 @@ import {
   where,
   type Unsubscribe,
 } from 'firebase/firestore'
-import { chaveCatalogo, formatarNumero, normalizarOrcamento, PIX_PADRAO } from '../domain/calc'
+import { chaveCatalogo, formatarNumero, normalizarOrcamento, PIX_PADRAO, proximaSequencia } from '../domain/calc'
 import { modeloPorId } from '../domain/templates'
 import type {
   Cliente,
@@ -26,6 +25,7 @@ import type {
   ProfissaoId,
   RespostaCliente,
 } from '../domain/types'
+import type { Assinatura } from '../domain/plano'
 import { db } from '../lib/firebase'
 
 // Escritas no Firestore entram no cache local na hora. Não esperamos a
@@ -41,10 +41,15 @@ export const PERFIL_VAZIO: Perfil = {
   email: '',
   endereco: '',
   cidade: '',
+  razaoSocial: '',
+  site: '',
+  instagram: '',
+  logo: '',
+  corMarca: '',
   pix: '',
   textoPagamento: '50% de entrada e 50% na conclusão do serviço, via Pix ou dinheiro.',
   textoGarantia: '',
-  proximoNumero: 1,
+  proximoNumero: 0,
   precosSalvos: {},
 }
 
@@ -111,8 +116,9 @@ export function ouvirOrcamento(
 }
 
 function proximoNumero(uid: string, perfil: Perfil): string {
-  gravar(setDoc(perfilRef(uid), { proximoNumero: increment(1) }, { merge: true }))
-  return formatarNumero(new Date().getFullYear(), perfil.proximoNumero || 1)
+  const sequencia = proximaSequencia(perfil)
+  gravar(setDoc(perfilRef(uid), { ultimoNumero: sequencia }, { merge: true }))
+  return formatarNumero(new Date().getFullYear(), sequencia)
 }
 
 export function criarOrcamento(
@@ -263,7 +269,8 @@ export function excluirItemCatalogo(uid: string, id: string) {
 
 /* ---------- Link público de aprovação ---------- */
 
-function perfilPublico(p: Perfil): PerfilPublico {
+/** Dados que o cliente vê. A marca própria só vai junto quando o profissional tem Pro. */
+export function perfilPublico(p: Perfil, pro: boolean): PerfilPublico {
   return {
     nome: p.nome,
     documento: p.documento,
@@ -273,6 +280,11 @@ function perfilPublico(p: Perfil): PerfilPublico {
     cidade: p.cidade,
     pix: p.pix,
     ...(p.pixTipo ? { pixTipo: p.pixTipo } : {}),
+    razaoSocial: p.razaoSocial,
+    site: p.site,
+    instagram: p.instagram,
+    pro,
+    ...(pro ? { logo: p.logo, corMarca: p.corMarca } : {}),
   }
 }
 
@@ -280,7 +292,7 @@ function perfilPublico(p: Perfil): PerfilPublico {
  * Publica (ou atualiza) a cópia pública do orçamento e devolve o id do link.
  * A resposta do cliente, se já existir, é preservada.
  */
-export function publicarLink(uid: string, orcamento: Orcamento, perfil: Perfil): string {
+export function publicarLink(uid: string, orcamento: Orcamento, perfilDoCliente: PerfilPublico): string {
   const ref = orcamento.linkId ? doc(compartilhamentosCol, orcamento.linkId) : doc(compartilhamentosCol)
   // O cliente não precisa ver pagamentos nem identificadores internos.
   const { pagamentos: _p, clienteId: _c, linkId: _l, ...publico } = orcamento
@@ -288,7 +300,7 @@ export function publicarLink(uid: string, orcamento: Orcamento, perfil: Perfil):
     id: ref.id,
     uid,
     orcamento: { ...publico, pagamentos: [] },
-    perfil: perfilPublico(perfil),
+    perfil: perfilDoCliente,
     atualizadoEm: Date.now(),
   }
   if (orcamento.linkId) {
@@ -350,6 +362,28 @@ export function sincronizarRespostas(uid: string): Unsubscribe {
     },
     (erro) => console.error('Falha ao sincronizar respostas', erro),
   )
+}
+
+/* ---------- Plano e interesse no Pro ---------- */
+
+/** Assinatura Pro, gravada apenas pelo administrador em assinaturas/{uid}. */
+export function ouvirAssinatura(uid: string, callback: (assinatura: Assinatura | null) => void): Unsubscribe {
+  return onSnapshot(
+    doc(db, 'assinaturas', uid),
+    (snap) => {
+      if (!snap.exists()) return callback(null)
+      const dados = snap.data() as { plano?: string; validoAte?: number | { toMillis: () => number } }
+      // No console do Firebase, "validoAte" pode ser um carimbo de data ou um número em milissegundos.
+      const validoAte = typeof dados.validoAte === 'number' ? dados.validoAte : (dados.validoAte?.toMillis?.() ?? 0)
+      callback(dados.plano === 'pro' ? { plano: 'pro', validoAte } : null)
+    },
+    () => callback(null),
+  )
+}
+
+/** Registra que o profissional quer assinar o Pro, para o time de vendas entrar em contato. */
+export async function registrarInteressePro(uid: string, dados: { nome: string; email: string; telefone: string; plano: 'mensal' | 'anual' }) {
+  await setDoc(doc(db, 'interesses', uid), { ...dados, uid, criadoEm: Date.now() })
 }
 
 /* ---------- Exportação (LGPD e backup) ---------- */

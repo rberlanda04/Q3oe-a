@@ -15,7 +15,7 @@ const LINKS = [
 ]
 
 export function Layout() {
-  const { perfil, user } = useSessao()
+  const { perfil, user, plano } = useSessao()
   const local = useLocation()
   // O editor tem a própria barra de ações embaixo; a navegação sai do caminho.
   const telaDeTarefa = local.pathname.startsWith('/orcamento/')
@@ -53,12 +53,14 @@ export function Layout() {
             <Link to="/novo" className="btn-primary hidden !py-2.5 md:inline-flex">
               <IconeMais tamanho={18} /> Novo orçamento
             </Link>
-            <span
-              className="grid h-9 w-9 place-items-center rounded-full bg-grafite-900 text-xs font-bold text-white"
+            <Link
+              to="/perfil"
+              className="grid h-9 w-9 place-items-center overflow-hidden rounded-full bg-grafite-900 text-xs font-bold text-white"
               title={perfil.nome || user?.email || ''}
+              aria-label="Meu perfil"
             >
-              {iniciais}
-            </span>
+              {plano.pro && perfil.logo ? <img src={perfil.logo} alt="" className="h-full w-full bg-white object-contain p-1" /> : iniciais}
+            </Link>
             <button
               className="grid h-9 w-9 place-items-center rounded-full text-grafite-500 hover:bg-white"
               onClick={() => signOut(auth)}

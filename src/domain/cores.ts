@@ -142,6 +142,37 @@ export function nivelWcag(razao: number): 'AAA' | 'AA' | 'AA grande' | 'Não usa
   return 'Não usar em texto'
 }
 
+export function hexValido(hex: string | undefined): hex is string {
+  return /^#[0-9a-f]{6}$/i.test(hex ?? '')
+}
+
+/** Mistura duas cores. peso = 0 devolve a primeira, peso = 1 devolve a segunda. */
+export function misturar(a: string, b: string, peso: number): string {
+  const ca = parseInt(a.slice(1), 16)
+  const cb = parseInt(b.slice(1), 16)
+  const canalMisto = (deslocamento: number) => {
+    const x = (ca >> deslocamento) & 255
+    const y = (cb >> deslocamento) & 255
+    return Math.round(x + (y - x) * peso)
+  }
+  return `#${[16, 8, 0].map((d) => canalMisto(d).toString(16).padStart(2, '0')).join('')}`
+}
+
+/**
+ * Cores de um documento: a marca do profissional (Pro) ou a Brasa do Q3.
+ * "texto" sempre tem contraste AA sobre branco; se a cor da marca não tiver, usa grafite.
+ */
+export function coresDoDocumento(corMarca: string | undefined, pro: boolean | undefined) {
+  if (pro && hexValido(corMarca)) {
+    return {
+      destaque: corMarca,
+      texto: contraste(corMarca, '#ffffff') >= 4.5 ? corMarca : '#1b1f2a',
+      suave: misturar(corMarca, '#ffffff', 0.9),
+    }
+  }
+  return { destaque: '#ff5a1f', texto: '#c43e0c', suave: '#fff4ed' }
+}
+
 /** Cor de texto legível sobre um fundo. */
 export function textoSobre(fundo: string): string {
   return contraste(fundo, '#ffffff') >= contraste(fundo, '#1b1f2a') ? '#ffffff' : '#1b1f2a'

@@ -1,4 +1,5 @@
-import { Font, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { Font, Image, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { coresDoDocumento } from '../domain/cores'
 import type { PerfilPublico } from '../domain/types'
 
 // A hifenização automática do react-pdf segue regras do inglês e insere hífens
@@ -28,19 +29,30 @@ export const st = StyleSheet.create({
   rodape: { position: 'absolute', bottom: 24, left: 36, right: 36, fontSize: 8, color: '#94a3b8', textAlign: 'center' },
 })
 
+/** Cores do documento conforme o plano: marca do profissional (Pro) ou Brasa do Q3. */
+export const cores = (perfil: PerfilPublico) => coresDoDocumento(perfil.corMarca, perfil.pro)
+
 export function Cabecalho({ perfil, titulo, linhas }: { perfil: PerfilPublico; titulo: string; linhas: string[] }) {
+  const cor = cores(perfil)
   const contato = [perfil.telefone, perfil.email].filter(Boolean).join('  ·  ')
   const local = [perfil.endereco, perfil.cidade].filter(Boolean).join(' - ')
+  const web = [perfil.site, perfil.instagram ? `@${perfil.instagram.replace(/^@/, '')}` : ''].filter(Boolean).join('  ·  ')
+  const logo = perfil.pro && perfil.logo ? perfil.logo : ''
   return (
-    <View style={st.topo}>
-      <View style={{ maxWidth: 300 }}>
-        <Text style={st.empresa}>{perfil.nome || 'Seu nome aqui'}</Text>
-        {perfil.documento ? <Text style={st.pequeno}>CPF/CNPJ: {perfil.documento}</Text> : null}
-        {contato ? <Text style={st.pequeno}>{contato}</Text> : null}
-        {local ? <Text style={st.pequeno}>{local}</Text> : null}
+    <View style={[st.topo, { borderBottomColor: cor.destaque }]}>
+      <View style={{ flexDirection: 'row', gap: 12, maxWidth: 330 }}>
+        {logo ? <Image src={logo} style={{ width: 64, height: 64, objectFit: 'contain' }} /> : null}
+        <View style={{ flexShrink: 1 }}>
+          <Text style={st.empresa}>{perfil.nome || 'Seu nome aqui'}</Text>
+          {perfil.razaoSocial && perfil.razaoSocial !== perfil.nome ? <Text style={st.pequeno}>{perfil.razaoSocial}</Text> : null}
+          {perfil.documento ? <Text style={st.pequeno}>CPF/CNPJ: {perfil.documento}</Text> : null}
+          {contato ? <Text style={st.pequeno}>{contato}</Text> : null}
+          {local ? <Text style={st.pequeno}>{local}</Text> : null}
+          {web ? <Text style={st.pequeno}>{web}</Text> : null}
+        </View>
       </View>
       <View>
-        <Text style={st.titulo}>{titulo}</Text>
+        <Text style={[st.titulo, { color: cor.texto }]}>{titulo}</Text>
         {linhas.map((linha) => (
           <Text key={linha} style={[st.pequeno, st.direita]}>
             {linha}

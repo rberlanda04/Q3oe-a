@@ -1,8 +1,9 @@
-import { getAnalytics, isSupported } from 'firebase/analytics'
+import { getAnalytics, isSupported, type Analytics } from 'firebase/analytics'
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import {
   initializeFirestore,
+  memoryLocalCache,
   persistentLocalCache,
   persistentMultipleTabManager,
 } from 'firebase/firestore'
@@ -27,11 +28,17 @@ export const auth = getAuth(app)
 export const db = initializeFirestore(app, {
   // Campos opcionais sem valor (undefined) são simplesmente omitidos.
   ignoreUndefinedProperties: true,
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+  // No build (pré-renderização em Node) não há IndexedDB; usa cache em memória.
+  localCache:
+    typeof window === 'undefined'
+      ? memoryLocalCache()
+      : persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
 })
 
-isSupported()
-  .then((ok) => {
-    if (ok) getAnalytics(app)
-  })
-  .catch(() => {})
+// Analytics só existe no navegador e só quando o ambiente permite (bloqueadores, modo privado).
+export const analytics: Promise<Analytics | null> =
+  typeof window === 'undefined'
+    ? Promise.resolve(null)
+    : isSupported()
+        .then((ok) => (ok ? getAnalytics(app) : null))
+        .catch(() => null)

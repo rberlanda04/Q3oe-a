@@ -16,6 +16,24 @@ service cloud.firestore {
       }
     }
 
+    // Assinatura Pro. Só o administrador grava (console do Firebase ou Admin SDK),
+    // para ninguém conseguir se promover a Pro sozinho.
+    match /assinaturas/{uid} {
+      allow read: if logado() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Pedido de assinatura do Pro, para o time de vendas entrar em contato.
+    match /interesses/{uid} {
+      allow read: if logado() && request.auth.uid == uid;
+      allow create, update: if logado()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.plano in ['mensal', 'anual']
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'email', 'telefone', 'plano', 'criadoEm']);
+      allow delete: if false;
+    }
+
     // Cópia pública de um orçamento, aberta pelo cliente através do link.
     // O id do documento é aleatório e funciona como senha do link.
     match /compartilhamentos/{id} {

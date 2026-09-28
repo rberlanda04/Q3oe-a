@@ -25,8 +25,10 @@ import type {
   Pagamento,
   Perfil,
   StatusOrcamento,
+  PerfilPublico,
 } from '../domain/types'
 import { useUsuario } from '../lib/auth'
+import { registrarEvento } from '../lib/eventos'
 import {
   enviarArquivo,
   gerarPdfGarantia,
@@ -50,7 +52,7 @@ type Remoto = Pick<Orcamento, 'status' | 'respondidoEm'>
 
 export function Editor() {
   const { id = '' } = useParams()
-  const { user, perfil } = useUsuario()
+  const { user, perfil, publico } = useUsuario()
   const [orcamento, setOrcamento] = useState<Orcamento | null | undefined>(undefined)
   const [remoto, setRemoto] = useState<Remoto | null>(null)
   const [erro, setErro] = useState('')
@@ -86,7 +88,7 @@ export function Editor() {
         </Link>
       </div>
     )
-  return <EditorOrcamento key={orcamento.id} inicial={orcamento} remoto={remoto} uid={user.uid} perfil={perfil} />
+  return <EditorOrcamento key={orcamento.id} inicial={orcamento} remoto={remoto} uid={user.uid} perfil={perfil} publico={publico} />
 }
 
 interface EnvioPendente {
@@ -99,11 +101,14 @@ function EditorOrcamento({
   remoto,
   uid,
   perfil,
+  publico,
 }: {
   inicial: Orcamento
   remoto: Remoto | null
   uid: string
   perfil: Perfil
+  /** Perfil como o cliente vê, com a marca própria quando há Pro. */
+  publico: PerfilPublico
 }) {
   const navegar = useNavigate()
   const [o, setO] = useState(inicial)
@@ -135,17 +140,17 @@ function EditorOrcamento({
   // Salvamento automático com pequeno atraso. Se já existe link, ele é atualizado junto.
   const ultimo = useRef(o)
   const naoSalvo = useRef(false)
-  const refs = useRef({ catalogo, clientes, perfil })
+  const refs = useRef({ catalogo, clientes, publico })
   useEffect(() => {
-    refs.current = { catalogo, clientes, perfil }
-  }, [catalogo, clientes, perfil])
+    refs.current = { catalogo, clientes, publico }
+  }, [catalogo, clientes, publico])
   useEffect(() => {
     ultimo.current = o
     if (o === inicial) return
     naoSalvo.current = true
     const timer = setTimeout(() => {
       salvarOrcamento(uid, o)
-      if (o.linkId) publicarLink(uid, o, refs.current.perfil)
+      if (o.linkId) publicarLink(uid, o, refs.current.publico)
       naoSalvo.current = false
     }, 600)
     return () => clearTimeout(timer)
@@ -155,7 +160,7 @@ function EditorOrcamento({
   useEffect(
     () => () => {
       let final = ultimo.current
-      const { catalogo: cat, clientes: cli, perfil: per } = refs.current
+      const { catalogo: cat, clientes: cli, publico: per } = refs.current
       const nome = final.cliente.nome.trim()
       if (nome) {
         const existente = cli.find((c) => c.id === final.clienteId)
@@ -218,6 +223,7 @@ function EditorOrcamento({
       }
       setPendente(null)
       if (resultado === 'cancelado') return
+      if (marcarEnviado) registrarEvento('orcamento_enviado', { forma: 'pdf', profissao: o.profissao })
       if (marcarEnviado && o.status === 'rascunho') alterar({ status: 'enviado', enviadoEm: Date.now() })
       if (resultado === 'baixado') setMensagem('PDF baixado. Anexe o arquivo na conversa do WhatsApp que abrimos.')
     } catch (erro) {
@@ -245,15 +251,16 @@ function EditorOrcamento({
 
   function enviarPdf() {
     if (!validarItens()) return
-    enviarDocumento('pdf', () => gerarPdfOrcamento(o, perfil), mensagemWhatsApp(o, perfil), true)
+    enviarDocumento('pdf', () => gerarPdfOrcamento(o, publico), mensagemWhatsApp(o, publico), true)
   }
 
   function enviarLink() {
     if (!validarItens()) return
-    const linkId = publicarLink(uid, o, perfil)
+    const linkId = publicarLink(uid, o, publico)
+    registrarEvento('orcamento_enviado', { forma: 'link', profissao: o.profissao })
     alterar({ linkId, ...(o.status === 'rascunho' ? { status: 'enviado' as const, enviadoEm: Date.now() } : {}) })
     const url = `${window.location.origin}/o/${linkId}`
-    window.open(linkWhatsApp(o.cliente.telefone, mensagemLink(o, perfil, url)), '_blank', 'noopener')
+    window.open(linkWhatsApp(o.cliente.telefone, mensagemLink(o, publico, url)), '_blank', 'noopener')
   }
 
   async function copiarLink() {
@@ -265,7 +272,7 @@ function EditorOrcamento({
   async function visualizar() {
     const aba = window.open('', '_blank')
     try {
-      const url = URL.createObjectURL(await gerarPdfOrcamento(o, perfil))
+      const url = URL.createObjectURL(await gerarPdfOrcamento(o, publico))
       if (aba) aba.location.href = url
       else window.location.href = url
     } catch (erro) {
@@ -279,7 +286,7 @@ function EditorOrcamento({
     const pagamentos = [...o.pagamentos, pagamento]
     alterar({ pagamentos, status: o.status === 'rascunho' || o.status === 'enviado' ? 'aprovado' : o.status })
     const atualizado = { ...o, pagamentos }
-    enviarDocumento('recibo', () => gerarPdfRecibo(atualizado, perfil, pagamento), mensagemDocumento(o, perfil, 'o recibo'))
+    enviarDocumento('recibo', () => gerarPdfRecibo(atualizado, publico, pagamento), mensagemDocumento(o, publico, 'o recibo'))
   }
 
   /* ---------- Sugestões ---------- */
@@ -298,7 +305,7 @@ function EditorOrcamento({
     [clientes, termoCliente, o.clienteId],
   )
 
-  const cobrancaPix = pixDoOrcamento(o, perfil)
+  const cobrancaPix = pixDoOrcamento(o, publico)
   const recebido = totalRecebido(o)
   const mostrarDocumentos = o.status === 'aprovado' || o.pagamentos.length > 0
 
@@ -671,7 +678,7 @@ function EditorOrcamento({
             ocupado={ocupado === 'recibo'}
             onRegistrar={registrarPagamento}
             onReenviar={(p) =>
-              enviarDocumento('recibo', () => gerarPdfRecibo(o, perfil, p), mensagemDocumento(o, perfil, 'o recibo'))
+              enviarDocumento('recibo', () => gerarPdfRecibo(o, publico, p), mensagemDocumento(o, publico, 'o recibo'))
             }
             onExcluir={(id) => alterar({ pagamentos: o.pagamentos.filter((p) => p.id !== id) })}
           />
@@ -681,7 +688,7 @@ function EditorOrcamento({
               className="btn-secondary"
               disabled={Boolean(ocupado)}
               onClick={() =>
-                enviarDocumento('ordem', () => gerarPdfOrcamento(o, perfil, 'ordem'), mensagemDocumento(o, perfil, 'a ordem de serviço'))
+                enviarDocumento('ordem', () => gerarPdfOrcamento(o, publico, 'ordem'), mensagemDocumento(o, publico, 'a ordem de serviço'))
               }
             >
               {ocupado === 'ordem' ? 'Gerando...' : '📋 Enviar ordem de serviço'}
@@ -691,7 +698,7 @@ function EditorOrcamento({
               className="btn-secondary"
               disabled={Boolean(ocupado)}
               onClick={() =>
-                enviarDocumento('garantia', () => gerarPdfGarantia(o, perfil), mensagemDocumento(o, perfil, 'o termo de garantia'))
+                enviarDocumento('garantia', () => gerarPdfGarantia(o, publico), mensagemDocumento(o, publico, 'o termo de garantia'))
               }
             >
               {ocupado === 'garantia' ? 'Gerando...' : '🛡️ Enviar termo de garantia'}

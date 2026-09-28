@@ -27,3 +27,6 @@ dist-ssr
 .firebase/
 firebase-debug.log
 firestore-debug.log
+
+# Pré-renderização
+dist-ssg

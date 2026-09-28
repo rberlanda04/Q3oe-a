@@ -5,8 +5,8 @@ import { formatarBRL } from '../domain/money'
 import type { Orcamento, Pagamento, PerfilPublico } from '../domain/types'
 import type { PixPdf, TipoDocumento } from './OrcamentoPdf'
 
-// O plano Pro vai remover a marca d'água. Por enquanto, todos têm a versão grátis.
-const MARCA_DAGUA = true
+/** No plano grátis, os documentos levam "feito com Q3 Orça" no rodapé. O Pro remove. */
+const marcaDagua = (perfil: PerfilPublico) => !perfil.pro
 
 function nomeArquivo(prefixo: string, orcamento: Orcamento, sufixo = ''): string {
   const cliente = orcamento.cliente.nome.trim().replace(/[^\p{L}\d]+/gu, '-').toLowerCase()
@@ -41,7 +41,7 @@ export async function gerarPdfOrcamento(
     tipo === 'orcamento' ? pixParaPdf(orcamento, perfil) : Promise.resolve(null),
   ])
   return renderizar(
-    <OrcamentoPdf orcamento={orcamento} perfil={perfil} marcaDagua={MARCA_DAGUA} tipo={tipo} pix={pix} geradoEm={Date.now()} />,
+    <OrcamentoPdf orcamento={orcamento} perfil={perfil} marcaDagua={marcaDagua(perfil)} tipo={tipo} pix={pix} geradoEm={Date.now()} />,
     nomeArquivo(tipo === 'ordem' ? 'ordem-de-servico' : 'orcamento', orcamento),
   )
 }
@@ -49,7 +49,7 @@ export async function gerarPdfOrcamento(
 export async function gerarPdfRecibo(orcamento: Orcamento, perfil: PerfilPublico, pagamento: Pagamento): Promise<File> {
   const { ReciboPdf } = await import('./ReciboPdf')
   return renderizar(
-    <ReciboPdf orcamento={orcamento} perfil={perfil} pagamento={pagamento} marcaDagua={MARCA_DAGUA} />,
+    <ReciboPdf orcamento={orcamento} perfil={perfil} pagamento={pagamento} marcaDagua={marcaDagua(perfil)} />,
     nomeArquivo('recibo', orcamento, pagamento.numeroRecibo.slice(orcamento.numero.length)),
   )
 }
@@ -57,7 +57,7 @@ export async function gerarPdfRecibo(orcamento: Orcamento, perfil: PerfilPublico
 export async function gerarPdfGarantia(orcamento: Orcamento, perfil: PerfilPublico): Promise<File> {
   const { GarantiaPdf } = await import('./GarantiaPdf')
   return renderizar(
-    <GarantiaPdf orcamento={orcamento} perfil={perfil} dataConclusao={Date.now()} marcaDagua={MARCA_DAGUA} />,
+    <GarantiaPdf orcamento={orcamento} perfil={perfil} dataConclusao={Date.now()} marcaDagua={marcaDagua(perfil)} />,
     nomeArquivo('garantia', orcamento),
   )
 }

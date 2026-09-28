@@ -77,6 +77,23 @@ describe('PDFs', () => {
     salvar('orcamento.pdf', buffer)
   }, 30_000)
 
+  it('gera o orçamento Pro com logo, cor da marca e sem marca d’água', async () => {
+    // Um PNG qualquer serve de logo no teste.
+    const logo = await QRCode.toDataURL('logo', { margin: 0, width: 128, color: { dark: '#1f418f' } })
+    const pro: PerfilPublico = {
+      ...perfil,
+      pro: true,
+      logo,
+      corMarca: '#1f418f',
+      razaoSocial: 'João Pinturas e Reformas LTDA',
+      site: 'joaopinturas.com.br',
+      instagram: 'joaopinturas',
+    }
+    const buffer = await renderToBuffer(<OrcamentoPdf orcamento={orcamento} perfil={pro} marcaDagua={false} />)
+    validarPdf(buffer)
+    salvar('orcamento-pro.pdf', buffer)
+  }, 30_000)
+
   it('gera a ordem de serviço', async () => {
     const buffer = await renderToBuffer(<OrcamentoPdf orcamento={orcamento} perfil={perfil} marcaDagua tipo="ordem" />)
     validarPdf(buffer)

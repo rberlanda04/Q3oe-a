@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { criarOrcamento, ouvirClientes } from '../data/repo'
 import { MODELOS } from '../domain/templates'
@@ -11,7 +11,16 @@ export function NovoOrcamento() {
   const navegar = useNavigate()
   const [parametros] = useSearchParams()
   const clienteId = parametros.get('cliente')
+  const modeloPedido = MODELOS.find((m) => m.id === parametros.get('modelo'))
   const [cliente, setCliente] = useState<ClienteCadastro | undefined>()
+  const criado = useRef(false)
+
+  // Chegou de uma página "modelo de orçamento para ...": já abre o orçamento daquela profissão.
+  useEffect(() => {
+    if (!modeloPedido || criado.current) return
+    criado.current = true
+    navegar(`/orcamento/${criarOrcamento(user.uid, perfil, modeloPedido.id)}`, { replace: true })
+  }, [modeloPedido, navegar, perfil, user.uid])
 
   useEffect(() => {
     if (!clienteId) return

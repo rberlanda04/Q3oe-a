@@ -5,22 +5,32 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icone-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ff5a1f" />
+    <!--seo-->
     <title>Q3 Orça · Orçamento rápido, aprovado pelo celular</title>
     <meta
       name="description"
       content="Monte orçamentos profissionais em 2 minutos, envie pelo WhatsApp e receba por Pix. Grátis para eletricistas, pintores, pedreiros, diaristas e todo prestador de serviço."
     />
-    <meta name="theme-color" content="#ff5a1f" />
     <meta property="og:title" content="Q3 Orça · Orçamento rápido, aprovado pelo celular" />
     <meta property="og:description" content="Monte em 2 minutos, envie pelo WhatsApp e receba por Pix." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://q3orca.web.app" />
+    <meta property="og:image" content="https://q3orca.web.app/og-imagem.png" />
+    <!--/seo-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Quem já está logado não precisa ver o HTML pré-renderizado do site piscando antes do painel.
+      try {
+        if (localStorage.getItem('q3:logado')) document.documentElement.dataset.logado = '1'
+      } catch (e) {}
+    </script>
+    <style>
+      [data-logado] [data-ssg] { display: none; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

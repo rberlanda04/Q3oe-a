@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ouvirCompartilhamento, responderOrcamento } from '../data/repo'
 import { calcularTotais, dataValidade, subtotalItem } from '../domain/calc'
+import { hexValido, textoSobre } from '../domain/cores'
 import { pixDoOrcamento } from '../domain/cobranca'
 import { formatarBRL, formatarQuantidade } from '../domain/money'
 import type { Compartilhamento, RespostaCliente } from '../domain/types'
+import { registrarEvento } from '../lib/eventos'
 import { baixarArquivo, gerarPdfOrcamento, linkWhatsApp, qrCodeDataUrl } from '../pdf/compartilhar'
 import { APP_NOME, Simbolo } from '../ui/Logo'
 import { Regua } from '../ui/Regua'
@@ -40,6 +42,9 @@ function Conteudo({ dados }: { dados: Compartilhamento }) {
   const validade = dataValidade(o.criadoEm, o.validadeDias)
   const vencido = !dados.resposta && validade.getTime() < agora
   const pix = pixDoOrcamento(o, p)
+  // Assinantes Pro aparecem com a própria marca; os demais, com a identidade Q3.
+  const marcaPropria = Boolean(p.pro && hexValido(p.corMarca))
+  const corTextoCabecalho = marcaPropria ? textoSobre(p.corMarca!) : '#ffffff'
   const temMaterial = totais.materiais > 0 && totais.servicos > 0
 
   const [qr, setQr] = useState('')
@@ -60,6 +65,7 @@ function Conteudo({ dados }: { dados: Compartilhamento }) {
     setFalha('')
     try {
       await responderOrcamento(dados.id, resposta, nome)
+      if (resposta === 'aprovado') registrarEvento('link_aprovado')
       setConfirmando(null)
     } catch (e) {
       console.error(e)
@@ -89,13 +95,28 @@ function Conteudo({ dados }: { dados: Compartilhamento }) {
 
   return (
     <div className="min-h-dvh bg-areia-100 pb-10">
-      <header className="relative overflow-hidden bg-grafite-900 px-4 pt-7 pb-20 text-white">
-        <div className="relative z-10 mx-auto max-w-2xl">
-          <p className="rotulo !text-brasa-400">Orçamento de serviço</p>
-          <p className="mt-1 font-display text-3xl font-extrabold">{p.nome || 'Orçamento'}</p>
-          <p className="mt-1 text-sm text-grafite-300">{[p.telefone, p.email, p.cidade].filter(Boolean).join(' · ')}</p>
+      <header
+        className="relative overflow-hidden px-4 pt-7 pb-20"
+        style={{ background: marcaPropria ? p.corMarca : '#1b1f2a', color: corTextoCabecalho }}
+      >
+        <div className="relative z-10 mx-auto flex max-w-2xl items-center gap-4">
+          {marcaPropria && p.logo && (
+            <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-cartao">
+              <img src={p.logo} alt={`Logo de ${p.nome}`} className="max-h-full max-w-full object-contain" />
+            </span>
+          )}
+          <div className="min-w-0">
+            <p className={`rotulo ${marcaPropria ? '!text-current opacity-80' : '!text-brasa-400'}`}>Orçamento de serviço</p>
+            <p className="mt-1 font-display text-3xl leading-tight font-extrabold">{p.nome || 'Orçamento'}</p>
+            <p className="mt-1 text-sm opacity-80">{[p.telefone, p.email, p.cidade].filter(Boolean).join(' · ')}</p>
+            {(p.site || p.instagram) && (
+              <p className="mt-0.5 text-sm opacity-80">
+                {[p.site, p.instagram ? `@${p.instagram.replace(/^@/, '')}` : ''].filter(Boolean).join(' · ')}
+              </p>
+            )}
+          </div>
         </div>
-        <Regua className="opacity-60" />
+        {!marcaPropria && <Regua className="opacity-60" />}
       </header>
 
       <main className="relative z-10 mx-auto -mt-10 max-w-2xl space-y-4 px-4">
@@ -249,12 +270,14 @@ function Conteudo({ dados }: { dados: Compartilhamento }) {
           {baixando ? 'Gerando PDF...' : 'Baixar orçamento em PDF'}
         </button>
 
-        <a href="/" className="flex items-center justify-center gap-2 pt-6 text-xs text-grafite-500">
-          <Simbolo tamanho={20} />
-          <span>
-            Feito com <strong className="text-grafite-800">{APP_NOME}</strong>. Crie seus orçamentos grátis.
-          </span>
-        </a>
+        {!p.pro && (
+          <a href="/" className="flex items-center justify-center gap-2 pt-6 text-xs text-grafite-500">
+            <Simbolo tamanho={20} />
+            <span>
+              Feito com <strong className="text-grafite-800">{APP_NOME}</strong>. Crie seus orçamentos grátis.
+            </span>
+          </a>
+        )}
       </main>
     </div>
   )

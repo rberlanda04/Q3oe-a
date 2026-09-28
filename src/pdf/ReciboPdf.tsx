@@ -4,7 +4,7 @@ import { FORMAS_PAGAMENTO } from '../domain/cobranca'
 import { reaisPorExtenso } from '../domain/extenso'
 import { formatarBRL } from '../domain/money'
 import type { Orcamento, Pagamento, PerfilPublico } from '../domain/types'
-import { AZUL, Cabecalho, CINZA, dataBR, Rodape, st } from './base'
+import { AZUL, Cabecalho, CINZA, cores, dataBR, Rodape, st } from './base'
 
 const r = StyleSheet.create({
   valor: { marginTop: 20, padding: 14, borderWidth: 1.5, borderColor: AZUL, borderRadius: 4, alignItems: 'center' },
@@ -37,8 +37,8 @@ export function ReciboPdf({ orcamento: o, perfil: p, pagamento, marcaDagua }: Pr
       <Page size="A4" style={st.pagina}>
         <Cabecalho perfil={p} titulo="RECIBO" linhas={[`Nº ${pagamento.numeroRecibo}`, `Data: ${dataBR(pagamento.data)}`]} />
 
-        <View style={r.valor}>
-          <Text style={r.valorTexto}>{formatarBRL(pagamento.valorCentavos)}</Text>
+        <View style={[r.valor, { borderColor: cores(p).destaque }]}>
+          <Text style={[r.valorTexto, { color: cores(p).texto }]}>{formatarBRL(pagamento.valorCentavos)}</Text>
         </View>
 
         <Text style={r.corpo}>
