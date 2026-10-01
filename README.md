@@ -42,7 +42,7 @@ A AbacatePay só faz cobrança automática recorrente no cartão. Por isso, o Pi
    firebase functions:secrets:set ABACATEPAY_WEBHOOK_SECRET
    ```
 4. Publique as funções: `firebase deploy --only functions`. O terminal mostra o endereço do `webhookAbacatePay`.
-5. Na AbacatePay, crie um webhook com esse endereço e `?webhookSecret=SEU_SEGREDO` no final, com o evento `transparent.completed`.
+5. Na AbacatePay (https://app.abacatepay.com/webhooks), crie um webhook com o endereço do `webhookAbacatePay`, sem nada no final, o evento `transparent.completed` e, no campo **Secret**, o mesmo valor gravado em `ABACATEPAY_WEBHOOK_SECRET`. A AbacatePay envia esse segredo junto de cada aviso.
 6. Em `src/config.ts`, mude `PIX_ATIVO_EM_PRODUCAO` para `true`, rode `npm run build` e `firebase deploy --only hosting`.
 7. Teste: gere um Pix no app e simule o pagamento no painel da AbacatePay em Dev mode.
 8. Para valer: gere a chave de **produção**, grave de novo em `ABACATEPAY_API_KEY` e publique as funções outra vez.
