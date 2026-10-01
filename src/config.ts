@@ -35,6 +35,19 @@ export const WHATSAPP_VENDAS = ''
 /* ---------- Pagamento do Pro ---------- */
 
 /**
+ * Liga o pagamento por Pix via AbacatePay dentro do app.
+ * Só ative depois de publicar as funções do servidor (pasta functions, veja o README),
+ * que exigem o plano Blaze do Firebase. Desligado, o botão registra um pedido no painel admin.
+ */
+export const PIX_ATIVO_EM_PRODUCAO = false
+
+/** Também liga no build de teste com emuladores (VITE_PIX_ATIVO=1). */
+export const PAGAMENTO_PIX_ATIVO = PIX_ATIVO_EM_PRODUCAO || import.meta.env.VITE_PIX_ATIVO === '1'
+
+/** Avisa sobre a renovação do Pro quando faltarem estes dias para vencer. */
+export const DIAS_AVISO_RENOVACAO = 5
+
+/**
  * Links de pagamento (Mercado Pago, Asaas...). Quando preenchidos, o botão
  * leva direto ao checkout. A ativação é feita no painel admin (/admin).
  */

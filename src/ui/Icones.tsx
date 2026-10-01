@@ -135,6 +135,12 @@ export const IconeRaio = (p: Props) => (
     <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
   </Base>
 )
+export const IconeAjuda = (p: Props) => (
+  <Base {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01" />
+  </Base>
+)
 export const IconeNuvem = (p: Props) => (
   <Base {...p}>
     <path d="M7 18a5 5 0 0 1-.5-10A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" />

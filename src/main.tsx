@@ -5,6 +5,7 @@ import './index.css'
 import { SessaoProvider, useSessao } from './lib/auth'
 import { monitorarErros } from './lib/eventos'
 import { Admin } from './pages/Admin'
+import { Ajuda, ChamadoUsuario } from './pages/Ajuda'
 import { Catalogo } from './pages/Catalogo'
 import { Clientes } from './pages/Clientes'
 import { Editor } from './pages/Editor'
@@ -16,6 +17,7 @@ import { Perfil } from './pages/Perfil'
 import { Planos } from './pages/Planos'
 import { Home } from './pages/site/Home'
 import { Marca } from './pages/site/Marca'
+import { Contato } from './pages/site/Contato'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { Layout } from './ui/Layout'
@@ -63,6 +65,8 @@ function Raiz() {
         <Route path="perfil" element={<Perfil />} />
         <Route path="planos" element={<Planos />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="ajuda" element={<Ajuda />} />
+        <Route path="ajuda/:id" element={<ChamadoUsuario />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
@@ -82,6 +86,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/modelos-de-orcamento" element={<ModelosIndice />} />
           <Route path="/termos" element={<Termos />} />
           <Route path="/privacidade" element={<Privacidade />} />
+          <Route path="/contato" element={<Contato />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />

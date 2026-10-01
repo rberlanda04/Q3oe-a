@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import {
+  excluirContato,
   excluirPedidoPro,
   gravarAssinatura,
   mensagemErroLeitura,
   ouvirAssinaturas,
+  ouvirContatos,
+  ouvirTodosChamados,
   ouvirPedidosPro,
   type AssinaturaAdmin,
+  type Chamado,
+  type Contato,
   type PedidoPro,
 } from '../data/repo'
 import { formatarBRL } from '../domain/money'
+import { CATEGORIAS, Conversa, STATUS_CHAMADO } from '../ui/Conversa'
 import { novaValidade } from '../domain/plano'
 import { useSessao, useUsuario } from '../lib/auth'
 import { linkWhatsApp } from '../pdf/compartilhar'
@@ -22,6 +28,138 @@ const dataBR = (ms: number) => new Date(ms).toLocaleDateString('pt-BR')
 export function Admin() {
   const { admin } = useSessao()
   return admin ? <PainelAdmin /> : <SemAcesso />
+}
+
+type Aba = 'pro' | 'suporte' | 'contatos'
+
+function PainelAdmin() {
+  const [aba, setAba] = useState<Aba>('pro')
+  const [chamados, setChamados] = useState<Chamado[]>([])
+  useEffect(() => ouvirTodosChamados(setChamados), [])
+  const pendentes = chamados.filter((c) => c.naoLidoEquipe || c.status === 'aberto').length
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="rotulo !text-brasa-700">Administração</p>
+        <h1 className="text-3xl font-extrabold">Painel do Q3 Orça</h1>
+      </div>
+      <div className="flex gap-2 overflow-x-auto" role="tablist">
+        {(
+          [
+            ['pro', 'Pro e pagamentos'],
+            ['suporte', `Suporte${pendentes ? ` (${pendentes})` : ''}`],
+            ['contatos', 'Contatos do site'],
+          ] as [Aba, string][]
+        ).map(([id, rotulo]) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={aba === id}
+            onClick={() => setAba(id)}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold ${aba === id ? 'bg-grafite-900 text-white' : 'border border-areia-300 bg-white text-grafite-600'}`}
+          >
+            {rotulo}
+          </button>
+        ))}
+      </div>
+      {aba === 'pro' && <AbaPro />}
+      {aba === 'suporte' && <AbaSuporte chamados={chamados} />}
+      {aba === 'contatos' && <AbaContatos />}
+    </div>
+  )
+}
+
+function AbaSuporte({ chamados }: { chamados: Chamado[] }) {
+  const [aberto, setAberto] = useState<string | null>(null)
+  const [mostrarResolvidos, setMostrarResolvidos] = useState(false)
+  const selecionado = chamados.find((c) => c.id === aberto)
+  if (selecionado) {
+    return (
+      <div className="space-y-4">
+        <button className="text-sm font-semibold text-grafite-500" onClick={() => setAberto(null)}>
+          ← Todos os chamados
+        </button>
+        <div>
+          <p className="rotulo">
+            {CATEGORIAS[selecionado.categoria]} · {selecionado.nome || 'Sem nome'} · {selecionado.email}
+          </p>
+          <h2 className="text-2xl font-extrabold">{selecionado.assunto}</h2>
+        </div>
+        <Conversa chamado={selecionado} lado="equipe" nome="Equipe Q3 Orça" />
+      </div>
+    )
+  }
+  const visiveis = chamados
+    .filter((c) => mostrarResolvidos || c.status !== 'resolvido')
+    .sort((a, b) => Number(b.naoLidoEquipe) - Number(a.naoLidoEquipe) || b.atualizadoEm - a.atualizadoEm)
+  return (
+    <section className="space-y-3">
+      <label className="!mb-0 flex items-center gap-2 text-sm font-medium">
+        <input type="checkbox" className="!w-auto" checked={mostrarResolvidos} onChange={(e) => setMostrarResolvidos(e.target.checked)} />
+        Mostrar resolvidos
+      </label>
+      {visiveis.length === 0 ? (
+        <p className="card text-center text-grafite-500">Nenhum chamado pendente.</p>
+      ) : (
+        <ul className="space-y-2">
+          {visiveis.map((c) => (
+            <li key={c.id}>
+              <button onClick={() => setAberto(c.id)} className="card flex w-full items-center justify-between gap-3 !p-4 text-left hover:border-brasa-200">
+                <div className="min-w-0">
+                  <p className="flex items-center gap-2 truncate font-semibold">
+                    {c.naoLidoEquipe && <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-brasa-500" aria-label="Mensagem nova" />}
+                    {c.assunto}
+                  </p>
+                  <p className="truncate text-sm text-grafite-500">
+                    {c.nome || c.email} · {CATEGORIAS[c.categoria]} · {new Date(c.atualizadoEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                  </p>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CHAMADO[c.status].classe}`}>{STATUS_CHAMADO[c.status].rotulo}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+function AbaContatos() {
+  const [contatos, setContatos] = useState<Contato[] | null>(null)
+  useEffect(() => ouvirContatos(setContatos), [])
+  if (contatos === null) return <p className="text-grafite-500">Carregando...</p>
+  if (contatos.length === 0) return <p className="card text-center text-grafite-500">Nenhuma mensagem pelo site.</p>
+  return (
+    <ul className="space-y-2">
+      {contatos.map((c) => (
+        <li key={c.id} className="card space-y-2 !p-4">
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-semibold">{c.nome}</p>
+              <p className="truncate text-sm text-grafite-500">
+                {c.email} · {new Date(c.criadoEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <a className="btn-primary !px-3 !py-2 text-sm" href={`mailto:${c.email}?subject=${encodeURIComponent('Sua mensagem para o Q3 Orça')}`}>
+                Responder
+              </a>
+              <button
+                className="btn-secondary !px-3 !py-2 text-sm !text-alerta-600"
+                aria-label={`Apagar mensagem de ${c.nome}`}
+                onClick={() => {
+                  if (confirm('Apagar esta mensagem?')) excluirContato(c.id).catch(console.error)
+                }}
+              >
+                <IconeLixeira tamanho={16} />
+              </button>
+            </div>
+          </div>
+          <p className="whitespace-pre-line text-grafite-700">{c.mensagem}</p>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 function SemAcesso() {
@@ -56,7 +194,7 @@ function SemAcesso() {
   )
 }
 
-function PainelAdmin() {
+function AbaPro() {
   const [pedidos, setPedidos] = useState<PedidoPro[] | null>(null)
   const [assinaturas, setAssinaturas] = useState<AssinaturaAdmin[] | null>(null)
   const [erro, setErro] = useState('')
@@ -100,11 +238,6 @@ function PainelAdmin() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="rotulo !text-brasa-700">Administração</p>
-        <h1 className="text-3xl font-extrabold">Painel do Q3 Orça</h1>
-      </div>
-
       {erro && <p className="card text-alerta-600">{erro}</p>}
       {aviso && (
         <p role="status" className="rounded-cartao bg-aprovado-50 p-4 text-sm font-medium text-aprovado-700">

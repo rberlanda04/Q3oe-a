@@ -44,7 +44,8 @@ export function situacaoPlano(assinatura: Assinatura | null, contaCriadaEm: numb
   }
   const fimTeste = contaCriadaEm + DIAS_TESTE_PRO * DIA
   if (contaCriadaEm > 0 && agora < fimTeste) {
-    return { pro: true, motivo: 'teste', diasRestantes: Math.ceil((fimTeste - agora) / DIA) }
+    const dias = Math.ceil((fimTeste - Math.max(agora, contaCriadaEm)) / DIA)
+    return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, DIAS_TESTE_PRO) }
   }
   return { pro: false, motivo: 'gratis', testeEncerrado: contaCriadaEm > 0 }
 }

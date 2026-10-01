@@ -78,7 +78,7 @@ O objetivo é chegar a 50 profissionais usando toda semana e entender por que el
 
 ## 7. Fase 3: receita e produto (meses 6 a 12)
 
-- **Cobrança automática:** o webhook do provedor de pagamento grava em `assinaturas/{uid}`. Isso exige Cloud Functions, no plano Blaze do Firebase, ou um Cloudflare Worker gratuito com o Firebase Admin SDK.
+- **Cobrança automática:** o pagamento por Pix via AbacatePay já está construído e testado, com liberação automática do Pro e renovação. Falta ativar: plano Blaze, chaves da AbacatePay e webhook, como descrito no README. Uma opção futura é a assinatura no cartão da AbacatePay, que cobra sozinha a cada ciclo.
 - **Plano Equipe**, a cerca de R$ 39 por mês: vários usuários na mesma empresa, orçamentos compartilhados e relatório por funcionário.
 - **Recursos que aumentam a retenção:** agenda de serviços, lembrete automático de cobrança, contrato simples e relatório mensal.
 - **Nota fiscal de serviço:** integrar a emissão da NFS-e Nacional para MEI e ME. Hoje isso é uma dor forte do público, e seria o principal motivo para migrar ao plano pago.

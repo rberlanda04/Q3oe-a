@@ -21,6 +21,40 @@ Contas novas ganham 14 dias de Pro grátis, contados da criação da conta. Com 
 
 Só administradores gravam em `assinaturas`, e ninguém consegue se tornar admin pelo app.
 
+## Pagamento do Pro por Pix (AbacatePay)
+
+O app gera um Pix exclusivo para cada pagamento, pela API da AbacatePay. Quando o Pix cai, o Pro é liberado sozinho, e a renovação soma o novo período ao que ainda resta.
+
+A AbacatePay só faz cobrança automática recorrente no cartão. Por isso, o Pix funciona como renovação simples: o app avisa 5 dias antes de vencer e o profissional renova em um toque.
+
+**Como funciona por dentro** (pasta `functions`):
+- `criarCobrancaPix`: o servidor define o valor (R$ 14,90 ou R$ 99), cria o Pix e guarda em `pagamentos/{id}`.
+- `verificarPagamento`: confere o status direto na AbacatePay quando o app pede ("Já paguei" e a cada 15 segundos).
+- `webhookAbacatePay`: recebe o aviso da AbacatePay, valida o segredo do endereço e a assinatura HMAC, reconfirma na API e libera o Pro.
+- A liberação roda numa transação: o mesmo pagamento nunca soma o período duas vezes.
+
+**Para ativar:**
+1. Crie a conta na AbacatePay e gere uma chave de API em **Dev mode**, para testar sem dinheiro real.
+2. No console do Firebase, mude o projeto para o plano **Blaze**, exigido pelas funções do servidor. Crie um alerta de orçamento no Google Cloud. No volume inicial, o uso fica dentro da cota gratuita.
+3. Grave os segredos (o segundo é uma senha longa que você inventa):
+   ```bash
+   firebase functions:secrets:set ABACATEPAY_API_KEY
+   firebase functions:secrets:set ABACATEPAY_WEBHOOK_SECRET
+   ```
+4. Publique as funções: `firebase deploy --only functions`. O terminal mostra o endereço do `webhookAbacatePay`.
+5. Na AbacatePay, crie um webhook com esse endereço e `?webhookSecret=SEU_SEGREDO` no final, com o evento `transparent.completed`.
+6. Em `src/config.ts`, mude `PIX_ATIVO_EM_PRODUCAO` para `true`, rode `npm run build` e `firebase deploy --only hosting`.
+7. Teste: gere um Pix no app e simule o pagamento no painel da AbacatePay em Dev mode.
+8. Para valer: gere a chave de **produção**, grave de novo em `ABACATEPAY_API_KEY` e publique as funções outra vez.
+
+**Testes locais** (requerem Java 11+): `npm run test:pagamento` roda o fluxo completo nos emuladores, com uma AbacatePay simulada. Ele cobre pagamento, renovação, webhook repetido, segredo errado e assinatura adulterada.
+
+## Suporte
+
+- **Central de ajuda** (`/ajuda`): o profissional abre chamados e conversa com a equipe. Respostas novas aparecem com um ponto no ícone de ajuda do cabeçalho.
+- **Fale conosco** (`/contato`): formulário público do site, para quem ainda não tem conta.
+- **Painel admin** (`/admin`): abas de suporte, com resposta direto na conversa, e de contatos do site.
+
 ## Antes do lançamento
 
 ```bash
@@ -75,6 +109,7 @@ npm install
 npm run dev      # abre em http://localhost:5173
 npm test         # testes de cálculo, Pix, SEO e geração do PDF
 npm run test:regras  # testes das regras de segurança no emulador (requer Java 11+)
+npm run test:pagamento  # fluxo completo do Pix com AbacatePay simulada (requer Java 11+)
 npm run build    # build de produção em dist/
 ```
 
@@ -115,6 +150,8 @@ src/
 | `/modelo-de-orcamento/:profissao` | Modelo de orçamento de uma profissão, para SEO |
 | `/planos` | Plano Pro e pedido de assinatura |
 | `/admin` | Painel de administração: pedidos e assinaturas |
+| `/ajuda` | Central de ajuda e chamados de suporte |
+| `/contato` | Fale conosco, para visitantes |
 | `/termos` | Termos de uso |
 | `/privacidade` | Política de privacidade |
 | `/site` | Site, acessível também para quem está logado |
@@ -136,6 +173,9 @@ compartilhamentos/{id}             cópia pública do orçamento, aberta pelo li
 assinaturas/{uid}                  assinatura Pro, gravada só pelo administrador
 interesses/{uid}                   pedidos de assinatura do Pro
 admins/{uid}                       quem acessa o painel admin (criado só pelo console)
+pagamentos/{id}                    cobranças Pix do Pro, gravadas só pelo servidor
+suporte/{id}/mensagens/{id}        chamados de suporte e a conversa
+contatos/{id}                      mensagens do formulário Fale conosco
 ```
 
 As regras em `firestore.rules` só permitem que cada usuário leia e escreva os próprios dados.

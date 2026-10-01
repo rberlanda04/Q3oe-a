@@ -15,6 +15,7 @@ await env.withSecurityRulesDisabled(async (ctx) => {
   const db = ctx.firestore()
   await setDoc(doc(db, 'admins/admin1'), { nome: 'Admin' })
   await setDoc(doc(db, 'users/ana'), { nome: 'Ana' })
+  await setDoc(doc(db, 'pagamentos/pix_char_1'), { uid: 'ana', status: 'PENDING', valorCentavos: 1490 })
   await setDoc(doc(db, 'compartilhamentos/link1'), {
     id: 'link1', uid: 'ana', orcamento: { id: 'o1' }, perfil: {}, resposta: null, nomeResposta: '', respondidoEm: null, pendenteSync: false, atualizadoEm: 1,
   })
@@ -75,6 +76,42 @@ await caso('cliente não responde duas vezes', assertFails(updateDoc(doc(anonimo
 await caso('dono marca a resposta como sincronizada', assertSucceeds(updateDoc(doc(ana, 'compartilhamentos/link1'), { pendenteSync: false })))
 await caso('outro usuário não apaga o link', assertFails(deleteDoc(doc(bia, 'compartilhamentos/link1'))))
 await caso('dono apaga o link', assertSucceeds(deleteDoc(doc(ana, 'compartilhamentos/link1'))))
+
+// Pagamentos Pix: só o servidor grava
+await caso('dono lê o próprio pagamento', assertSucceeds(getDoc(doc(ana, 'pagamentos/pix_char_1'))))
+await caso('outro usuário não lê pagamento alheio', assertFails(getDoc(doc(bia, 'pagamentos/pix_char_1'))))
+await caso('usuário não marca pagamento como pago', assertFails(updateDoc(doc(ana, 'pagamentos/pix_char_1'), { status: 'PAID' })))
+await caso('usuário não cria pagamento falso', assertFails(setDoc(doc(ana, 'pagamentos/pix_char_2'), { uid: 'ana', status: 'PAID' })))
+
+// Suporte interno
+const chamado = { uid: 'ana', nome: 'Ana', email: 'a@x.com', assunto: 'Dúvida no PDF', categoria: 'duvida', status: 'aberto', criadoEm: 1, atualizadoEm: 1, naoLidoEquipe: true, naoLidoUsuario: false }
+await caso('usuário abre chamado', assertSucceeds(setDoc(doc(ana, 'suporte/ch1'), chamado)))
+await caso('chamado em nome de outro: negado', assertFails(setDoc(doc(bia, 'suporte/ch2'), chamado)))
+await caso('chamado já respondido na criação: negado', assertFails(setDoc(doc(ana, 'suporte/ch3'), { ...chamado, status: 'respondido' })))
+await caso('usuário escreve no próprio chamado', assertSucceeds(setDoc(doc(ana, 'suporte/ch1/mensagens/m1'), { autor: 'usuario', texto: 'Oi', em: 1, nome: 'Ana' })))
+await caso('usuário não fala como equipe', assertFails(setDoc(doc(ana, 'suporte/ch1/mensagens/m2'), { autor: 'equipe', texto: 'Resolvido', em: 2, nome: 'Equipe' })))
+await caso('outro usuário não lê o chamado', assertFails(getDoc(doc(bia, 'suporte/ch1'))))
+await caso('outro usuário não lê as mensagens', assertFails(getDocs(collection(bia, 'suporte/ch1/mensagens'))))
+await caso('outro usuário não escreve no chamado', assertFails(setDoc(doc(bia, 'suporte/ch1/mensagens/m3'), { autor: 'usuario', texto: 'x', em: 3, nome: 'Bia' })))
+await caso('usuário lista os próprios chamados', assertSucceeds(getDocs(query(collection(ana, 'suporte'), where('uid', '==', 'ana')))))
+await caso('usuário não lista chamados de todos', assertFails(getDocs(collection(bia, 'suporte'))))
+await caso('admin responde como equipe', assertSucceeds(setDoc(doc(adm, 'suporte/ch1/mensagens/m4'), { autor: 'equipe', texto: 'Olá!', em: 4, nome: 'Equipe' })))
+await caso('admin marca como respondido', assertSucceeds(updateDoc(doc(adm, 'suporte/ch1'), { status: 'respondido', naoLidoUsuario: true, atualizadoEm: 5 })))
+await caso('usuário não muda o assunto', assertFails(updateDoc(doc(ana, 'suporte/ch1'), { assunto: 'Outro' })))
+await caso('usuário marca como resolvido', assertSucceeds(updateDoc(doc(ana, 'suporte/ch1'), { status: 'resolvido', atualizadoEm: 6 })))
+await caso('mensagem não pode ser editada', assertFails(updateDoc(doc(ana, 'suporte/ch1/mensagens/m1'), { texto: 'editado' })))
+await caso('outro usuário não apaga mensagens', assertFails(deleteDoc(doc(bia, 'suporte/ch1/mensagens/m1'))))
+await caso('outro usuário não apaga o chamado', assertFails(deleteDoc(doc(bia, 'suporte/ch1'))))
+await caso('dono apaga mensagens ao excluir a conta', assertSucceeds(deleteDoc(doc(ana, 'suporte/ch1/mensagens/m1'))))
+await caso('dono apaga o chamado ao excluir a conta', assertSucceeds(deleteDoc(doc(ana, 'suporte/ch1'))))
+
+// Fale conosco do site
+const contato = { nome: 'Visitante', email: 'v@x.com', mensagem: 'Quero saber mais', criadoEm: 1, origem: 'site' }
+await caso('visitante envia contato', assertSucceeds(setDoc(doc(anonimo, 'contatos/c1'), contato)))
+await caso('contato com e-mail inválido: negado', assertFails(setDoc(doc(anonimo, 'contatos/c2'), { ...contato, email: 'nao-e-email' })))
+await caso('contato com campo extra: negado', assertFails(setDoc(doc(anonimo, 'contatos/c3'), { ...contato, link: 'spam' })))
+await caso('visitante não lê contatos', assertFails(getDoc(doc(anonimo, 'contatos/c1'))))
+await caso('admin lê contatos', assertSucceeds(getDocs(collection(adm, 'contatos'))))
 
 console.log(`\n${ok} regras confirmadas, ${falhas} falhas.`)
 await env.cleanup()

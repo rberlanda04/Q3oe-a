@@ -5,6 +5,7 @@ import { calcularTotais, totalRecebido } from '../domain/calc'
 import { formatarBRL } from '../domain/money'
 import { modeloPorId } from '../domain/templates'
 import type { Orcamento, StatusOrcamento } from '../domain/types'
+import { DIAS_AVISO_RENOVACAO } from '../config'
 import { useUsuario } from '../lib/auth'
 import { linkWhatsApp } from '../pdf/compartilhar'
 import { IconeBusca, IconeCheck, IconeMais, IconeRelogio, IconeSeta, IconeWhatsApp } from '../ui/Icones'
@@ -77,6 +78,15 @@ export function Orcamentos() {
           {primeiroNome ? `, ${primeiroNome}` : ''}!
         </h1>
       </div>
+
+      {plano.motivo === 'assinatura' && plano.validoAte - agora <= DIAS_AVISO_RENOVACAO * DIA && (
+        <Link to="/planos" className="flex items-center justify-between gap-3 rounded-cartao bg-regua-300 p-4 text-grafite-900">
+          <span className="text-sm">
+            <strong>Seu Pro vence em {new Date(plano.validoAte).toLocaleDateString('pt-BR')}.</strong> Renove para manter sua marca nos documentos.
+          </span>
+          <IconeSeta tamanho={18} className="shrink-0" />
+        </Link>
+      )}
 
       {plano.motivo === 'teste' && plano.diasRestantes <= 5 && (
         <Link to="/planos" className="flex items-center justify-between gap-3 rounded-cartao bg-regua-300 p-4 text-grafite-900">

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:regras": "firebase emulators:exec --only firestore --project demo-q3orca \"node tests/regras-firestore.mjs\"",
-    "checar-lancamento": "node scripts/checar-lancamento.mjs"
+    "checar-lancamento": "node scripts/checar-lancamento.mjs",
+    "test:pagamento": "npm --prefix functions run build && node tests/rodar-pagamento.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",

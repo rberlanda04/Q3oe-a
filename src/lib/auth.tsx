@@ -56,6 +56,8 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
       setUser(novo)
       setAssinatura(null)
       setAdmin(false)
+      // A hora de referência do plano precisa ser posterior à criação da conta.
+      setAgora(Date.now())
       try {
         if (novo) localStorage.setItem('q3:logado', '1')
         else localStorage.removeItem('q3:logado')

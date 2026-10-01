@@ -48,6 +48,69 @@ service cloud.firestore {
       allow delete: if (logado() && request.auth.uid == uid) || admin();
     }
 
+    // Cobranças Pix do Pro. Só as funções do servidor gravam (Admin SDK ignora estas regras).
+    match /pagamentos/{id} {
+      allow read: if (logado() && resource.data.uid == request.auth.uid) || admin();
+      allow write: if false;
+    }
+
+    // Suporte interno: chamados com conversa entre o profissional e a equipe.
+    match /suporte/{id} {
+      function dono() {
+        return logado() && resource.data.uid == request.auth.uid;
+      }
+      allow get: if dono() || admin();
+      // O profissional lista só os próprios chamados; o admin lista todos.
+      allow list: if (logado() && resource.data.uid == request.auth.uid) || admin();
+
+      allow create: if logado()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'aberto'
+        && request.resource.data.categoria in ['duvida', 'problema', 'pagamento', 'sugestao']
+        && request.resource.data.assunto is string
+        && request.resource.data.assunto.size() > 0
+        && request.resource.data.assunto.size() <= 120
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'email', 'assunto', 'categoria', 'status', 'criadoEm', 'atualizadoEm', 'naoLidoEquipe', 'naoLidoUsuario']);
+
+      // O dono reabre, marca como resolvido ou como lido; não mexe em mais nada.
+      allow update: if dono()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'atualizadoEm', 'naoLidoEquipe', 'naoLidoUsuario'])
+        && request.resource.data.status in ['aberto', 'resolvido'];
+      allow update: if admin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'atualizadoEm', 'naoLidoEquipe', 'naoLidoUsuario'])
+        && request.resource.data.status in ['aberto', 'respondido', 'resolvido'];
+      // O dono apaga ao excluir a conta (LGPD); o admin pode limpar chamados antigos.
+      allow delete: if dono() || admin();
+
+      match /mensagens/{mensagemId} {
+        function chamado() {
+          return get(/databases/$(database)/documents/suporte/$(id)).data;
+        }
+        allow read: if (logado() && chamado().uid == request.auth.uid) || admin();
+        allow create: if logado()
+          && request.resource.data.texto is string
+          && request.resource.data.texto.size() > 0
+          && request.resource.data.texto.size() <= 4000
+          && request.resource.data.keys().hasOnly(['autor', 'texto', 'em', 'nome'])
+          && (
+            (request.resource.data.autor == 'usuario' && chamado().uid == request.auth.uid)
+            || (request.resource.data.autor == 'equipe' && admin())
+          );
+        allow update: if false;
+        allow delete: if (logado() && chamado().uid == request.auth.uid) || admin();
+      }
+    }
+
+    // Formulário "Fale conosco" do site, para quem ainda não tem conta.
+    match /contatos/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['nome', 'email', 'mensagem', 'criadoEm', 'origem'])
+        && request.resource.data.nome is string && request.resource.data.nome.size() > 0 && request.resource.data.nome.size() <= 100
+        && request.resource.data.email is string && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$') && request.resource.data.email.size() <= 200
+        && request.resource.data.mensagem is string && request.resource.data.mensagem.size() > 0 && request.resource.data.mensagem.size() <= 2000;
+      allow read, delete: if admin();
+      allow update: if false;
+    }
+
     // Cópia pública de um orçamento, aberta pelo cliente através do link.
     // O id do documento é aleatório e funciona como senha do link.
     match /compartilhamentos/{id} {

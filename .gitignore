@@ -30,3 +30,9 @@ firestore-debug.log
 
 # Pré-renderização
 dist-ssg
+
+# Funções do servidor
+functions/lib
+.secret.local
+*.secret.local
+dist-teste

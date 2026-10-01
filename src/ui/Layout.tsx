@@ -1,8 +1,10 @@
 import { signOut } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import { ouvirMeusChamados } from '../data/repo'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useSessao } from '../lib/auth'
 import { auth } from '../lib/firebase'
-import { IconeCaixa, IconeDocumento, IconeMais, IconePessoas, IconeSair, IconeUsuario } from './Icones'
+import { IconeAjuda, IconeCaixa, IconeDocumento, IconeMais, IconePessoas, IconeSair, IconeUsuario } from './Icones'
 import { Logo } from './Logo'
 
 export { APP_NOME } from './Logo'
@@ -16,6 +18,11 @@ const LINKS = [
 
 export function Layout() {
   const { perfil, user, plano } = useSessao()
+  const [respostasNovas, setRespostasNovas] = useState(0)
+  useEffect(() => {
+    if (!user) return
+    return ouvirMeusChamados(user.uid, (lista) => setRespostasNovas(lista.filter((c) => c.naoLidoUsuario).length))
+  }, [user])
   const local = useLocation()
   // O editor tem a própria barra de ações embaixo; a navegação sai do caminho.
   const telaDeTarefa = local.pathname.startsWith('/orcamento/')
@@ -52,6 +59,15 @@ export function Layout() {
           <div className="flex items-center gap-2">
             <Link to="/novo" className="btn-primary hidden !py-2.5 md:inline-flex">
               <IconeMais tamanho={18} /> Novo orçamento
+            </Link>
+            <Link
+              to="/ajuda"
+              className="relative grid h-9 w-9 place-items-center rounded-full text-grafite-600 hover:bg-white"
+              aria-label={respostasNovas ? `Ajuda: ${respostasNovas} resposta nova` : 'Ajuda'}
+              title="Ajuda"
+            >
+              <IconeAjuda tamanho={20} />
+              {respostasNovas > 0 && <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-brasa-500 ring-2 ring-areia-100" />}
             </Link>
             <Link
               to="/perfil"

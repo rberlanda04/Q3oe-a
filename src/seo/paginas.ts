@@ -94,6 +94,13 @@ export const PAGINAS_SEO: PaginaSeo[] = [
     }),
   ),
   {
+    caminho: '/contato',
+    titulo: 'Fale conosco · Q3 Orça',
+    descricao: 'Fale com a equipe do Q3 Orça: dúvidas antes de começar, parcerias e sugestões. Respondemos por e-mail em horário comercial.',
+    prioridade: 0.4,
+    dados: [ORGANIZACAO],
+  },
+  {
     caminho: '/termos',
     titulo: 'Termos de uso · Q3 Orça',
     descricao: 'Termos de uso do Q3 Orça: conta, planos grátis e Pro, pagamento, cancelamento e responsabilidades de quem usa o serviço.',
@@ -143,7 +150,7 @@ export function headDaPagina(p: PaginaSeo): string {
 }
 
 /** Caminhos que não devem aparecer no Google: área logada e orçamentos de clientes. */
-export const CAMINHOS_PRIVADOS = ['/o/', '/entrar', '/novo', '/orcamento/', '/clientes', '/catalogo', '/perfil', '/planos', '/admin', '/site']
+export const CAMINHOS_PRIVADOS = ['/o/', '/entrar', '/novo', '/orcamento/', '/clientes', '/catalogo', '/perfil', '/planos', '/admin', '/ajuda', '/site']
 
 export function robotsTxt(): string {
   return ['User-agent: *', 'Allow: /', ...CAMINHOS_PRIVADOS.map((c) => `Disallow: ${c}`), '', `Sitemap: ${SITE_URL}/sitemap.xml`, ''].join('\n')

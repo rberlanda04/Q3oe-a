@@ -1,12 +1,21 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { LINK_PAGAMENTO_ANUAL, LINK_PAGAMENTO_MENSAL, PRECO_ANUAL, PRECO_MENSAL, WHATSAPP_VENDAS } from '../config'
+import {
+  DIAS_AVISO_RENOVACAO,
+  LINK_PAGAMENTO_ANUAL,
+  LINK_PAGAMENTO_MENSAL,
+  PAGAMENTO_PIX_ATIVO,
+  PRECO_ANUAL,
+  PRECO_MENSAL,
+  WHATSAPP_VENDAS,
+} from '../config'
 import { registrarInteressePro } from '../data/repo'
 import { DIAS_TESTE_PRO } from '../domain/plano'
 import { useUsuario } from '../lib/auth'
 import { registrarEvento } from '../lib/eventos'
 import { linkWhatsApp } from '../pdf/compartilhar'
-import { IconeCheck, IconeVoltar } from '../ui/Icones'
+import { IconeCheck, IconePix, IconeVoltar } from '../ui/Icones'
+import { PagamentoPix } from '../ui/PagamentoPix'
 import { SeloPlano } from '../ui/SeloPlano'
 
 const RECURSOS_PRO = [
@@ -21,8 +30,18 @@ export function Planos() {
   const { user, perfil, plano } = useUsuario()
   const [escolha, setEscolha] = useState<'mensal' | 'anual'>('anual')
   const [estado, setEstado] = useState<'livre' | 'enviando' | 'enviado' | 'erro'>('livre')
+  const [pagando, setPagando] = useState(false)
+  const [agora] = useState(() => Date.now())
+  const assinante = plano.motivo === 'assinatura'
+  const diasParaVencer = assinante ? Math.ceil((plano.validoAte - agora) / (24 * 60 * 60 * 1000)) : null
+  const mostrarCompra = !assinante || PAGAMENTO_PIX_ATIVO
 
   async function quero() {
+    if (PAGAMENTO_PIX_ATIVO) {
+      setPagando(true)
+      registrarEvento('pro_pedido', { plano: escolha, forma: 'pix' })
+      return
+    }
     setEstado('enviando')
     try {
       await registrarInteressePro(user.uid, {
@@ -67,8 +86,15 @@ export function Planos() {
         </p>
       )}
       {plano.motivo === 'assinatura' && (
-        <p className="rounded-cartao bg-aprovado-50 p-4 text-sm text-aprovado-700">
-          Seu Pro está ativo até <strong>{new Date(plano.validoAte).toLocaleDateString('pt-BR')}</strong>. Obrigado por apoiar o Q3 Orça!
+        <p
+          className={`rounded-cartao p-4 text-sm ${
+            diasParaVencer !== null && diasParaVencer <= DIAS_AVISO_RENOVACAO ? 'bg-regua-300 text-grafite-900' : 'bg-aprovado-50 text-aprovado-700'
+          }`}
+        >
+          Seu Pro está ativo até <strong>{new Date(plano.validoAte).toLocaleDateString('pt-BR')}</strong>
+          {diasParaVencer !== null && diasParaVencer <= DIAS_AVISO_RENOVACAO
+            ? `. Faltam ${diasParaVencer} ${diasParaVencer === 1 ? 'dia' : 'dias'}: renove para não perder sua marca nos documentos.`
+            : '. Obrigado por apoiar o Q3 Orça!'}
         </p>
       )}
 
@@ -83,7 +109,7 @@ export function Planos() {
             ))}
           </ul>
 
-          {plano.motivo !== 'assinatura' && (
+          {mostrarCompra && (
             <>
               <div className="mt-8 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Forma de pagamento">
                 <Opcao
@@ -96,8 +122,22 @@ export function Planos() {
                 <Opcao ativa={escolha === 'mensal'} onClick={() => setEscolha('mensal')} titulo="Mensal" preco={PRECO_MENSAL} detalhe="por mês" />
               </div>
               <button className="btn-primary mt-5 w-full !py-4 text-lg" disabled={estado === 'enviando'} onClick={quero}>
-                {estado === 'enviando' ? 'Enviando...' : 'Quero o Pro'}
+                {PAGAMENTO_PIX_ATIVO ? (
+                  <>
+                    <IconePix tamanho={22} /> {assinante ? 'Renovar com Pix' : 'Pagar com Pix'}
+                  </>
+                ) : estado === 'enviando' ? (
+                  'Enviando...'
+                ) : (
+                  'Quero o Pro'
+                )}
               </button>
+              {PAGAMENTO_PIX_ATIVO && (
+                <p className="mt-3 text-center text-sm text-grafite-300">
+                  Pix com renovação simples: avisamos {DIAS_AVISO_RENOVACAO} dias antes de vencer e você renova em um toque. O tempo que
+                  faltava não se perde. Sem cartão e sem cobrança automática.
+                </p>
+              )}
               {estado === 'enviado' && (
                 <p role="status" className="mt-3 rounded-xl bg-white/10 p-3 text-sm">
                   Pedido recebido! Vamos te chamar em {perfil.telefone ? 'seu WhatsApp' : 'seu e-mail'} para concluir a assinatura.
@@ -111,6 +151,14 @@ export function Planos() {
           )}
         </div>
       </section>
+
+      {pagando && (
+        <PagamentoPix
+          periodo={escolha}
+          renovacao={assinante}
+          onFechar={() => setPagando(false)}
+        />
+      )}
 
       <p className="text-center text-sm text-grafite-500">
         Continua grátis para sempre: orçamentos ilimitados, link de aprovação, Pix, recibo e garantia.

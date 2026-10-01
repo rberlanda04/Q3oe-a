@@ -446,6 +446,140 @@ export async function excluirPedidoPro(uid: string) {
   await deleteDoc(doc(db, 'interesses', uid))
 }
 
+/* ---------- Suporte ---------- */
+
+export type CategoriaSuporte = 'duvida' | 'problema' | 'pagamento' | 'sugestao'
+export type StatusChamado = 'aberto' | 'respondido' | 'resolvido'
+
+export interface Chamado {
+  id: string
+  uid: string
+  nome: string
+  email: string
+  assunto: string
+  categoria: CategoriaSuporte
+  status: StatusChamado
+  criadoEm: number
+  atualizadoEm: number
+  naoLidoEquipe: boolean
+  naoLidoUsuario: boolean
+}
+
+export interface MensagemSuporte {
+  id: string
+  autor: 'usuario' | 'equipe'
+  nome: string
+  texto: string
+  em: number
+}
+
+const suporteCol = collection(db, 'suporte')
+const mensagensCol = (id: string) => collection(db, 'suporte', id, 'mensagens')
+
+/** Abre um chamado com a primeira mensagem. As duas gravações seguem em ordem, mesmo sem internet. */
+export function abrirChamado(
+  uid: string,
+  dados: { nome: string; email: string; assunto: string; categoria: CategoriaSuporte; mensagem: string },
+): string {
+  const ref = doc(suporteCol)
+  const agora = Date.now()
+  gravar(
+    setDoc(ref, {
+      uid,
+      nome: dados.nome.slice(0, 100),
+      email: dados.email.slice(0, 200),
+      assunto: dados.assunto.trim().slice(0, 120),
+      categoria: dados.categoria,
+      status: 'aberto',
+      criadoEm: agora,
+      atualizadoEm: agora,
+      naoLidoEquipe: true,
+      naoLidoUsuario: false,
+    }),
+  )
+  gravar(setDoc(doc(mensagensCol(ref.id)), { autor: 'usuario', nome: dados.nome.slice(0, 100), texto: dados.mensagem.trim().slice(0, 4000), em: agora }))
+  return ref.id
+}
+
+const paraChamado = (d: { id: string; data: () => unknown }) => ({ ...(d.data() as Chamado), id: d.id })
+
+export function ouvirMeusChamados(uid: string, callback: (lista: Chamado[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  // Ordenado no aparelho, para não exigir índice composto no Firestore.
+  return onSnapshot(
+    query(suporteCol, where('uid', '==', uid)),
+    (snap) => callback(snap.docs.map(paraChamado).sort((a, b) => b.atualizadoEm - a.atualizadoEm)),
+    erro,
+  )
+}
+
+export function ouvirTodosChamados(callback: (lista: Chamado[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(query(suporteCol, orderBy('atualizadoEm', 'desc')), (snap) => callback(snap.docs.map(paraChamado)), erro)
+}
+
+export function ouvirChamado(id: string, callback: (chamado: Chamado | null) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(doc(suporteCol, id), (snap) => callback(snap.exists() ? paraChamado(snap) : null), erro)
+}
+
+export function ouvirMensagens(id: string, callback: (lista: MensagemSuporte[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(
+    query(mensagensCol(id), orderBy('em')),
+    (snap) => callback(snap.docs.map((d) => ({ ...(d.data() as MensagemSuporte), id: d.id }))),
+    erro,
+  )
+}
+
+/** Mensagem nova: do profissional reabre o chamado; da equipe marca como respondido. */
+export function enviarMensagemSuporte(id: string, autor: 'usuario' | 'equipe', nome: string, texto: string) {
+  const agora = Date.now()
+  gravar(setDoc(doc(mensagensCol(id)), { autor, nome: nome.slice(0, 100), texto: texto.trim().slice(0, 4000), em: agora }))
+  gravar(
+    updateDoc(
+      doc(suporteCol, id),
+      autor === 'usuario'
+        ? { status: 'aberto', atualizadoEm: agora, naoLidoEquipe: true }
+        : { status: 'respondido', atualizadoEm: agora, naoLidoUsuario: true, naoLidoEquipe: false },
+    ),
+  )
+}
+
+export function atualizarChamado(id: string, dados: Partial<Pick<Chamado, 'status' | 'naoLidoEquipe' | 'naoLidoUsuario'>>) {
+  gravar(updateDoc(doc(suporteCol, id), { ...dados, ...(dados.status ? { atualizadoEm: Date.now() } : {}) }))
+}
+
+/* ---------- Fale conosco (site) ---------- */
+
+export interface Contato {
+  id: string
+  nome: string
+  email: string
+  mensagem: string
+  criadoEm: number
+  origem: string
+}
+
+/** Usado por visitantes sem login. Espera o servidor para confirmar o envio. */
+export async function enviarContato(dados: { nome: string; email: string; mensagem: string }) {
+  await setDoc(doc(collection(db, 'contatos')), {
+    nome: dados.nome.trim().slice(0, 100),
+    email: dados.email.trim().slice(0, 200),
+    mensagem: dados.mensagem.trim().slice(0, 2000),
+    criadoEm: Date.now(),
+    origem: 'site',
+  })
+}
+
+export function ouvirContatos(callback: (lista: Contato[]) => void, erro: AoErrar = registrarErro): Unsubscribe {
+  return onSnapshot(
+    query(collection(db, 'contatos'), orderBy('criadoEm', 'desc')),
+    (snap) => callback(snap.docs.map((d) => ({ ...(d.data() as Contato), id: d.id }))),
+    erro,
+  )
+}
+
+export async function excluirContato(id: string) {
+  await deleteDoc(doc(db, 'contatos', id))
+}
+
 /* ---------- Exclusão da conta (LGPD) ---------- */
 
 /**
@@ -458,6 +592,10 @@ export async function excluirDadosDaConta(uid: string) {
     refs.push(...(await getDocs(col)).docs.map((d) => d.ref))
   }
   refs.push(...(await getDocs(query(compartilhamentosCol, where('uid', '==', uid)))).docs.map((d) => d.ref))
+  // Chamados de suporte: primeiro as mensagens, depois o chamado.
+  const chamados = (await getDocs(query(suporteCol, where('uid', '==', uid)))).docs
+  for (const chamado of chamados) refs.push(...(await getDocs(mensagensCol(chamado.id))).docs.map((d) => d.ref))
+  refs.push(...chamados.map((d) => d.ref))
   // Lotes de até 500 gravações, o limite do Firestore.
   for (let i = 0; i < refs.length; i += 450) {
     const lote = writeBatch(db)

@@ -195,7 +195,8 @@ export function Privacidade() {
           <li><strong>Seus clientes:</strong> nome, telefone e endereço do serviço.</li>
           <li><strong>Orçamentos e pagamentos:</strong> itens, valores, condições, status e pagamentos registrados.</li>
           <li><strong>Resposta do cliente:</strong> quando ele aprova ou recusa pelo link, guardamos a resposta, o nome informado e o horário.</li>
-          <li><strong>Pedido do Pro:</strong> nome, e-mail, telefone e plano escolhido, para entrarmos em contato.</li>
+          <li><strong>Pedido do Pro e pagamentos:</strong> nome, e-mail, telefone, plano escolhido e o registro de cada Pix pago.</li>
+          <li><strong>Suporte e contato:</strong> as mensagens que você envia pela central de ajuda ou pelo formulário do site.</li>
           <li><strong>Uso do site:</strong> páginas visitadas e ações como "orçamento enviado", sem o conteúdo dos orçamentos.</li>
         </ul>
       </section>
@@ -218,6 +219,10 @@ export function Privacidade() {
             <strong>Google Firebase:</strong> hospedagem, login e banco de dados. Os dados podem ser armazenados em servidores no Brasil ou no
             exterior, com as garantias contratuais do Google.
           </li>
+          <li>
+            <strong>AbacatePay:</strong> processa o pagamento do Pro por Pix. Recebe o valor e um identificador interno da sua conta, não os dados
+            dos seus orçamentos.
+          </li>
           <li><strong>Google Analytics:</strong> estatísticas de uso do site, com identificadores de navegador.</li>
           <li><strong>Google Fonts:</strong> as fontes do site, o que envia seu endereço IP ao Google.</li>
           <li>
@@ -232,7 +237,7 @@ export function Privacidade() {
       <section>
         <h2>5. Por quanto tempo</h2>
         <p>
-          Os dados ficam guardados enquanto sua conta existir. Ao excluir a conta, apagamos perfil, orçamentos, clientes, itens e links. Os
+          Os dados ficam guardados enquanto sua conta existir. Ao excluir a conta, apagamos perfil, orçamentos, clientes, itens, links e chamados de suporte. Os
           registros de assinatura podem ser mantidos pelo prazo exigido pela legislação fiscal.
         </p>
       </section>

@@ -32,6 +32,10 @@ if (valor('SITE_URL').includes('.web.app')) {
   recomendados++
   console.log('[recomendado] SITE_URL: ainda usa o endereço do Firebase. Registre um domínio próprio para o SEO.')
 }
+if (!/export const PIX_ATIVO_EM_PRODUCAO = true/.test(config)) {
+  recomendados++
+  console.log('[recomendado] PIX_ATIVO_EM_PRODUCAO: pagamento por Pix desligado. Veja "Pagamento do Pro por Pix" no README.')
+}
 if (!valor('WHATSAPP_SUPORTE') && !valor('EMAIL_CONTATO')) {
   console.log('[FALTA] Nenhum canal de contato: os termos e a política ficam sem forma de falar com vocês.')
 }

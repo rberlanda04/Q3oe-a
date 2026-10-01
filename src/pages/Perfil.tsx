@@ -376,29 +376,30 @@ export function Perfil() {
         </div>
       </form>
 
-      {(WHATSAPP_SUPORTE || EMAIL_CONTATO) && (
-        <section className="card space-y-3">
-          <h2 className="text-lg font-bold">Precisa de ajuda?</h2>
-          <p className="text-sm text-grafite-600">Fale com a gente. Respondemos em horário comercial.</p>
-          <div className="flex flex-wrap gap-2">
-            {WHATSAPP_SUPORTE && (
-              <a
-                className="btn-whatsapp !py-2.5 text-sm"
-                href={linkWhatsApp(WHATSAPP_SUPORTE, 'Olá! Preciso de ajuda com o Q3 Orça.')}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <IconeWhatsApp tamanho={16} /> WhatsApp
-              </a>
-            )}
-            {EMAIL_CONTATO && (
-              <a className="btn-secondary !py-2.5 text-sm" href={`mailto:${EMAIL_CONTATO}?subject=Ajuda com o Q3 Orça`}>
-                {EMAIL_CONTATO}
-              </a>
-            )}
-          </div>
-        </section>
-      )}
+      <section className="card space-y-3">
+        <h2 className="text-lg font-bold">Precisa de ajuda?</h2>
+        <p className="text-sm text-grafite-600">Fale com a gente. Respondemos em horário comercial.</p>
+        <div className="flex flex-wrap gap-2">
+          <Link to="/ajuda" className="btn-primary !py-2.5 text-sm">
+            Central de ajuda
+          </Link>
+          {WHATSAPP_SUPORTE && (
+            <a
+              className="btn-whatsapp !py-2.5 text-sm"
+              href={linkWhatsApp(WHATSAPP_SUPORTE, 'Olá! Preciso de ajuda com o Q3 Orça.')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <IconeWhatsApp tamanho={16} /> WhatsApp
+            </a>
+          )}
+          {EMAIL_CONTATO && (
+            <a className="btn-secondary !py-2.5 text-sm" href={`mailto:${EMAIL_CONTATO}?subject=Ajuda com o Q3 Orça`}>
+              {EMAIL_CONTATO}
+            </a>
+          )}
+        </div>
+      </section>
 
       <section className="card space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">

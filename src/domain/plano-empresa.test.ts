@@ -10,6 +10,11 @@ describe('plano', () => {
     expect(situacaoPlano(null, agora - 3 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 11 })
   })
 
+  it('conta recém-criada mostra 14 dias, mesmo com relógio de referência atrasado', () => {
+    const criada = agora + 5000
+    expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 14 })
+  })
+
   it('volta ao grátis quando o teste acaba', () => {
     expect(situacaoPlano(null, agora - 15 * DIA, agora)).toEqual({ pro: false, motivo: 'gratis', testeEncerrado: true })
   })
