@@ -47,6 +47,8 @@ A AbacatePay só faz cobrança automática recorrente no cartão. Por isso, o Pi
 7. Teste: gere um Pix no app e simule o pagamento no painel da AbacatePay em Dev mode.
 8. Para valer: gere a chave de **produção**, grave de novo em `ABACATEPAY_API_KEY` e publique as funções outra vez.
 
+**Validado com a API real** da AbacatePay em Dev mode: criação do Pix, QR Code, consulta de status e liberação do Pro após o pagamento simulado. Nesse modo, a taxa informada foi de R$ 0,80 por Pix. Confira a tabela de produção no painel da AbacatePay.
+
 **Testes locais** (requerem Java 11+): `npm run test:pagamento` roda o fluxo completo nos emuladores, com uma AbacatePay simulada. Ele cobre pagamento, renovação, webhook repetido, segredo errado e assinatura adulterada.
 
 ## Suporte
