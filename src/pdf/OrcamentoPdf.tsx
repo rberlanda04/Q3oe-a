@@ -2,7 +2,7 @@ import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/render
 import { calcularTotais, dataValidade, subtotalItem } from '../domain/calc'
 import { formatarBRL, formatarQuantidade } from '../domain/money'
 import type { Orcamento, PerfilPublico } from '../domain/types'
-import { Assinaturas, Cabecalho, CINZA, cores, dataBR, Rodape, Secao, st } from './base'
+import { Assinaturas, Cabecalho, CINZA, cores, dataBR, Rodape, Secao, st, MarcaDagua } from './base'
 
 const t = StyleSheet.create({
   tabelaCab: { flexDirection: 'row', backgroundColor: '#fff4ed', paddingVertical: 6, paddingHorizontal: 6, fontFamily: 'Helvetica-Bold', fontSize: 9 },
@@ -51,6 +51,7 @@ export function OrcamentoPdf({ orcamento: o, perfil: p, marcaDagua, tipo = 'orca
   return (
     <Document title={`${ordem ? 'Ordem de serviço' : 'Orçamento'} ${o.numero}`} author={p.nome || undefined}>
       <Page size="A4" style={st.pagina}>
+        <MarcaDagua ativa={marcaDagua} />
         <Cabecalho perfil={p} titulo={ordem ? 'ORDEM DE SERVIÇO' : 'ORÇAMENTO'} linhas={linhas} />
 
         <View style={st.bloco}>

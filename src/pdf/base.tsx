@@ -1,4 +1,5 @@
-import { Font, Image, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { Circle, Font, Image, Path, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer'
+import { SITE_URL } from '../config'
 import { coresDoDocumento } from '../domain/cores'
 import type { PerfilPublico } from '../domain/types'
 
@@ -12,6 +13,9 @@ export const AZUL = '#c43e0c'
 export const BRASA = '#ff5a1f'
 export const GRAFITE = '#1b1f2a'
 export const CINZA = '#5b6372'
+/** Tons bem claros da marca d'água: aparecem, mas não competem com o texto. */
+const MARCA_DAGUA_FUNDO = '#fff1ea'
+const MARCA_DAGUA_TEXTO = '#ede8e2'
 
 export const st = StyleSheet.create({
   pagina: { padding: 36, paddingBottom: 56, fontSize: 10, fontFamily: 'Helvetica', color: GRAFITE },
@@ -63,15 +67,40 @@ export function Cabecalho({ perfil, titulo, linhas }: { perfil: PerfilPublico; t
   )
 }
 
+const SITE = SITE_URL.replace(/^https?:\/\//, '')
+
 export function Rodape({ marcaDagua }: { marcaDagua: boolean }) {
   return (
     <Text
       style={st.rodape}
       fixed
       render={({ pageNumber, totalPages }) =>
-        `${marcaDagua ? 'Documento feito com Q3 Orça  ·  ' : ''}Página ${pageNumber} de ${totalPages}`
+        `${marcaDagua ? `Feito com Q3 Orça  ·  Crie o seu grátis em ${SITE}  ·  ` : ''}Página ${pageNumber} de ${totalPages}`
       }
     />
+  )
+}
+
+/**
+ * Marca d'água do plano grátis: o símbolo do Q3 Orça grande, claro e na diagonal,
+ * atrás do conteúdo, em todas as páginas. Fica bem visível sem atrapalhar a leitura.
+ * Deve ser o primeiro filho da <Page>, para ficar por baixo do texto.
+ */
+export function MarcaDagua({ ativa }: { ativa: boolean }) {
+  if (!ativa) return null
+  return (
+    <View fixed style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Cores claras em vez de transparência: leitores de PDF nem sempre aplicam opacidade em vetores. */}
+      <View style={{ alignItems: 'center', transform: 'rotate(-30deg)' }}>
+        <Svg width={240} height={240} viewBox="0 0 48 48">
+          <Rect width="48" height="48" rx="13" fill={MARCA_DAGUA_FUNDO} />
+          <Circle cx="20" cy="22.5" r="10" fill="none" stroke="#ffffff" strokeWidth={5} />
+          <Path d="M27.1 29.6 L30.8 33.3 L40.5 21.5" fill="none" stroke="#ffffff" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+        <Text style={{ marginTop: 18, fontSize: 44, fontFamily: 'Helvetica-Bold', color: MARCA_DAGUA_TEXTO, letterSpacing: 1 }}>Q3 Orça</Text>
+        <Text style={{ marginTop: 4, fontSize: 16, fontFamily: 'Helvetica', color: MARCA_DAGUA_TEXTO }}>Plano grátis</Text>
+      </View>
+    </View>
   )
 }
 

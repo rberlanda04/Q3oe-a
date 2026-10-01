@@ -1,7 +1,7 @@
 import { Document, Page, Text, View } from '@react-pdf/renderer'
 import { formatarQuantidade } from '../domain/money'
 import type { Orcamento, PerfilPublico } from '../domain/types'
-import { Assinaturas, Cabecalho, dataBR, Rodape, Secao, st } from './base'
+import { Assinaturas, Cabecalho, dataBR, Rodape, Secao, st, MarcaDagua } from './base'
 
 const EXCLUSOES = [
   'Mau uso, falta de manutenção ou uso diferente do indicado.',
@@ -22,6 +22,7 @@ export function GarantiaPdf({ orcamento: o, perfil: p, dataConclusao, marcaDagua
   return (
     <Document title={`Termo de garantia ${o.numero}`} author={p.nome || undefined}>
       <Page size="A4" style={st.pagina}>
+        <MarcaDagua ativa={marcaDagua} />
         <Cabecalho
           perfil={p}
           titulo="TERMO DE GARANTIA"
