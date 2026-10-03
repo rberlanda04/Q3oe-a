@@ -26,6 +26,8 @@ const db = getFirestore()
 const CHAVE_API = defineSecret('ABACATEPAY_API_KEY')
 const SEGREDO_WEBHOOK = defineSecret('ABACATEPAY_WEBHOOK_SECRET')
 const REGIAO = 'southamerica-east1'
+// Chamada pública no Cloud Run: o próprio código confere login (onCall) e assinatura (webhook).
+const INVOCADOR = 'public'
 
 interface Pagamento {
   uid: string
@@ -77,7 +79,7 @@ async function aplicarPagamento(id: string): Promise<number | null> {
   })
 }
 
-export const criarCobrancaPix = onCall({ region: REGIAO, secrets: [CHAVE_API] }, async (requisicao) => {
+export const criarCobrancaPix = onCall({ region: REGIAO, invoker: INVOCADOR, secrets: [CHAVE_API] }, async (requisicao) => {
   const uid = requisicao.auth?.uid
   if (!uid) throw new HttpsError('unauthenticated', 'Entre na sua conta para assinar.')
   const periodo = requisicao.data?.periodo
@@ -128,7 +130,7 @@ export const criarCobrancaPix = onCall({ region: REGIAO, secrets: [CHAVE_API] },
   }
 })
 
-export const verificarPagamento = onCall({ region: REGIAO, secrets: [CHAVE_API] }, async (requisicao) => {
+export const verificarPagamento = onCall({ region: REGIAO, invoker: INVOCADOR, secrets: [CHAVE_API] }, async (requisicao) => {
   const uid = requisicao.auth?.uid
   if (!uid) throw new HttpsError('unauthenticated', 'Entre na sua conta.')
   const id = String(requisicao.data?.id ?? '')
@@ -143,7 +145,7 @@ export const verificarPagamento = onCall({ region: REGIAO, secrets: [CHAVE_API] 
   return { status, validoAte: null }
 })
 
-export const webhookAbacatePay = onRequest({ region: REGIAO, secrets: [CHAVE_API, SEGREDO_WEBHOOK] }, async (req, res) => {
+export const webhookAbacatePay = onRequest({ region: REGIAO, invoker: INVOCADOR, secrets: [CHAVE_API, SEGREDO_WEBHOOK] }, async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).send('Use POST')
     return
