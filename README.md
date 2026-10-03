@@ -87,6 +87,7 @@ O Firebase Hosting serve as páginas prontas pelo endereço limpo e manda o rest
 Para adicionar uma página pública: crie a rota em `src/ssg.tsx` e em `src/main.tsx`, e a entrada em `PAGINAS_SEO`. O teste `src/seo/seo.test.ts` confere tamanho de título, descrição e duplicidade.
 
 O plano de crescimento está em [PLANO-DE-ESCALA.md](PLANO-DE-ESCALA.md).
+A estratégia de lançamento, com diagnóstico de prontidão e público-alvo, está em [ESTRATEGIA-DE-LANCAMENTO.md](ESTRATEGIA-DE-LANCAMENTO.md).
 
 ## Tecnologia
 
