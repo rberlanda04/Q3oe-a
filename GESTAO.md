@@ -95,6 +95,7 @@ Plano completo em `ESTRATEGIA-CURITIBA.md`.
 
 | Data | Contas | Novas 7 dias | Orçamentos | Aprovados | Pro ativos | Pedidos Pro | Chamados abertos |
 |---|---|---|---|---|---|---|---|
+| 2026-10-03 | 3 | 2 | 10 | 0 | 0 | 0 | 0 |
 
 ## Registro de decisões
 
