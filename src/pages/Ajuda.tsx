@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { EMAIL_CONTATO, WHATSAPP_SUPORTE } from '../config'
 import { abrirChamado, mensagemErroLeitura, ouvirChamado, ouvirMeusChamados, type CategoriaSuporte, type Chamado } from '../data/repo'
 import { useUsuario } from '../lib/auth'
@@ -21,8 +21,13 @@ export function Ajuda() {
   const navegar = useNavigate()
   const [chamados, setChamados] = useState<Chamado[] | null>(null)
   const [erro, setErro] = useState('')
-  const [categoria, setCategoria] = useState<CategoriaSuporte>('duvida')
-  const [assunto, setAssunto] = useState('')
+  // "Dar opinião" abre esta tela com ?categoria=sugestao, já pronta para escrever.
+  const [parametros] = useSearchParams()
+  const categoriaInicial = parametros.get('categoria')
+  const [categoria, setCategoria] = useState<CategoriaSuporte>(
+    categoriaInicial && categoriaInicial in CATEGORIAS ? (categoriaInicial as CategoriaSuporte) : 'duvida',
+  )
+  const [assunto, setAssunto] = useState(categoriaInicial === 'sugestao' ? 'Opinião sobre o Q3 Orça (beta)' : '')
   const [mensagem, setMensagem] = useState('')
 
   useEffect(() => ouvirMeusChamados(user.uid, setChamados, (e) => setErro(mensagemErroLeitura(e))), [user.uid])
@@ -72,7 +77,7 @@ export function Ajuda() {
           </div>
         </div>
         <div>
-          <label htmlFor="mensagem">Conte o que aconteceu</label>
+          <label htmlFor="mensagem">{categoria === 'sugestao' ? 'O que você achou? O que falta ou atrapalha?' : 'Conte o que aconteceu'}</label>
           <textarea id="mensagem" rows={4} maxLength={4000} value={mensagem} onChange={(e) => setMensagem(e.target.value)} />
         </div>
         <button className="btn-primary w-full" disabled={!assunto.trim() || !mensagem.trim()}>

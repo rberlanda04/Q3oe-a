@@ -50,6 +50,12 @@ let linkPublico = ''
 let contaExcluida = false
 let falhou = false
 try {
+  await passo('página do beta abre e leva ao cadastro', async () => {
+    await page.goto(BASE + '/beta', { waitUntil: 'load' })
+    await page.getByRole('heading', { name: /Ajude a construir/ }).waitFor()
+    await page.getByRole('link', { name: /Quero testar/ }).waitFor()
+  })
+
   await passo('página de modelo leva ao cadastro e abre orçamento de pintor', async () => {
     await page.goto(BASE + '/modelo-de-orcamento/pintor', { waitUntil: 'load' })
     await page.getByRole('heading', { name: /Modelo de orçamento para pintor/ }).waitFor()
@@ -70,7 +76,8 @@ try {
 
   await passo('buscar dados públicos pelo CNPJ', async () => {
     await page.getByRole('link', { name: 'Meus dados' }).click()
-    await page.getByText(/Teste Pro: 14 dias/).waitFor()
+    // Fase beta: 90 dias de Pro grátis; fora do beta: 14 dias de teste.
+    await page.getByText(/Pro grátis no beta: 90 dias|Teste Pro: 14 dias/).waitFor()
     await page.getByLabel('CPF ou CNPJ').fill('00.000.000/0001-91')
     await page.getByRole('button', { name: /Buscar CNPJ/ }).click()
     await page.getByText(/Dados públicos preenchidos/).waitFor({ timeout: 20000 })
@@ -92,7 +99,7 @@ try {
   })
 
   await passo('pedido de assinatura Pro é registrado', async () => {
-    await page.getByRole('link', { name: /Teste Pro/ }).first().click()
+    await page.getByRole('link', { name: /Pro grátis no beta|Teste Pro/ }).first().click()
     await page.getByRole('button', { name: 'Quero o Pro' }).click()
     await page.getByText('Pedido recebido!').waitFor({ timeout: 15000 })
     await page.screenshot({ path: join(PASTA, 'tela-planos.png'), fullPage: true })
@@ -170,8 +177,17 @@ try {
     await page.getByText('Acesso restrito').waitFor({ timeout: 20000 })
   })
 
+  await passo('botão Dar opinião abre a sugestão pronta', async () => {
+    await page.getByRole('link', { name: 'Orçamentos' }).first().click()
+    await page.getByRole('link', { name: 'Dar opinião' }).click()
+    await page.getByLabel('Resumo').waitFor()
+    const assunto = await page.getByLabel('Resumo').inputValue()
+    if (!assunto.includes('beta')) throw new Error('assunto da sugestão não veio preenchido: ' + assunto)
+    await page.getByLabel(/O que você achou/).waitFor()
+  })
+
   await passo('abrir chamado na central de ajuda', async () => {
-    await page.getByRole('link', { name: /^Ajuda/ }).click()
+    await page.goto(BASE + '/ajuda', { waitUntil: 'load' })
     await page.getByRole('heading', { name: 'Central de ajuda' }).waitFor()
     await page.getByLabel('Resumo').fill('Teste automatizado: dúvida sobre o PDF')
     await page.getByLabel('Conte o que aconteceu').fill('Mensagem de teste automatizado. Pode ignorar.')

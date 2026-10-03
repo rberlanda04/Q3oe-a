@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { DIAS_PRO_BETA, DIAS_TESTE_ATUAL, MODO_BETA } from '../../config'
 import { MODELOS, modeloPorId } from '../../domain/templates'
 import { caminhoProfissao, PERGUNTAS_HOME } from '../../seo/paginas'
 import { PROFISSOES_SEO } from '../../seo/profissoes'
@@ -43,7 +44,8 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pt-12 pb-16 lg:grid-cols-[1.1fr_0.9fr] lg:pt-20 lg:pb-24">
         <div>
           <p className="inline-flex items-center gap-2 rounded-full border border-brasa-200 bg-white px-3 py-1.5 text-sm font-semibold text-brasa-700">
-            <span className="h-2 w-2 rounded-full bg-aprovado-500" /> Cliente aprova pelo link e paga no Pix
+            <span className="h-2 w-2 rounded-full bg-aprovado-500" />{' '}
+            {MODO_BETA ? `Fase de testes: Pro grátis por ${DIAS_PRO_BETA} dias` : 'Cliente aprova pelo link e paga no Pix'}
           </p>
           <h1 className="mt-6 text-5xl leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl">
             Orçamento rápido,{' '}
@@ -352,7 +354,7 @@ function Precos() {
             ]}
             chamada={
               <Link to="/entrar?modo=criar" className="btn w-full bg-white text-grafite-900 hover:bg-areia-100">
-                Testar grátis por 14 dias
+                {MODO_BETA ? `Grátis por ${DIAS_PRO_BETA} dias no beta` : `Testar grátis por ${DIAS_TESTE_ATUAL} dias`}
               </Link>
             }
           />

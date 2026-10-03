@@ -6,6 +6,7 @@
 import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { Route, Routes, StaticRouter } from 'react-router-dom'
+import { Beta } from './pages/site/Beta'
 import { Home } from './pages/site/Home'
 import { Contato } from './pages/site/Contato'
 import { Privacidade, Termos } from './pages/site/Legal'
@@ -24,6 +25,7 @@ export function render(url: string): string {
           <Route path="/termos" element={<Termos />} />
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/contato" element={<Contato />} />
+          <Route path="/beta" element={<Beta />} />
           <Route path="/modelos-de-orcamento" element={<ModelosIndice />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
         </Routes>

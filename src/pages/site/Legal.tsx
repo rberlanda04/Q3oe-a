@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import {
+  DIAS_PRO_BETA,
   EMAIL_CONTATO,
+  MODO_BETA,
   EMPRESA_CIDADE,
   EMPRESA_CNPJ,
   EMPRESA_RAZAO_SOCIAL,
@@ -41,7 +43,19 @@ function Contato() {
           </a>
         </>
       )}
-      {!EMAIL_CONTATO && !WHATSAPP_SUPORTE && 'pelos canais de atendimento informados no site'}
+      {!EMAIL_CONTATO && !WHATSAPP_SUPORTE && (
+        <>
+          pelo formulário{' '}
+          <Link className="font-semibold text-brasa-700" to="/contato">
+            Fale conosco
+          </Link>{' '}
+          ou, para quem tem conta, pela{' '}
+          <Link className="font-semibold text-brasa-700" to="/ajuda">
+            central de ajuda
+          </Link>{' '}
+          do app
+        </>
+      )}
     </>
   )
 }
@@ -97,6 +111,12 @@ export function Termos() {
             assina.
           </li>
           <li>Contas novas ganham {DIAS_TESTE_PRO} dias de Pro grátis, sem cobrança automática ao final.</li>
+          {MODO_BETA && (
+            <li>
+              Durante a fase de testes, o Q3 Orça é oferecido como versão beta: contas novas têm {DIAS_PRO_BETA} dias de Pro grátis, sem cobrança, e
+              o serviço pode mudar ou apresentar falhas enquanto é aprimorado com a ajuda de quem testa.
+            </li>
+          )}
           <li>
             Você pode desistir da assinatura em até 7 dias após a contratação e receber o valor pago de volta, conforme o artigo 49 do Código
             de Defesa do Consumidor.

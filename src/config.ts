@@ -3,6 +3,21 @@
  * Antes do lançamento, rode `npm run checar-lancamento` para ver o que falta.
  */
 
+import { DIAS_TESTE_PRO } from './domain/plano'
+
+/* ---------- Fase de testes (beta) ---------- */
+
+/**
+ * Fase de testes aberta: mostra o selo "Beta" no site e no app e dá Pro grátis
+ * por DIAS_PRO_BETA dias a todo cadastro (a oferta de Fundador da estratégia).
+ * Para encerrar o beta, mude para false: o teste volta a ser de DIAS_TESTE_PRO dias.
+ */
+export const MODO_BETA = true
+export const DIAS_PRO_BETA = 90
+
+/** Dias de Pro grátis para contas novas, conforme a fase atual. */
+export const DIAS_TESTE_ATUAL = MODO_BETA ? DIAS_PRO_BETA : DIAS_TESTE_PRO
+
 /** Endereço público do site. Troque quando tiver domínio próprio (ex.: https://q3orca.com.br). */
 export const SITE_URL = 'https://q3orca.web.app'
 

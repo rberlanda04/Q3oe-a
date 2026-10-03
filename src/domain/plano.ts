@@ -38,14 +38,19 @@ export type SituacaoPlano =
  * Decide se o profissional tem os recursos Pro agora.
  * Contas novas ganham 14 dias de teste, contados da criação da conta.
  */
-export function situacaoPlano(assinatura: Assinatura | null, contaCriadaEm: number, agora: number): SituacaoPlano {
+export function situacaoPlano(
+  assinatura: Assinatura | null,
+  contaCriadaEm: number,
+  agora: number,
+  diasTeste: number = DIAS_TESTE_PRO,
+): SituacaoPlano {
   if (assinatura?.plano === 'pro' && assinatura.validoAte > agora) {
     return { pro: true, motivo: 'assinatura', validoAte: assinatura.validoAte }
   }
-  const fimTeste = contaCriadaEm + DIAS_TESTE_PRO * DIA
+  const fimTeste = contaCriadaEm + diasTeste * DIA
   if (contaCriadaEm > 0 && agora < fimTeste) {
     const dias = Math.ceil((fimTeste - Math.max(agora, contaCriadaEm)) / DIA)
-    return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, DIAS_TESTE_PRO) }
+    return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, diasTeste) }
   }
   return { pro: false, motivo: 'gratis', testeEncerrado: contaCriadaEm > 0 }
 }

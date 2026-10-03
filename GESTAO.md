@@ -4,10 +4,12 @@ Painel único de andamento do projeto. O agente `gerente-q3orca` lê este arquiv
 
 Última atualização: 3 de outubro de 2026.
 
+**Fase atual: beta aberto em https://q3orca.web.app** (`MODO_BETA` ligado, Pro grátis por 90 dias). Condução em `GUIA-DE-TESTES.md`.
+
 ## Prioridades da semana
 
-1. Configurar o contato oficial no app (`EMAIL_CONTATO` e `WHATSAPP_SUPORTE`).
-2. Testes reais no celular: 5 orçamentos, PDF pelo WhatsApp, QR Code de R$ 0,01 e instalação na tela inicial.
+1. Testes reais no celular: 5 orçamentos, PDF pelo WhatsApp, QR Code de R$ 0,01 e instalação na tela inicial.
+2. Convidar os primeiros 10 testadores com o link https://q3orca.web.app/beta?utm_source=whatsapp&utm_medium=convite.
 3. Material impresso para Curitiba: cartaz e panfleto com QR Codes rastreáveis.
 4. Lista de 30 profissionais conhecidos de Curitiba e cadastro no Balaroti PRO.
 
@@ -18,7 +20,8 @@ Painel único de andamento do projeto. O agente `gerente-q3orca` lê este arquiv
 | Orçamento, link de aprovação, Pix, recibo, garantia, clientes, catálogo | Agente | Feito | Manter |
 | Marca do assinante Pro (logo, cor, CNPJ) | Agente | Feito | Manter |
 | Central de ajuda, Fale conosco e painel admin | Agente | Feito | Manter |
-| Botão de ativação de Fundador no painel admin | Agente | A fazer | 3 meses de Pro em um toque |
+| Modo beta: selo, página /beta, "Dar opinião" e Pro grátis por 90 dias | Agente | Feito | Encerrar conforme GUIA-DE-TESTES.md |
+| Botão de ativação de Fundador no painel admin | Agente | A fazer | Hoje: `npm run ops:fundador` |
 | Programa de indicação (link pessoal, 1 mês de Pro) | Agente | A fazer | Aguardando aprovação do dono |
 | Cupom de fundador no checkout por Pix | Agente | A fazer | Depois do programa de indicação |
 | Orçamento de exemplo no primeiro acesso | Agente | A fazer | Fase 2 |
@@ -70,7 +73,7 @@ Plano completo em `ESTRATEGIA-CURITIBA.md`.
 | Tarefa | Responsável | Status | Próximo passo |
 |---|---|---|---|
 | Painel admin liberado para r.berlanda04@gmail.com | Agente | Feito | Manter |
-| Contato oficial no app | Dono | Aguardando dono | Informar e-mail e WhatsApp |
+| Contato oficial no app | Agente | Feito | Termos apontam para Fale conosco e central de ajuda; e-mail e WhatsApp são opcionais |
 | Responder chamados e Fale conosco | Dono | Em andamento | Ver o painel admin diariamente |
 | Ativar Pro de fundadores | Agente | Em andamento | `npm run ops:fundador -- email 3` |
 
@@ -105,3 +108,4 @@ Plano completo em `ESTRATEGIA-CURITIBA.md`.
 | 2026-10-03 | Lançar sem CNPJ por enquanto | Decisão do dono; beta gratuito não exige |
 | 2026-10-03 | Curitiba como primeira praça | Escolha do dono; ecossistema local forte (Balaroti PRO, Salas do Empreendedor) |
 | 2026-10-03 | Pix desligado no site até a chave de produção | Com chave de teste, o QR Code não recebe dinheiro de verdade |
+| 2026-10-03 | Beta aberto em q3orca.web.app, com Pro grátis por 90 dias | Domínio próprio ainda pendente; oferta de Fundador automática |

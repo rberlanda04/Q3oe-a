@@ -11,7 +11,7 @@ const itens = [
   ['EMPRESA_RAZAO_SOCIAL', 'Razão social da empresa. Aparece nos termos de uso e na política de privacidade.', true],
   ['EMPRESA_CNPJ', 'CNPJ da empresa, para os documentos legais.', true],
   ['EMPRESA_CIDADE', 'Cidade da sede, usada nos documentos legais.', false],
-  ['EMAIL_CONTATO', 'E-mail de atendimento e do encarregado de dados (LGPD).', true],
+  ['EMAIL_CONTATO', 'E-mail de atendimento e do encarregado de dados (LGPD).', false],
   ['WHATSAPP_SUPORTE', 'WhatsApp de suporte, mostrado em "Precisa de ajuda?".', false],
   ['WHATSAPP_VENDAS', 'WhatsApp que recebe os pedidos do Pro.', false],
   ['LINK_PAGAMENTO_MENSAL', 'Link de checkout do Pro mensal.', false],
@@ -37,7 +37,10 @@ if (!/export const PIX_ATIVO_EM_PRODUCAO = true/.test(config)) {
   console.log('[recomendado] PIX_ATIVO_EM_PRODUCAO: pagamento por Pix desligado. Veja "Pagamento do Pro por Pix" no README.')
 }
 if (!valor('WHATSAPP_SUPORTE') && !valor('EMAIL_CONTATO')) {
-  console.log('[FALTA] Nenhum canal de contato: os termos e a política ficam sem forma de falar com vocês.')
+  console.log('[ok] Contato: sem e-mail ou WhatsApp, os termos apontam para o Fale conosco e a central de ajuda.')
+}
+if (/export const MODO_BETA = true/.test(config)) {
+  console.log('[info] MODO_BETA ligado: selo Beta, botão "Dar opinião" e Pro grátis estendido para contas novas.')
 }
 
 console.log('\nFora do código:')

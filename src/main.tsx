@@ -15,6 +15,7 @@ import { OrcamentoPublico } from './pages/OrcamentoPublico'
 import { Orcamentos } from './pages/Orcamentos'
 import { Perfil } from './pages/Perfil'
 import { Planos } from './pages/Planos'
+import { Beta } from './pages/site/Beta'
 import { Home } from './pages/site/Home'
 import { Marca } from './pages/site/Marca'
 import { Contato } from './pages/site/Contato'
@@ -87,6 +88,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/termos" element={<Termos />} />
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/contato" element={<Contato />} />
+          <Route path="/beta" element={<Beta />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />

@@ -94,6 +94,13 @@ export const PAGINAS_SEO: PaginaSeo[] = [
     }),
   ),
   {
+    caminho: '/beta',
+    titulo: 'Fase de testes do Q3 Orça · Pro grátis para os primeiros',
+    descricao: 'Teste grátis o Q3 Orça, app de orçamento para eletricistas, pintores e prestadores de serviço. Pro liberado durante a fase de testes.',
+    prioridade: 0.6,
+    dados: [ORGANIZACAO],
+  },
+  {
     caminho: '/contato',
     titulo: 'Fale conosco · Q3 Orça',
     descricao: 'Fale com a equipe do Q3 Orça: dúvidas antes de começar, parcerias e sugestões. Respondemos por e-mail em horário comercial.',

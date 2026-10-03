@@ -8,6 +8,7 @@ Toda comunicação com o dono do projeto e todo texto do produto são em **portu
 
 | Arquivo | Conteúdo |
 |---|---|
+| `GUIA-DE-TESTES.md` | Como conduzir a fase beta: convites, acompanhamento, gravidade de problemas e como encerrar |
 | `GESTAO.md` | Painel de gestão: frentes, tarefas, responsáveis e status. **Fonte da verdade do andamento.** |
 | `ESTRATEGIA-DE-LANCAMENTO.md` | Diagnóstico de prontidão, público-alvo, fases e roteiros |
 | `ESTRATEGIA-CURITIBA.md` | Lançamento na primeira praça: parceiros, metas e cronograma |
@@ -64,7 +65,8 @@ Os scripts `ops:*` usam o login do Firebase CLI desta máquina e ignoram as regr
 1. **Antes de publicar em produção:** `npx tsc -b`, `npm run lint`, `npm test` e `npm run build` limpos. Mudou `firestore.rules`: rode `npm run test:regras`. Mudou `functions/`: rode `npm run test:pagamento`. Mudança visível ao usuário: publique no canal de pré-visualização e rode `BASE=<url> npm run test:e2e` antes de publicar no site oficial.
 2. **Dinheiro sempre em centavos inteiros.** Cálculos ficam em `src/domain/`, com testes.
 3. **Nunca grave segredos no repositório.** Chaves da AbacatePay ficam no Secret Manager (`firebase functions:secrets:set`). Arquivos `*.local` são só para emuladores e estão no `.gitignore`.
-4. **Pix:** `PIX_ATIVO_EM_PRODUCAO` só pode ser `true` com a chave de **produção** da AbacatePay gravada. Com chave de teste, o QR Code é falso.
-5. **Dados de usuários reais** nunca são apagados ou alterados sem pedido explícito do dono. Contas de teste usam e-mails que começam com `teste-automatizado` e são apagadas ao fim de cada teste.
-6. **Textos do produto:** voz da marca (direta, de colega para colega, sem jargão). Nada de depoimentos, números ou parcerias inventados.
-7. **Commits** em português, terminando com a linha `Co-Authored-By` indicada pelo ambiente.
+4. **Fase beta:** `MODO_BETA` em `src/config.ts` liga o selo Beta, a página `/beta`, o botão "Dar opinião" e o Pro grátis por `DIAS_PRO_BETA` dias. Antes de desligar, siga "Como encerrar o beta" em `GUIA-DE-TESTES.md`.
+5. **Pix:** `PIX_ATIVO_EM_PRODUCAO` só pode ser `true` com a chave de **produção** da AbacatePay gravada. Com chave de teste, o QR Code é falso.
+6. **Dados de usuários reais** nunca são apagados ou alterados sem pedido explícito do dono. Contas de teste usam e-mails que começam com `teste-automatizado` e são apagadas ao fim de cada teste.
+7. **Textos do produto:** voz da marca (direta, de colega para colega, sem jargão). Nada de depoimentos, números ou parcerias inventados.
+8. **Commits** em português, terminando com a linha `Co-Authored-By` indicada pelo ambiente.

@@ -5,7 +5,9 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useSessao } from '../lib/auth'
 import { auth } from '../lib/firebase'
 import { IconeAjuda, IconeCaixa, IconeDocumento, IconeMais, IconePessoas, IconeSair, IconeUsuario } from './Icones'
+import { MODO_BETA } from '../config'
 import { Logo } from './Logo'
+import { SeloBeta } from './SeloBeta'
 
 export { APP_NOME } from './Logo'
 
@@ -36,9 +38,12 @@ export function Layout() {
     <div className="min-h-dvh">
       <header className="sticky top-0 z-20 border-b border-areia-200 bg-areia-100/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
-          <Link to="/" aria-label="Início">
-            <Logo tamanho={30} />
-          </Link>
+          <span className="flex items-center gap-2">
+            <Link to="/" aria-label="Início">
+              <Logo tamanho={30} />
+            </Link>
+            <SeloBeta />
+          </span>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Principal">
             {LINKS.map(({ para, rotulo, Icone, fim }) => (
               <NavLink
@@ -92,6 +97,15 @@ export function Layout() {
       <main className={`mx-auto max-w-3xl px-4 py-6 ${telaDeTarefa ? 'pb-40' : 'pb-32 md:pb-12'}`}>
         <Outlet />
       </main>
+
+      {MODO_BETA && !telaDeTarefa && !local.pathname.startsWith('/ajuda') && (
+        <Link
+          to="/ajuda?categoria=sugestao"
+          className="fixed right-4 bottom-24 z-10 rounded-full bg-grafite-900 px-4 py-2.5 text-sm font-semibold text-white shadow-flutuante md:bottom-6"
+        >
+          Dar opinião
+        </Link>
+      )}
 
       {!telaDeTarefa && (
         <nav

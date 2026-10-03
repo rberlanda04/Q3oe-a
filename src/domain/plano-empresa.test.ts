@@ -15,6 +15,11 @@ describe('plano', () => {
     expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 14 })
   })
 
+  it('aceita um período de teste maior, como o da fase beta', () => {
+    expect(situacaoPlano(null, agora - 20 * DIA, agora, 90)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 70 })
+    expect(situacaoPlano(null, agora - 91 * DIA, agora, 90).pro).toBe(false)
+  })
+
   it('volta ao grátis quando o teste acaba', () => {
     expect(situacaoPlano(null, agora - 15 * DIA, agora)).toEqual({ pro: false, motivo: 'gratis', testeEncerrado: true })
   })

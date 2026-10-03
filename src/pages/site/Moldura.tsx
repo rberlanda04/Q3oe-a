@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useSessao } from '../../lib/auth'
 import { Logo } from '../../ui/Logo'
+import { SeloBeta } from '../../ui/SeloBeta'
 
 /** Define o título da aba e, se o endereço tiver âncora (#precos), rola até ela depois de montar a página. */
 export function useTitulo(titulo: string) {
@@ -30,9 +31,12 @@ export function CabecalhoSite({ links = true }: { links?: boolean }) {
   return (
     <header className="sticky top-0 z-30 border-b border-areia-200/70 bg-areia-100/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link to="/" aria-label="Q3 Orça, início">
-          <Logo tamanho={30} />
-        </Link>
+        <span className="flex items-center gap-2">
+          <Link to="/" aria-label="Q3 Orça, início">
+            <Logo tamanho={30} />
+          </Link>
+          <SeloBeta />
+        </span>
         {links && (
           <nav className="hidden items-center gap-7 text-sm font-semibold text-grafite-600 md:flex">
             <a href={`${base}#como-funciona`} className="hover:text-brasa-700">

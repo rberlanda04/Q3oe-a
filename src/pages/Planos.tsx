@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   DIAS_AVISO_RENOVACAO,
+  DIAS_PRO_BETA,
+  DIAS_TESTE_ATUAL,
+  MODO_BETA,
   LINK_PAGAMENTO_ANUAL,
   LINK_PAGAMENTO_MENSAL,
   PAGAMENTO_PIX_ATIVO,
@@ -10,7 +13,6 @@ import {
   WHATSAPP_VENDAS,
 } from '../config'
 import { registrarInteressePro } from '../data/repo'
-import { DIAS_TESTE_PRO } from '../domain/plano'
 import { useUsuario } from '../lib/auth'
 import { registrarEvento } from '../lib/eventos'
 import { linkWhatsApp } from '../pdf/compartilhar'
@@ -81,8 +83,17 @@ export function Planos() {
 
       {plano.motivo === 'teste' && (
         <p className="rounded-cartao bg-regua-100 p-4 text-sm">
-          Você está no <strong>teste grátis do Pro</strong>. Faltam {plano.diasRestantes} {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Depois disso,
-          seus documentos voltam para o modelo grátis, e seu logo continua salvo para quando você assinar.
+          {MODO_BETA ? (
+            <>
+              Você está na <strong>fase de testes</strong>: o Pro é grátis por {DIAS_PRO_BETA} dias, sem cobrança. Faltam {plano.diasRestantes}{' '}
+              {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Sua opinião vale ouro: use "Dar opinião" para contar o que achou.
+            </>
+          ) : (
+            <>
+              Você está no <strong>teste grátis do Pro</strong>. Faltam {plano.diasRestantes} {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Depois
+              disso, seus documentos voltam para o modelo grátis, e seu logo continua salvo para quando você assinar.
+            </>
+          )}
         </p>
       )}
       {plano.motivo === 'assinatura' && (
@@ -145,7 +156,7 @@ export function Planos() {
               )}
               {estado === 'erro' && <p className="mt-3 text-sm text-brasa-300">Não foi possível enviar. Verifique sua conexão e tente de novo.</p>}
               {plano.motivo === 'gratis' && !plano.testeEncerrado && (
-                <p className="mt-3 text-center text-sm text-grafite-300">Contas novas ganham {DIAS_TESTE_PRO} dias de Pro grátis.</p>
+                <p className="mt-3 text-center text-sm text-grafite-300">Contas novas ganham {DIAS_TESTE_ATUAL} dias de Pro grátis.</p>
               )}
             </>
           )}
