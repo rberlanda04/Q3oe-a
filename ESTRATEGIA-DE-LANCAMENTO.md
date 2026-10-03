@@ -2,6 +2,8 @@
 
 Outubro de 2026. Este documento responde a três perguntas: estamos prontos para lançar, para quem vamos vender primeiro e como chegar até essas pessoas. Ele complementa o [PLANO-DE-ESCALA.md](PLANO-DE-ESCALA.md), que trata de metas de longo prazo.
 
+O plano de aplicação na primeira praça está em [ESTRATEGIA-CURITIBA.md](ESTRATEGIA-CURITIBA.md).
+
 ## 1. Estamos prontos?
 
 **Resposta curta:** estamos prontos para um lançamento fechado e gratuito com os primeiros profissionais, depois de duas tarefas de uma hora. Não estamos prontos para o lançamento oficial pago: faltam empresa, pagamento ativo, domínio e revisão jurídica.
