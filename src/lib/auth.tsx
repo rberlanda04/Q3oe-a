@@ -1,6 +1,7 @@
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ouvirAssinatura, ouvirPerfil, ouvirSouAdmin, PERFIL_VAZIO, perfilPublico, sincronizarRespostas } from '../data/repo'
+import { ouvirAssinatura, ouvirPerfil, ouvirSouAdmin, PERFIL_VAZIO, perfilPublico, salvarPerfil, sincronizarRespostas } from '../data/repo'
+import { origemGuardada } from './origem'
 import { DIAS_TESTE_ATUAL } from '../config'
 import { situacaoPlano, type Assinatura, type SituacaoPlano } from '../domain/plano'
 import type { Perfil, PerfilPublico } from '../domain/types'
@@ -66,7 +67,15 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
         /* Navegação privada: sem problema, só perde a otimização visual. */
       }
       if (novo) {
+        // Conta criada agora (até 1 dia): leva a origem da visita para o perfil, uma vez.
+        const contaNova = Date.now() - new Date(novo.metadata.creationTime ?? 0).getTime() < 24 * 60 * 60 * 1000
+        let origemConferida = false
         pararPerfil = ouvirPerfil(novo.uid, (p) => {
+          if (!origemConferida) {
+            origemConferida = true
+            const origem = origemGuardada()
+            if (contaNova && origem && !p.origem) salvarPerfil(novo.uid, { origem })
+          }
           setPerfil(p)
           setCarregando(false)
         })

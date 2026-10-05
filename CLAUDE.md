@@ -12,6 +12,7 @@ Toda comunicação com o dono do projeto e todo texto do produto são em **portu
 | `GESTAO.md` | Painel de gestão: frentes, tarefas, responsáveis e status. **Fonte da verdade do andamento.** |
 | `ESTRATEGIA-DE-LANCAMENTO.md` | Diagnóstico de prontidão, público-alvo, fases e roteiros |
 | `ESTRATEGIA-CURITIBA.md` | Lançamento na primeira praça: parceiros, metas e cronograma |
+| `campanha/campanha.json` | Plano da campanha em dados (metas, cronograma, canais e links utm), lido pelo `ops:campanha` e pelo agente `campanha-q3orca` |
 | `PLANO-DE-ESCALA.md` | Metas de 12 meses, funil e custos |
 | `PLANO.md` | Plano original do produto |
 | `README.md` | Arquitetura, configuração, Pix, SEO, suporte e comandos |
@@ -52,6 +53,7 @@ tests/        regras do Firestore, pagamento no emulador e teste de ponta a pont
 | `npm run test:e2e` | Teste de ponta a ponta no navegador contra o site publicado (`BASE=` para outro endereço) |
 | `npm run checar-lancamento` | Lista o que falta configurar antes do lançamento |
 | `npm run ops:metricas` | Números de produção: contas, orçamentos, aprovações, assinantes, suporte |
+| `npm run ops:campanha` | Leitura da campanha: metas, funil por canal de origem e série semanal (`-- --json` para o agente) |
 | `npm run ops:fundador -- email [meses]` | Ativa ou renova o Pro de um profissional |
 | `npm run ops:firestore -- ler/listar/gravar/apagar caminho` | Leitura e escrita administrativa no Firestore |
 | `firebase deploy --only hosting` | Publicar o site |

@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-r
 import './index.css'
 import { SessaoProvider, useSessao } from './lib/auth'
 import { monitorarErros } from './lib/eventos'
+import { guardarOrigemDaVisita } from './lib/origem'
 import { Admin } from './pages/Admin'
 import { Ajuda, ChamadoUsuario } from './pages/Ajuda'
 import { Catalogo } from './pages/Catalogo'
@@ -75,6 +76,8 @@ function Raiz() {
 }
 
 monitorarErros()
+
+guardarOrigemDaVisita()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

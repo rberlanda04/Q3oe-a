@@ -57,6 +57,19 @@ Plano completo em `ESTRATEGIA-CURITIBA.md`.
 | 5 lojas de bairro mapeadas | Dono | A fazer | Mesmo bairro, para concentrar |
 | 50 Fundadores ativos | Dono e agente | A fazer | Semanas 2 a 5 |
 
+## 3b. Campanha de lançamento (acompanhamento)
+
+O agente `campanha-q3orca` (`.claude/agents/campanha-q3orca.md`) lê os números todo dia (`npm run ops:campanha`),
+compara com as metas de `campanha/campanha.json` e atualiza o painel **Campanha Q3 Orça**
+(https://claude.ai/artifact/Hrzp8W98Az38fRBzVDGgYM): metas, funil por canal, cronograma, tarefas do dono com material
+pronto e QR Codes por canal. Cada cadastro novo guarda o canal de origem (utm do primeiro acesso).
+
+| Tarefa | Responsável | Status | Próximo passo |
+|---|---|---|---|
+| Canal de origem gravado no cadastro (utm do primeiro acesso) | Agente | Feito (local) | Publicar o hosting |
+| Leitura da campanha e painel | Agente | Feito | Leitura diária automática |
+| Metas manuais (parcerias, lojas, oficinas, depoimentos) | Dono | Em andamento | Atualizar no painel com − e + |
+
 ## 4. Marketing, conteúdo e SEO
 
 | Tarefa | Responsável | Status | Próximo passo |

@@ -15,7 +15,8 @@
     "ops:metricas": "node scripts/ops/metricas.cjs",
     "ops:fundador": "node scripts/ops/fundador.cjs",
     "ops:firestore": "node scripts/ops/firestore.cjs",
-    "test:e2e": "node tests/e2e/fluxo-completo.mjs"
+    "test:e2e": "node tests/e2e/fluxo-completo.mjs",
+    "ops:campanha": "node scripts/ops/campanha.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",

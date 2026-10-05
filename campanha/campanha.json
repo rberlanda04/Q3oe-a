@@ -1,0 +1,39 @@
+{
+  "nome": "Lançamento Curitiba: Fundadores",
+  "praca": "Curitiba e região metropolitana",
+  "inicio": "2026-10-05",
+  "semanas": 12,
+  "fonte": "ESTRATEGIA-CURITIBA.md (seções 7 e 8) e PLANO-DE-ESCALA.md",
+  "metas": [
+    { "id": "fundadores", "indicador": "Fundadores ativos (enviaram orçamento nos últimos 7 dias)", "meta": 35, "prazoSemana": 4, "fonteDado": "automatico" },
+    { "id": "cadastros", "indicador": "Cadastros na campanha", "meta": 300, "prazoSemana": 12, "fonteDado": "automatico" },
+    { "id": "orcamentosSemana", "indicador": "Orçamentos enviados na semana", "meta": 400, "prazoSemana": 12, "fonteDado": "automatico" },
+    { "id": "parcerias", "indicador": "Parcerias fechadas (1 rede ou programa)", "meta": 3, "prazoSemana": 12, "fonteDado": "painel" },
+    { "id": "lojas", "indicador": "Lojas com cartaz", "meta": 10, "prazoSemana": 12, "fonteDado": "painel" },
+    { "id": "oficinas", "indicador": "Oficinas realizadas", "meta": 2, "prazoSemana": 12, "fonteDado": "painel" },
+    { "id": "depoimentos", "indicador": "Depoimentos reais autorizados", "meta": 10, "prazoSemana": 12, "fonteDado": "painel" }
+  ],
+  "cronograma": [
+    { "semana": 1, "foco": "Preparação", "entregas": ["Contato configurado no app", "Cadastro no Balaroti PRO", "Lista de 30 profissionais conhecidos", "5 lojas mapeadas", "Cartazes impressos"] },
+    { "semana": 2, "foco": "Abordagem", "entregas": ["30 mensagens a conhecidos", "Visita às 5 lojas", "Proposta ao Balaroti PRO", "Proposta à Sala do Empreendedor"] },
+    { "semana": 3, "foco": "Fundadores", "entregas": ["20 fundadores com o primeiro orçamento feito junto"] },
+    { "semana": 4, "foco": "Fundadores", "entregas": ["40 fundadores", "Primeira rodada de entrevistas", "Contato com SENAI e Instituto da Construção"] },
+    { "semana": 5, "foco": "Ajustes", "entregas": ["50 fundadores", "Correções do app", "Decisão de avançar"] },
+    { "semana": 6, "foco": "Primeira oficina", "entregas": ["Oficina numa Sala do Empreendedor ou treinamento de parceiro"] },
+    { "semana": 7, "foco": "Expansão", "entregas": ["São José dos Pinhais, Pinhais e Colombo: 5 lojas e grupos locais"] },
+    { "semana": 8, "foco": "Conteúdo", "entregas": ["6 vídeos com fundadores", "Primeiros depoimentos no site"] },
+    { "semana": 9, "foco": "Anúncios", "entregas": ["Teste de R$ 800 restrito à região metropolitana"] },
+    { "semana": 10, "foco": "Expansão", "entregas": ["Fazenda Rio Grande e Araucária"] },
+    { "semana": 11, "foco": "Parcerias", "entregas": ["Segunda oficina", "Proposta de evento com o Sebrae/PR"] },
+    { "semana": 12, "foco": "Revisão", "entregas": ["Metas comparadas com os dados reais", "Plano do trimestre seguinte"] }
+  ],
+  "canais": [
+    { "fonte": "whatsapp", "meio": "convite", "descricao": "Mensagens a conhecidos e grupos", "link": "https://q3orca.web.app/beta?utm_source=whatsapp&utm_medium=convite&utm_campaign=fundadores-curitiba" },
+    { "fonte": "balaroti", "meio": "cartaz", "descricao": "Cartaz e QR Code nos balcões do Balaroti", "link": "https://q3orca.web.app/?utm_source=balaroti&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
+    { "fonte": "loja", "meio": "cartaz", "descricao": "Lojas e depósitos de bairro (troque 'loja' pelo nome de cada uma)", "link": "https://q3orca.web.app/?utm_source=loja-NOME&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
+    { "fonte": "sala-empreendedor", "meio": "oficina", "descricao": "Oficinas nas Salas do Empreendedor", "link": "https://q3orca.web.app/?utm_source=sala-empreendedor&utm_medium=oficina&utm_campaign=fundadores-curitiba" },
+    { "fonte": "instagram", "meio": "anuncio", "descricao": "Anúncios Instagram/Facebook (semana 9)", "link": "https://q3orca.web.app/?utm_source=instagram&utm_medium=anuncio&utm_campaign=fundadores-curitiba" },
+    { "fonte": "google", "meio": "anuncio", "descricao": "Google Ads (semana 9)", "link": "https://q3orca.web.app/?utm_source=google&utm_medium=anuncio&utm_campaign=fundadores-curitiba" }
+  ],
+  "orcamento": { "previsto": 1500, "itens": [["Impressão de cartazes e panfletos", 250], ["Anúncios na região", 800], ["Deslocamento", 300], ["Oficinas", 150]] }
+}

@@ -85,6 +85,24 @@ const firestore = {
     const r = await chamar('GET', `${FIRESTORE}/${colecao}?pageSize=${limite}`)
     return (r?.documents ?? []).map((d) => ({ id: d.name.split('/').pop(), ...deDocumento(d) }))
   },
+  /** Lista a coleção inteira, página por página. */
+  async listarTodos(colecao) {
+    const todos = []
+    let pagina = ''
+    do {
+      const r = await chamar('GET', `${FIRESTORE}/${colecao}?pageSize=300${pagina ? `&pageToken=${pagina}` : ''}`)
+      todos.push(...(r?.documents ?? []).map((d) => ({ id: d.name.split('/').pop(), ...deDocumento(d) })))
+      pagina = r?.nextPageToken ?? ''
+    } while (pagina)
+    return todos
+  },
+  /** Todos os documentos das subcoleções com esse nome (ex.: orcamentos de todos os usuários), só com os campos pedidos. */
+  async grupo(colecao, campos) {
+    const r = await chamar('POST', `${FIRESTORE}:runQuery`, {
+      structuredQuery: { from: [{ collectionId: colecao, allDescendants: true }], select: { fields: campos.map((c) => ({ fieldPath: c })) } },
+    })
+    return (r ?? []).filter((x) => x.document).map((x) => ({ caminho: x.document.name.split('/documents/')[1], ...deDocumento(x.document) }))
+  },
   /** Grava (mesclando) os campos informados no documento. */
   async gravar(caminho, dados) {
     const mascara = Object.keys(dados).map((k) => `updateMask.fieldPaths=${encodeURIComponent(k)}`).join('&')

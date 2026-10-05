@@ -36,3 +36,6 @@ functions/lib
 .secret.local
 *.secret.local
 dist-teste
+
+# Gerado pelo ops:campanha para o painel (refeito a cada leitura)
+campanha/painel.json

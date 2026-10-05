@@ -102,6 +102,8 @@ export interface Orcamento {
 }
 
 export interface Perfil {
+  /** De onde veio o cadastro (primeiro acesso), gravado na criação da conta. */
+  origem?: import('./origem').Origem
   /** Nome da empresa (nome fantasia) ou do profissional. */
   nome: string
   razaoSocial: string
