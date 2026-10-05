@@ -612,7 +612,7 @@ function Aplicacoes() {
             <p className="mt-8 font-display text-4xl leading-[1.05] font-extrabold">
               Chega de orçamento no papel de pão.
             </p>
-            <p className="mt-4 font-semibold">q3orca.web.app</p>
+            <p className="mt-4 font-semibold">q3orca.com.br</p>
             <Regua className="[&_line]:stroke-grafite-900" />
           </div>
           <figcaption className="mt-2 text-sm text-grafite-500">Post para Instagram, paleta Canteiro.</figcaption>

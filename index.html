@@ -14,7 +14,7 @@
     />
     <meta property="og:title" content="Q3 Orça · Orçamento rápido, aprovado pelo celular" />
     <meta property="og:description" content="Monte em 2 minutos, envie pelo WhatsApp e receba por Pix." />
-    <meta property="og:image" content="https://q3orca.web.app/og-imagem.png" />
+    <meta property="og:image" content="https://q3orca.com.br/og-imagem.png" />
     <!--/seo-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,6 +22,17 @@
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Endereço antigo (q3orca.web.app) leva ao domínio próprio, mantendo caminho e utm.
+      // Quem está logado no endereço antigo fica: o cache offline é por endereço e um
+      // orçamento ainda não sincronizado se perderia na troca.
+      try {
+        var antigos = ['q3orca.web.app', 'q3orca.firebaseapp.com']
+        if (antigos.indexOf(location.hostname) >= 0 && !localStorage.getItem('q3:logado')) {
+          location.replace('https://q3orca.com.br' + location.pathname + location.search + location.hash)
+        }
+      } catch (e) {}
+    </script>
     <script>
       // Quem já está logado não precisa ver o HTML pré-renderizado do site piscando antes do painel.
       try {

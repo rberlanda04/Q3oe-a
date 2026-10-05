@@ -18,8 +18,11 @@ export const DIAS_PRO_BETA = 90
 /** Dias de Pro grátis para contas novas, conforme a fase atual. */
 export const DIAS_TESTE_ATUAL = MODO_BETA ? DIAS_PRO_BETA : DIAS_TESTE_PRO
 
-/** Endereço público do site. Troque quando tiver domínio próprio (ex.: https://q3orca.com.br). */
-export const SITE_URL = 'https://q3orca.web.app'
+/** Endereço público do site (domínio próprio desde o lançamento). */
+export const SITE_URL = 'https://q3orca.com.br'
+
+/** Endereços antigos que passam a levar ao domínio próprio, mantendo o caminho. */
+export const DOMINIOS_ANTIGOS = ['q3orca.web.app', 'q3orca.firebaseapp.com']
 
 /* ---------- Empresa responsável (aparece nos termos e na política de privacidade) ---------- */
 
