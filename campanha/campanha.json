@@ -28,12 +28,12 @@
     { "semana": 12, "foco": "Revisão", "entregas": ["Metas comparadas com os dados reais", "Plano do trimestre seguinte"] }
   ],
   "canais": [
-    { "fonte": "whatsapp", "meio": "convite", "descricao": "Mensagens a conhecidos e grupos", "link": "https://q3orca.com.br/beta?utm_source=whatsapp&utm_medium=convite&utm_campaign=fundadores-curitiba" },
-    { "fonte": "balaroti", "meio": "cartaz", "descricao": "Cartaz e QR Code nos balcões do Balaroti", "link": "https://q3orca.com.br/?utm_source=balaroti&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
-    { "fonte": "loja", "meio": "cartaz", "descricao": "Lojas e depósitos de bairro (troque 'loja' pelo nome de cada uma)", "link": "https://q3orca.com.br/?utm_source=loja-NOME&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
-    { "fonte": "sala-empreendedor", "meio": "oficina", "descricao": "Oficinas nas Salas do Empreendedor", "link": "https://q3orca.com.br/?utm_source=sala-empreendedor&utm_medium=oficina&utm_campaign=fundadores-curitiba" },
-    { "fonte": "instagram", "meio": "anuncio", "descricao": "Anúncios Instagram/Facebook (semana 9)", "link": "https://q3orca.com.br/?utm_source=instagram&utm_medium=anuncio&utm_campaign=fundadores-curitiba" },
-    { "fonte": "google", "meio": "anuncio", "descricao": "Google Ads (semana 9)", "link": "https://q3orca.com.br/?utm_source=google&utm_medium=anuncio&utm_campaign=fundadores-curitiba" }
+    { "fonte": "whatsapp", "meio": "convite", "descricao": "Mensagens a conhecidos e grupos", "link": "https://www.q3orca.com.br/beta?utm_source=whatsapp&utm_medium=convite&utm_campaign=fundadores-curitiba" },
+    { "fonte": "balaroti", "meio": "cartaz", "descricao": "Cartaz e QR Code nos balcões do Balaroti", "link": "https://www.q3orca.com.br/?utm_source=balaroti&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
+    { "fonte": "loja", "meio": "cartaz", "descricao": "Lojas e depósitos de bairro (troque 'loja' pelo nome de cada uma)", "link": "https://www.q3orca.com.br/?utm_source=loja-NOME&utm_medium=cartaz&utm_campaign=fundadores-curitiba" },
+    { "fonte": "sala-empreendedor", "meio": "oficina", "descricao": "Oficinas nas Salas do Empreendedor", "link": "https://www.q3orca.com.br/?utm_source=sala-empreendedor&utm_medium=oficina&utm_campaign=fundadores-curitiba" },
+    { "fonte": "instagram", "meio": "anuncio", "descricao": "Anúncios Instagram/Facebook (semana 9)", "link": "https://www.q3orca.com.br/?utm_source=instagram&utm_medium=anuncio&utm_campaign=fundadores-curitiba" },
+    { "fonte": "google", "meio": "anuncio", "descricao": "Google Ads (semana 9)", "link": "https://www.q3orca.com.br/?utm_source=google&utm_medium=anuncio&utm_campaign=fundadores-curitiba" }
   ],
   "orcamento": { "previsto": 1500, "itens": [["Impressão de cartazes e panfletos", 250], ["Anúncios na região", 800], ["Deslocamento", 300], ["Oficinas", 150]] }
 }

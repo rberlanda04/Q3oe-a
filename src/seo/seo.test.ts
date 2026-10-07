@@ -25,7 +25,7 @@ describe('SEO', () => {
 
   it('gera head com canônico, Open Graph e JSON-LD válido', () => {
     const head = headDaPagina(PAGINAS_SEO[0])
-    expect(head).toContain('<link rel="canonical" href="https://q3orca.com.br/" />')
+    expect(head).toContain('<link rel="canonical" href="https://www.q3orca.com.br/" />')
     expect(head).toContain('og:image')
     const json = head.match(/<script type="application\/ld\+json">(.*)<\/script>/)?.[1]
     expect(() => JSON.parse(json!)).not.toThrow()
@@ -34,7 +34,7 @@ describe('SEO', () => {
   it('bloqueia orçamentos de clientes e área logada no robots.txt', () => {
     const robots = robotsTxt()
     expect(robots).toContain('Disallow: /o/')
-    expect(robots).toContain('Sitemap: https://q3orca.com.br/sitemap.xml')
-    expect(sitemapXml('2026-09-28')).toContain('<loc>https://q3orca.com.br/modelo-de-orcamento/eletricista</loc>')
+    expect(robots).toContain('Sitemap: https://www.q3orca.com.br/sitemap.xml')
+    expect(sitemapXml('2026-09-28')).toContain('<loc>https://www.q3orca.com.br/modelo-de-orcamento/eletricista</loc>')
   })
 })
