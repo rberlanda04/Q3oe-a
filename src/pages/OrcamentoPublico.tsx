@@ -10,6 +10,7 @@ import { registrarEvento } from '../lib/eventos'
 import { baixarArquivo, gerarPdfOrcamento, linkWhatsApp, qrCodeDataUrl } from '../pdf/compartilhar'
 import { APP_NOME, Simbolo } from '../ui/Logo'
 import { Regua } from '../ui/Regua'
+import { UTM_ORCAMENTO_CLIENTE } from '../domain/indicacao'
 
 export function OrcamentoPublico() {
   const { id = '' } = useParams()
@@ -271,10 +272,10 @@ function Conteudo({ dados }: { dados: Compartilhamento }) {
         </button>
 
         {!p.pro && (
-          <a href="/" className="flex items-center justify-center gap-2 pt-6 text-xs text-grafite-500">
+          <a href={`/?${UTM_ORCAMENTO_CLIENTE}`} className="flex items-center justify-center gap-2 pt-6 text-xs text-grafite-500">
             <Simbolo tamanho={20} />
             <span>
-              Feito com <strong className="text-grafite-800">{APP_NOME}</strong>. Crie seus orçamentos grátis.
+              Feito com <strong className="text-grafite-800">{APP_NOME}</strong>. Também presta serviço? Faça orçamentos assim, grátis.
             </span>
           </a>
         )}

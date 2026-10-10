@@ -13,6 +13,12 @@ export type ProfissaoId =
   | 'fotografo'
   | 'freelancer'
   | 'confeitaria'
+  | 'gesseiro'
+  | 'azulejista'
+  | 'serralheiro'
+  | 'vidraceiro'
+  | 'telhadista'
+  | 'chaveiro'
   | 'outro'
 
 export type TipoItem = 'servico' | 'material'

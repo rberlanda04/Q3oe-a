@@ -258,6 +258,126 @@ export const PROFISSOES_SEO: ConteudoProfissao[] = [
       ['Como garantir a encomenda?', 'Configure o QR Code Pix para cobrar o sinal. O cliente paga pelo próprio orçamento.'],
     ],
   },
+  {
+    id: 'gesseiro',
+    slug: 'gesso-e-drywall',
+    para: 'gesseiro e drywall',
+    busca: 'modelo de orçamento de gesso e drywall',
+    descricao:
+      'Modelo de orçamento de gesso e drywall grátis: forro, parede, sanca e moldura por m² e metro linear. Monte no celular e envie pelo WhatsApp.',
+    intro:
+      'Forro e drywall se cobram por área, mas sanca, moldura e recortes mudam o preço. O modelo já separa m², metro linear e aberturas, para o cliente entender o que está pagando.',
+    dicas: [
+      'Meça a área real do forro e acrescente a perda de material como item separado.',
+      'Sanca e moldura se cobram por metro linear, não por m².',
+      'Cada abertura para spot ou luminária é um item. Isso evita o "era só um furinho".',
+      'Combine quem faz a pintura depois do gesso e escreva nas observações.',
+    ],
+    perguntas: [
+      ['Como calcular orçamento de forro de gesso?', 'Multiplique a largura pelo comprimento do cômodo para ter o m², coloque o seu preço por m² e some sancas e aberturas. O total sai automático.'],
+      ['Drywall ou gesso: como diferenciar no orçamento?', 'Use itens separados. O modelo já traz forro de gesso liso, forro de drywall e parede de drywall, cada um com o seu preço.'],
+    ],
+  },
+  {
+    id: 'azulejista',
+    slug: 'pisos-e-revestimentos',
+    para: 'assentamento de piso',
+    busca: 'modelo de orçamento para assentamento de piso',
+    descricao:
+      'Modelo de orçamento para assentamento de piso e porcelanato grátis: m², rodapé, rejunte e retirada de piso antigo. Envie pelo WhatsApp com Pix.',
+    intro:
+      'Porcelanato grande, piso cerâmico e azulejo de parede têm preços diferentes por m². O modelo separa cada tipo, o rodapé e a retirada do piso antigo, para não sobrar serviço sem cobrar.',
+    dicas: [
+      'Cobre porcelanato acima de 60 × 60 com preço próprio: dá mais trabalho e exige nivelador.',
+      'Retirada de piso antigo e regularização de contrapiso são serviços à parte.',
+      'Informe que a argamassa precisa ser a indicada pelo fabricante da peça (AC-II ou AC-III).',
+      'Peça ao cliente uma sobra de 10% do piso para recortes.',
+    ],
+    perguntas: [
+      ['Quanto cobrar por m² de porcelanato?', 'Depende da região e do tamanho da peça. Defina o seu preço por m² uma vez: ele fica salvo e aparece pronto nos próximos orçamentos.'],
+      ['O rodapé entra no m²?', 'Não. Rodapé se cobra por metro linear. O modelo já traz o item com a unidade certa.'],
+    ],
+  },
+  {
+    id: 'serralheiro',
+    slug: 'serralheria',
+    para: 'serralheria',
+    busca: 'modelo de orçamento para serralheria',
+    descricao:
+      'Modelo de orçamento para serralheria grátis: portão, grade, corrimão e guarda-corpo por m² e metro. Receba a entrada por Pix e comece a fabricar.',
+    intro:
+      'Serviço sob medida precisa de aprovação antes de cortar o material. Com o orçamento pelo link, o cliente aprova, paga a entrada pelo Pix e você já compra o ferro.',
+    dicas: [
+      'Peça a entrada antes de comprar o material. Configure o QR Code Pix para cobrar só o sinal.',
+      'Deixe claro se a pintura com fundo anticorrosivo está incluída.',
+      'Motor de portão vai como material, com a garantia do fabricante.',
+      'Anote as medidas no campo de observações: elas fazem parte do que o cliente aprovou.',
+    ],
+    perguntas: [
+      ['Como cobrar portão de ferro?', 'O mais comum é por m², com o motor e os acessórios como itens separados. O total já mostra mão de obra e material.'],
+      ['Posso cobrar instalação separada?', 'Sim. Adicione um item de instalação ou deslocamento. O cliente vê cada parte do preço.'],
+    ],
+  },
+  {
+    id: 'vidraceiro',
+    slug: 'vidracaria',
+    para: 'vidraçaria',
+    busca: 'modelo de orçamento para vidraçaria',
+    descricao:
+      'Modelo de orçamento para vidraçaria grátis: box, janela e porta de vidro temperado, espelho e sacada. Envie pelo WhatsApp e receba o sinal por Pix.',
+    intro:
+      'Vidro temperado é feito sob medida e não tem volta depois do pedido. O orçamento aprovado pelo link registra a medida, o tipo de vidro e as ferragens que o cliente escolheu.',
+    dicas: [
+      'Escreva a espessura e a cor do vidro na descrição de cada item.',
+      'Ferragens e puxadores vão como material, para o cliente comparar opções.',
+      'Cobre o sinal na aprovação: o pedido à têmpera só sai depois dele.',
+      'Informe o prazo da têmpera no prazo do orçamento.',
+    ],
+    perguntas: [
+      ['Como fazer orçamento de box de banheiro?', 'Escolha o item box em vidro temperado, coloque a medida nas observações e acrescente o kit de ferragens. Pronto para enviar.'],
+      ['Preciso citar a norma do vidro?', 'É uma boa prática. O modelo já traz a garantia com a referência à NBR 14698 do vidro temperado.'],
+    ],
+  },
+  {
+    id: 'telhadista',
+    slug: 'telhados-e-calhas',
+    para: 'telhados e calhas',
+    busca: 'modelo de orçamento para telhado',
+    descricao:
+      'Modelo de orçamento para telhado e calhas grátis: troca de telhas, calha, rufo, manta e estrutura. Monte no local e envie pelo WhatsApp na hora.',
+    intro:
+      'Telhado se orça em cima da casa, muitas vezes com o cliente esperando embaixo. Com o modelo no celular, você soma telhas, calhas e rufos e envia o orçamento antes de descer.',
+    dicas: [
+      'Cobre calha e rufo por metro linear e telhas por m².',
+      'Escreva no prazo que o serviço depende do tempo. Chuva atrasa telhado.',
+      'Fotografe o problema e descreva nas observações. Isso justifica a troca.',
+      'Separe a revisão do telhado do conserto: muitos clientes fecham os dois.',
+    ],
+    perguntas: [
+      ['Como calcular orçamento de troca de telhas?', 'Meça a área a trocar em m², coloque o seu preço e some as telhas como material. O total separa mão de obra e material.'],
+      ['Posso dar garantia contra goteira?', 'Pode, desde que limite aos pontos onde houve serviço. O modelo já traz esse texto de garantia.'],
+    ],
+  },
+  {
+    id: 'chaveiro',
+    slug: 'chaveiro',
+    para: 'chaveiro',
+    busca: 'modelo de orçamento para chaveiro',
+    descricao:
+      'Modelo de orçamento para chaveiro grátis: abertura de porta, troca de fechadura e miolo, fechadura digital. Envie pelo WhatsApp e receba por Pix.',
+    intro:
+      'Chamado de chaveiro é rápido e muitas vezes de noite. Mandar o preço antes de sair evita discussão na porta, e o cliente paga pelo Pix do próprio orçamento.',
+    dicas: [
+      'Envie o orçamento antes de se deslocar, com a taxa de atendimento já incluída.',
+      'Atendimento noturno e em feriado tem preço próprio. Deixe como item separado.',
+      'Fechadura e miolo vão como material, com a marca na descrição.',
+      'Peça um documento que comprove que o cliente mora no imóvel antes de abrir a porta.',
+    ],
+    perguntas: [
+      ['Quanto cobrar para abrir uma porta?', 'Depende do tipo de fechadura e do horário. Cadastre o seu preço uma vez: ele aparece pronto nos próximos orçamentos.'],
+      ['Como receber na hora?', 'O orçamento sai com QR Code Pix. O cliente paga pelo celular assim que o serviço termina.'],
+    ],
+  },
 ]
 
 export function profissaoPorSlug(slug: string | undefined): ConteudoProfissao | undefined {

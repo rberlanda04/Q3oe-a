@@ -5,7 +5,8 @@ import { calcularTotais, totalRecebido } from '../domain/calc'
 import { formatarBRL } from '../domain/money'
 import { modeloPorId } from '../domain/templates'
 import type { Orcamento, StatusOrcamento } from '../domain/types'
-import { DIAS_AVISO_RENOVACAO } from '../config'
+import { DIAS_AVISO_RENOVACAO, SITE_URL } from '../config'
+import { linkWhatsAppSemContato, textoIndicacao } from '../domain/indicacao'
 import { useUsuario } from '../lib/auth'
 import { linkWhatsApp } from '../pdf/compartilhar'
 import { IconeBusca, IconeCheck, IconeMais, IconeRelogio, IconeSeta, IconeWhatsApp } from '../ui/Icones'
@@ -162,6 +163,23 @@ export function Orcamentos() {
               )
             })}
           </ul>
+        </section>
+      )}
+
+      {(lista ?? []).some((o) => o.status === 'aprovado') && (
+        <section className="flex items-center justify-between gap-3 rounded-cartao border border-aprovado-100 bg-aprovado-50 p-4">
+          <div className="min-w-0">
+            <p className="font-semibold">Conhece alguém que também faz orçamento?</p>
+            <p className="text-sm text-grafite-600">Mande o Q3 Orça para um colega. É grátis para ele também.</p>
+          </div>
+          <a
+            href={linkWhatsAppSemContato(textoIndicacao(SITE_URL))}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-whatsapp shrink-0 !px-3 !py-2 text-sm"
+          >
+            <IconeWhatsApp tamanho={16} /> Indicar
+          </a>
         </section>
       )}
 
