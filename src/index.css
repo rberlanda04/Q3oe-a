@@ -5,8 +5,8 @@
  * Paleta "Brasa": laranja de obra, grafite, areia e verde de aprovado.
  */
 @theme {
-  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque", "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Bricolage Fallback", "Figtree", ui-sans-serif, system-ui, sans-serif;
 
   /* Brasa: a cor da marca. 500 para o símbolo e destaques, 700 para botões e links (contraste AA com branco). */
   --color-brasa-50: #fff4ed;
@@ -147,4 +147,36 @@
   .carrossel-tela { display: none; }
   .carrossel-legendas span { animation: none; }
   .carrossel-legendas span:first-child { opacity: 1; }
+}
+
+/* ---------- Fontes reserva com as medidas das fontes da marca ----------
+   As fontes do Google carregam sem bloquear a página; enquanto não chegam, o texto usa
+   Arial ajustada para ocupar o mesmo espaço, e nada pula quando a fonte troca.
+   Medidas tiradas no navegador comparando a largura e a altura de um mesmo texto. */
+@font-face {
+  font-family: "Bricolage Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Arial");
+  font-weight: 600 900;
+  size-adjust: 92.3%;
+  ascent-override: 100.8%;
+  descent-override: 29.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Figtree Fallback";
+  src: local("Arial"), local("ArialMT");
+  font-weight: 100 500;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Figtree Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  font-weight: 600 900;
+  size-adjust: 96.2%;
+  ascent-override: 98.8%;
+  descent-override: 26%;
+  line-gap-override: 0%;
 }

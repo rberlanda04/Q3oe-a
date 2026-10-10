@@ -48,7 +48,8 @@ function Hero() {
             <span className="h-2 w-2 rounded-full bg-aprovado-500" />{' '}
             {MODO_BETA ? `Fase de testes: Pro grátis por ${DIAS_PRO_BETA} dias` : 'Cliente aprova pelo link e paga no Pix'}
           </p>
-          <h1 className="mt-6 text-5xl leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl">
+          {/* No celular o título ocupa 4 linhas com a fonte da marca: a altura fica reservada para nada pular enquanto ela carrega. */}
+          <h1 className="mt-6 min-h-[4.1em] text-5xl leading-[1.02] font-extrabold sm:min-h-0 sm:text-6xl lg:text-7xl">
             Orçamento rápido,{' '}
             <span className="relative whitespace-nowrap text-brasa-600">
               aprovado
