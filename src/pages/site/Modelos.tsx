@@ -182,7 +182,7 @@ export function ModeloProfissao() {
   )
 }
 
-function Migalhas({ itens }: { itens: [string, string][] }) {
+export function Migalhas({ itens }: { itens: [string, string][] }) {
   return (
     <nav aria-label="Você está em" className="text-sm text-grafite-500">
       <ol className="flex flex-wrap items-center gap-1.5">

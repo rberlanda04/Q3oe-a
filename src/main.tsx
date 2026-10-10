@@ -22,6 +22,7 @@ import { Marca } from './pages/site/Marca'
 import { Contato } from './pages/site/Contato'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
+import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras'
 import { Layout } from './ui/Layout'
 import { Simbolo } from './ui/Logo'
 
@@ -93,6 +94,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/contato" element={<Contato />} />
           <Route path="/beta" element={<Beta />} />
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
+          <Route path="/calculadoras" element={<CalculadorasIndice />} />
+          <Route path="/calculadora/:slug" element={<CalculadoraPagina />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />
           <Route path="/*" element={<Raiz />} />

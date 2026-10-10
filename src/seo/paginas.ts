@@ -1,5 +1,6 @@
 import { SITE_URL } from '../config'
 import { MODELOS } from '../domain/templates'
+import { CALCULADORAS, caminhoCalculadora } from './calculadoras'
 import { PROFISSOES_SEO, type ConteudoProfissao } from './profissoes'
 
 /** Metadados de cada página pública pré-renderizada. */
@@ -90,6 +91,37 @@ export const PAGINAS_SEO: PaginaSeo[] = [
           [`Orçamento para ${p.para}`, caminhoProfissao(p)],
         ]),
         faq(p.perguntas),
+      ],
+    }),
+  ),
+  {
+    caminho: '/calculadoras',
+    titulo: 'Calculadoras grátis para prestadores de serviço · Q3 Orça',
+    descricao: 'Calculadoras grátis de tinta e pintura por m², piso, argamassa e rejunte, e de quanto cobrar por hora de serviço. Sem cadastro, direto no celular.',
+    prioridade: 0.8,
+    dados: [ORGANIZACAO, migalhas([['Início', '/'], ['Calculadoras', '/calculadoras']])],
+  },
+  ...CALCULADORAS.map(
+    (c): PaginaSeo => ({
+      caminho: caminhoCalculadora(c),
+      titulo: `${c.titulo} · Q3 Orça`,
+      descricao: c.descricao,
+      prioridade: 0.8,
+      dados: [
+        migalhas([
+          ['Início', '/'],
+          ['Calculadoras', '/calculadoras'],
+          [c.h1, caminhoCalculadora(c)],
+        ]),
+        {
+          '@type': 'WebApplication',
+          name: c.h1,
+          url: `${SITE_URL}${caminhoCalculadora(c)}`,
+          applicationCategory: 'UtilitiesApplication',
+          operatingSystem: 'Web',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+        },
+        faq(c.perguntas),
       ],
     }),
   ),
