@@ -127,3 +127,24 @@
 @utility rotulo {
   @apply text-xs font-bold tracking-wider text-grafite-400 uppercase;
 }
+
+/* ---------- Carrossel de telas reais na home (Home.tsx, Celular) ----------
+   5 telas, 3,5 s cada (ciclo de 17,5 s). A tela 0 fica fixa por baixo; as outras
+   entram por cima na sua vez e saem quando a próxima já está aparecendo. */
+.carrossel { position: relative; aspect-ratio: 600 / 1298; }
+.carrossel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.carrossel-tela { opacity: 0; animation: carrossel-tela 17.5s ease-in-out infinite both; animation-delay: calc(var(--i) * 3.5s); }
+.carrossel-legendas { position: relative; }
+.carrossel-legendas span { position: absolute; inset: 0; opacity: 0; animation: carrossel-tela 17.5s ease-in-out infinite both; animation-delay: calc(var(--i) * 3.5s); }
+@keyframes carrossel-tela {
+  0% { opacity: 0; transform: scale(1.03); }
+  3% { opacity: 1; transform: scale(1); }
+  20% { opacity: 1; }
+  23% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carrossel-tela { display: none; }
+  .carrossel-legendas span { animation: none; }
+  .carrossel-legendas span:first-child { opacity: 1; }
+}

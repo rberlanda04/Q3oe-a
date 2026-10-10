@@ -85,82 +85,49 @@ function Hero() {
 }
 
 /** Demonstração: o que o cliente vê ao abrir o link. */
+/**
+ * Telas reais do app passando em carrossel, só com CSS (classes .carrossel em index.css).
+ * A primeira tela fica fixa por baixo e carrega com prioridade: o topo aparece na hora,
+ * e as outras entram por cima em sequência, com transição suave.
+ */
+const TELAS = [
+  ['orcamento', 'Monte em 2 minutos', 'Orçamento de pintura com o total calculado'],
+  ['cliente', 'O cliente recebe no WhatsApp', 'Orçamento aberto pelo cliente, com o logo do profissional'],
+  ['aprovado', 'Aprova e paga no Pix', 'Orçamento aprovado pelo cliente, com QR Code Pix'],
+  ['marca', 'Com o seu logo e a sua cor', 'Tela de dados da empresa'],
+  ['modelo', 'Modelos para 26 profissões', 'Página do modelo de orçamento para pintor'],
+] as const
+
 function Celular() {
   return (
-    <div className="relative mx-auto w-full max-w-[340px]">
+    <figure className="relative mx-auto w-full max-w-[320px]">
       <div className="absolute -inset-8 -z-10 rounded-full bg-brasa-200/50 blur-3xl" />
-      <div className="rounded-[2.6rem] bg-grafite-900 p-3 shadow-flutuante">
-        <div className="overflow-hidden rounded-[2rem] bg-areia-100">
-          <div className="bg-grafite-900 px-5 pt-6 pb-10 text-white">
-            <p className="font-display text-lg font-bold">Marcos Elétrica</p>
-            <p className="text-xs text-grafite-300">(11) 97777-0000 · Campinas - SP</p>
-          </div>
-          <div className="-mt-6 space-y-3 px-4 pb-5">
-            <div className="rounded-2xl bg-white p-4 shadow-cartao">
-              <p className="text-xs text-grafite-500">Orçamento nº 2026-0042</p>
-              <p className="font-display font-bold">Para Ana Paula</p>
-              <ul className="mt-3 space-y-2 text-sm">
-                {[
-                  ['Instalação de tomada', '6 × R$ 45,00', 'R$ 270,00'],
-                  ['Troca de disjuntor', '2 × R$ 60,00', 'R$ 120,00'],
-                  ['Chuveiro elétrico', '1 × R$ 90,00', 'R$ 90,00'],
-                ].map(([d, q, v]) => (
-                  <li key={d} className="flex justify-between gap-2">
-                    <span>
-                      {d}
-                      <span className="block text-[11px] text-grafite-400">{q}</span>
-                    </span>
-                    <span className="font-medium">{v}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 flex justify-between border-t border-areia-200 pt-2 font-display text-lg font-extrabold">
-                <span>Total</span>
-                <span>R$ 480,00</span>
-              </div>
-            </div>
-            <div className="rounded-xl bg-aprovado-600 py-3 text-center font-semibold text-white">Aprovar orçamento</div>
-            <div className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-cartao">
-              <QrFalso />
-              <div className="text-sm">
-                <p className="font-semibold">Pagar com Pix</p>
-                <p className="text-grafite-500">Aponte a câmera do banco</p>
-              </div>
-            </div>
-          </div>
+      <div className="rounded-[2.6rem] bg-grafite-900 p-2.5 shadow-flutuante">
+        <div className="carrossel overflow-hidden rounded-[2.1rem] bg-areia-100">
+          {TELAS.map(([nome, , alt], i) => (
+            <img
+              key={nome}
+              src={`/telas/${nome}.webp`}
+              alt={alt}
+              width={600}
+              height={1298}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchPriority={i === 0 ? 'high' : 'low'}
+              decoding="async"
+              className={i === 0 ? 'carrossel-base' : 'carrossel-tela'}
+              style={i === 0 ? undefined : ({ '--i': i } as React.CSSProperties)}
+            />
+          ))}
         </div>
       </div>
-      <div className="absolute top-2 -left-4 flex items-center gap-2 rounded-2xl bg-white px-3 py-2.5 shadow-flutuante sm:-left-14">
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-aprovado-500 text-white">
-          <IconeCheck tamanho={16} strokeWidth={3} />
-        </span>
-        <div className="text-xs">
-          <p className="font-bold">Orçamento aprovado!</p>
-          <p className="text-grafite-500">Ana Paula · agora</p>
-        </div>
-      </div>
-      <div className="absolute -right-4 -bottom-4 flex items-center gap-2 rounded-2xl bg-grafite-900 px-3 py-2.5 text-white shadow-flutuante sm:-right-10">
-        <IconePix tamanho={22} className="text-aprovado-500" />
-        <div className="text-xs">
-          <p className="font-bold">Pix recebido</p>
-          <p className="text-grafite-300">R$ 240,00 de entrada</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function QrFalso() {
-  // Padrão decorativo: não é um código Pix de verdade.
-  const celulas = [0b1110101, 0b1010011, 0b1110110, 0b0001011, 0b1101101, 0b1011000, 0b1110111]
-  return (
-    <svg width="52" height="52" viewBox="0 0 7 7" className="shrink-0 rounded-md bg-white" aria-hidden shapeRendering="crispEdges">
-      {celulas.flatMap((linha, y) =>
-        Array.from({ length: 7 }, (_, x) =>
-          (linha >> (6 - x)) & 1 ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="#1b1f2a" /> : null,
-        ),
-      )}
-    </svg>
+      <figcaption className="carrossel-legendas mt-4 h-6 text-center text-sm font-semibold text-grafite-700" aria-hidden>
+        {TELAS.map(([nome, legenda], i) => (
+          <span key={nome} style={{ '--i': i } as React.CSSProperties}>
+            {legenda}
+          </span>
+        ))}
+      </figcaption>
+    </figure>
   )
 }
 
