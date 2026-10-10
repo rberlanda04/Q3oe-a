@@ -4,12 +4,12 @@ Painel único de andamento do projeto. O agente `gerente-q3orca` lê este arquiv
 
 Última atualização: 3 de outubro de 2026.
 
-**Fase atual: beta aberto em https://q3orca.web.app** (`MODO_BETA` ligado, Pro grátis por 90 dias). Condução em `GUIA-DE-TESTES.md`.
+**Fase atual: beta aberto em https://www.q3orca.com.br** (domínio próprio desde 06/10) (`MODO_BETA` ligado, Pro grátis por 90 dias). Condução em `GUIA-DE-TESTES.md`.
 
 ## Prioridades da semana
 
 1. Testes reais no celular: 5 orçamentos, PDF pelo WhatsApp, QR Code de R$ 0,01 e instalação na tela inicial.
-2. Convidar os primeiros 10 testadores com o link https://q3orca.web.app/beta?utm_source=whatsapp&utm_medium=convite.
+2. Convidar os primeiros 10 testadores com o link https://www.q3orca.com.br/beta?utm_source=whatsapp&utm_medium=convite.
 3. Material impresso para Curitiba: cartaz e panfleto com QR Codes rastreáveis.
 4. Lista de 30 profissionais conhecidos de Curitiba e cadastro no Balaroti PRO.
 

@@ -1,11 +1,11 @@
 # Guia da fase de testes (beta)
 
-Como conduzir os testes do Q3 Orça com profissionais reais em https://q3orca.web.app, enquanto o domínio próprio não fica pronto.
+Como conduzir os testes do Q3 Orça com profissionais reais em https://www.q3orca.com.br.
 
 ## O que já está no ar
 
 - **Selo "Beta"** no site e no app, ligado à página de convite.
-- **Página de convite:** https://q3orca.web.app/beta
+- **Página de convite:** https://www.q3orca.com.br/beta
 - **Pro grátis por 90 dias** para toda conta nova, sem cobrança. É a oferta de Fundador da estratégia, automática.
 - **Botão "Dar opinião"** em todas as telas do app. Ele abre a central de ajuda já como sugestão.
 - **Suporte:** central de ajuda no app e formulário Fale conosco no site. As respostas são dadas pelo painel `/admin`.
@@ -17,11 +17,11 @@ Use um link diferente por canal. O Google Analytics separa os cadastros pela ori
 
 | Canal | Link |
 |---|---|
-| Conhecidos pelo WhatsApp | https://q3orca.web.app/beta?utm_source=whatsapp&utm_medium=convite |
-| Grupos de profissionais | https://q3orca.web.app/beta?utm_source=grupos&utm_medium=post |
-| Loja de material (cartaz) | https://q3orca.web.app/beta?utm_source=loja-NOME&utm_medium=cartaz |
-| Balaroti PRO | https://q3orca.web.app/beta?utm_source=balaroti&utm_medium=parceria |
-| Instagram | https://q3orca.web.app/beta?utm_source=instagram&utm_medium=bio |
+| Conhecidos pelo WhatsApp | https://www.q3orca.com.br/beta?utm_source=whatsapp&utm_medium=convite |
+| Grupos de profissionais | https://www.q3orca.com.br/beta?utm_source=grupos&utm_medium=post |
+| Loja de material (cartaz) | https://www.q3orca.com.br/beta?utm_source=loja-NOME&utm_medium=cartaz |
+| Balaroti PRO | https://www.q3orca.com.br/beta?utm_source=balaroti&utm_medium=parceria |
+| Instagram | https://www.q3orca.com.br/beta?utm_source=instagram&utm_medium=bio |
 
 ## Mensagem de convite
 

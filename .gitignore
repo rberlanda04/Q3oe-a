@@ -39,6 +39,8 @@ dist-teste
 
 # Gerado pelo ops:campanha para o painel (refeito a cada leitura)
 campanha/painel.json
+# Leituras diárias da campanha: métricas de produção, ficam só neste computador
+campanha/leituras/
 
 # Vídeos e GIFs gerados por scripts/marketing (pesados para o Git)
 campanha/midia/

@@ -1,6 +1,6 @@
 # Q3 Orça
 
-Gerador de orçamentos para prestadores de serviço (eletricistas, pintores, encanadores e outros), com envio pelo WhatsApp, link de aprovação, Pix, recibo e garantia. Site e app em https://q3orca.web.app. Repositório: https://github.com/rberlanda04/Q3oe-a.
+Gerador de orçamentos para prestadores de serviço (eletricistas, pintores, encanadores e outros), com envio pelo WhatsApp, link de aprovação, Pix, recibo e garantia. Site e app em https://www.q3orca.com.br (q3orca.com.br redireciona para o www; q3orca.web.app é o endereço do Firebase). Repositório: https://github.com/rberlanda04/Q3oe-a.
 
 Toda comunicação com o dono do projeto e todo texto do produto são em **português do Brasil**.
 

@@ -20,7 +20,7 @@ import { limparContaDeTeste } from './limpar-conta.mjs'
 const PASTA = join(tmpdir(), 'q3orca-e2e')
 mkdirSync(PASTA, { recursive: true })
 
-const BASE = process.env.BASE || 'https://q3orca.web.app'
+const BASE = process.env.BASE || 'https://www.q3orca.com.br'
 const LOGO = process.env.LOGO || 'public/icone-512.png'
 const email = `teste-automatizado-${Date.now()}@example.com`
 const senha = `Teste-${Math.random().toString(36).slice(2)}-9`

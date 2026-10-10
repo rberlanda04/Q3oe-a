@@ -5,11 +5,11 @@ O plano do produto está em [PLANO.md](PLANO.md).
 
 ## Identidade visual
 
-O manual completo fica em `/marca` (https://q3orca.web.app/marca). As cores são tokens do Tailwind definidos em `src/index.css` e espelhados em `src/domain/cores.ts`. Um teste garante que os dois continuam iguais e que as combinações de uso obrigatório têm contraste AA.
+O manual completo fica em `/marca` (https://www.q3orca.com.br/marca). As cores são tokens do Tailwind definidos em `src/index.css` e espelhados em `src/domain/cores.ts`. Um teste garante que os dois continuam iguais e que as combinações de uso obrigatório têm contraste AA.
 
 ## Plano Pro
 
-Contas novas ganham 14 dias de Pro grátis, contados da criação da conta. Com o Pro, o profissional usa logo, cor da marca e dados da empresa nos documentos e no link do cliente, e a marca Q3 Orça sai do rodapé.
+Contas novas ganham Pro grátis, contado da criação da conta: 90 dias durante a fase beta (`MODO_BETA` em `src/config.ts`) e 14 dias depois dela. Com o Pro, o profissional usa logo, cor da marca e dados da empresa nos documentos e no link do cliente, e a marca Q3 Orça sai do rodapé.
 
 **Pedidos de assinatura** ficam em Firestore, na coleção `interesses`, com nome, e-mail, telefone e plano escolhido.
 
@@ -126,7 +126,7 @@ npm run build
 firebase deploy --only firestore:rules,hosting
 ```
 
-O app fica disponível em https://q3orca.web.app.
+O app fica disponível em https://www.q3orca.com.br (o endereço do Firebase, https://q3orca.web.app, leva ao domínio próprio quem não está logado).
 
 Sem o CLI, dá para colar o conteúdo de `firestore.rules` em **Firestore Database > Regras** no console e clicar em **Publicar**.
 
