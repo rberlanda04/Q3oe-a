@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { EMAIL_CONTATO, WHATSAPP_SUPORTE } from '../../config'
 import { enviarContato } from '../../data/repo'
+import { PERGUNTAS_CONTATO } from '../../seo/paginas'
 import { IconeCheck, IconeWhatsApp } from '../../ui/Icones'
 import { CabecalhoSite, RodapeSite, useTitulo } from './Moldura'
 
@@ -105,6 +106,24 @@ export function Contato() {
           </form>
         )}
       </main>
+      <section className="mx-auto max-w-3xl px-5 pb-20">
+        <h2 className="text-3xl font-extrabold">Antes de escrever, veja se a resposta está aqui</h2>
+        <div className="mt-6 space-y-3">
+          {PERGUNTAS_CONTATO.map(([p, r]) => (
+            <details key={p} className="group card !p-0 [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 font-semibold">
+                {p}
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-areia-200 transition group-open:rotate-45">+</span>
+              </summary>
+              <p className="px-6 pb-5 text-grafite-600">{r}</p>
+            </details>
+          ))}
+        </div>
+        <p className="mt-8 text-grafite-600">
+          Quer começar agora? Veja os <Link to="/modelos-de-orcamento" className="font-semibold text-brasa-700">modelos de orçamento por profissão</Link> ou
+          faça a conta do seu preço nas <Link to="/calculadoras" className="font-semibold text-brasa-700">calculadoras grátis</Link>.
+        </p>
+      </section>
       <RodapeSite />
     </div>
   )

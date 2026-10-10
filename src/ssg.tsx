@@ -3,7 +3,7 @@
  * públicas para o Google ler sem precisar executar JavaScript.
  * Usado por scripts/prerender.mjs; não entra no bundle do navegador.
  */
-import { StrictMode } from 'react'
+import { StrictMode, Suspense } from 'react'
 import { renderToString } from 'react-dom/server'
 import { Route, Routes, StaticRouter } from 'react-router-dom'
 import { Beta } from './pages/site/Beta'
@@ -20,6 +20,8 @@ export function render(url: string): string {
   return renderToString(
     <StrictMode>
       <StaticRouter location={url}>
+        {/* Mesma estrutura do main.tsx (Suspense em volta das rotas), para o navegador reaproveitar este HTML. */}
+        <Suspense>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/marca" element={<Marca />} />
@@ -32,6 +34,7 @@ export function render(url: string): string {
           <Route path="/calculadoras" element={<CalculadorasIndice />} />
           <Route path="/calculadora/:slug" element={<CalculadoraPagina />} />
         </Routes>
+        </Suspense>
       </StaticRouter>
     </StrictMode>,
   )

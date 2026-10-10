@@ -28,7 +28,7 @@ for (const pagina of ssg.PAGINAS_SEO) {
   const html = modelo
     .replace(/<meta name="robots"[^>]*>\s*/, '')
     .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, ssg.headDaPagina(pagina))
-    .replace('<div id="root"></div>', `<div id="root"><div data-ssg>${corpo}</div></div>`)
+    .replace('<div id="root"></div>', `<div id="root" data-ssg>${corpo}</div>`)
   const arquivo = pagina.caminho === '/' ? join(dist, 'index.html') : join(dist, `${pagina.caminho.slice(1)}.html`)
   mkdirSync(dirname(arquivo), { recursive: true })
   writeFileSync(arquivo, html)

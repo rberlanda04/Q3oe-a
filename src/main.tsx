@@ -1,5 +1,5 @@
 import { lazy, StrictMode, Suspense, type ComponentType } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import './index.css'
 import { SessaoProvider, useSessao } from './lib/auth'
@@ -9,6 +9,7 @@ import { Login } from './pages/Login'
 import { Beta } from './pages/site/Beta'
 import { Home } from './pages/site/Home'
 import { Contato } from './pages/site/Contato'
+import { Marca } from './pages/site/Marca'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras'
@@ -32,7 +33,6 @@ const OrcamentoPublico = sobDemanda(() => import('./pages/OrcamentoPublico'), 'O
 const Orcamentos = sobDemanda(() => import('./pages/Orcamentos'), 'Orcamentos')
 const Perfil = sobDemanda(() => import('./pages/Perfil'), 'Perfil')
 const Planos = sobDemanda(() => import('./pages/Planos'), 'Planos')
-const Marca = sobDemanda(() => import('./pages/site/Marca'), 'Marca')
 const Layout = sobDemanda(() => import('./ui/Layout'), 'Layout')
 
 /** Quem nunca entrou neste navegador é visitante: o site aparece sem esperar o login responder. */
@@ -98,7 +98,7 @@ monitorarErros()
 
 guardarOrigemDaVisita()
 
-createRoot(document.getElementById('root')!).render(
+const app = (
   <StrictMode>
     <SessaoProvider>
       <BrowserRouter>
@@ -123,5 +123,19 @@ createRoot(document.getElementById('root')!).render(
         </Suspense>
       </BrowserRouter>
     </SessaoProvider>
-  </StrictMode>,
+  </StrictMode>
 )
+
+/**
+ * Página do site pré-renderizada e visitante: o React reaproveita o HTML que já está na
+ * tela (hidratação) em vez de apagar e desenhar de novo, e o conteúdo aparece antes.
+ * Quem está logado vê o app, que é outra tela: aí o HTML do site é descartado.
+ */
+const raiz = document.getElementById('root')!
+if (raiz.hasAttribute('data-ssg') && !provavelmenteLogado()) {
+  hydrateRoot(raiz, app)
+} else {
+  raiz.removeAttribute('data-ssg')
+  raiz.replaceChildren()
+  createRoot(raiz).render(app)
+}

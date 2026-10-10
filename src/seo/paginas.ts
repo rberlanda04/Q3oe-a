@@ -30,6 +30,15 @@ export const PERGUNTAS_HOME: [string, string][] = [
   ['E se eu trocar de celular?', 'Seus dados ficam guardados na nuvem, ligados à sua conta. É só entrar de novo. Você também pode baixar uma cópia completa.'],
 ]
 
+/** Dúvidas respondidas na página de contato, antes do formulário. */
+export const PERGUNTAS_CONTATO: [string, string][] = [
+  ['Em quanto tempo vocês respondem?', 'Respondemos por e-mail em horário comercial. Quem já tem conta também pode abrir um chamado em Ajuda, dentro do app, e acompanhar a conversa por lá.'],
+  ['O Q3 Orça é grátis mesmo?', 'Sim. Orçamentos ilimitados, link de aprovação, Pix, recibo e garantia são grátis para sempre. O Pro, de R$ 14,90 por mês ou R$ 99 por ano, coloca o seu logo e a sua cor nos documentos.'],
+  ['Minha profissão não está na lista. Consigo usar?', 'Consegue. Escolha "Outro serviço" e cadastre os seus itens: eles ficam salvos para os próximos orçamentos. Se quiser um modelo pronto para a sua área, peça pelo formulário.'],
+  ['Vocês fazem parceria com lojas e associações?', 'Fazemos. Lojas de material, distribuidores, sindicatos e associações de profissionais podem divulgar o Q3 Orça para os seus clientes e associados. Conte pelo formulário como é o seu público.'],
+  ['Como apago a minha conta e os meus dados?', 'No app, em Meus dados, há a opção de baixar uma cópia de tudo e de excluir a conta. A exclusão apaga orçamentos, clientes e links públicos, conforme a LGPD.'],
+]
+
 function faq(perguntas: [string, string][]) {
   return {
     '@type': 'FAQPage',
@@ -137,7 +146,7 @@ export const PAGINAS_SEO: PaginaSeo[] = [
     titulo: 'Fale conosco · Q3 Orça',
     descricao: 'Fale com a equipe do Q3 Orça: dúvidas antes de começar, parcerias e sugestões. Respondemos por e-mail em horário comercial.',
     prioridade: 0.4,
-    dados: [ORGANIZACAO],
+    dados: [ORGANIZACAO, faq(PERGUNTAS_CONTATO)],
   },
   {
     caminho: '/termos',
