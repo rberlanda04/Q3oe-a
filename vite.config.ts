@@ -32,6 +32,8 @@ export default defineConfig({
     tailwindcss(),
     casca(),
     VitePWA({
+      // Registro do modo offline sem bloquear a primeira pintura.
+      injectRegister: 'script-defer',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icone-192.png'],
       manifest: {
