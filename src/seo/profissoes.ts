@@ -378,6 +378,166 @@ export const PROFISSOES_SEO: ConteudoProfissao[] = [
       ['Como receber na hora?', 'O orçamento sai com QR Code Pix. O cliente paga pelo celular assim que o serviço termina.'],
     ],
   },
+  {
+    id: 'marido-de-aluguel',
+    slug: 'marido-de-aluguel',
+    para: 'marido de aluguel',
+    busca: 'modelo de orçamento para marido de aluguel',
+    descricao:
+      'Modelo de orçamento para marido de aluguel grátis: pequenos reparos por hora, instalação de suporte, cortina, chuveiro e luminária. Envie pelo WhatsApp.',
+    intro:
+      'Marido de aluguel faz muita coisa pequena no mesmo dia, e é fácil esquecer de cobrar uma delas. O modelo lista os serviços mais pedidos e soma tudo, com a visita técnica separada.',
+    dicas: [
+      'Cobre por hora técnica os reparos que não dá para prever, e por unidade os que se repetem.',
+      'Deixe a visita técnica como item. Muitos profissionais abatem o valor se o serviço for fechado.',
+      'Buchas, parafusos e fixações vão como material: o cliente entende o que está pagando.',
+      'Junte vários serviços no mesmo orçamento e ofereça um valor fechado para o pacote.',
+    ],
+    perguntas: [
+      ['Quanto cobrar por hora de marido de aluguel?', 'Use a calculadora do valor da hora: ela parte da renda que você quer, soma os gastos do trabalho e desconta o tempo de deslocamento.'],
+      ['Cobro por hora ou por serviço?', 'Os dois funcionam. O modelo traz a hora técnica e os serviços por unidade, e você escolhe o que fica melhor para cada cliente.'],
+    ],
+  },
+  {
+    id: 'limpeza-pos-obra',
+    slug: 'limpeza-pos-obra',
+    para: 'limpeza pós-obra',
+    busca: 'modelo de orçamento de limpeza pós-obra',
+    descricao:
+      'Modelo de orçamento de limpeza pós-obra grátis: limpeza por m², remoção de tinta e cimento, vidros e diárias de equipe. Envie pelo WhatsApp com Pix.',
+    intro:
+      'Limpeza pós-obra se cobra por m², mas respingo de tinta, cimento nos vidros e entulho mudam o trabalho. O modelo separa cada parte, para o preço refletir o estado real da obra.',
+    dicas: [
+      'Faça a visita antes de orçar e descreva nas observações o que encontrou.',
+      'Limpeza fina, de pré-mudança, tem preço por m² diferente da limpeza pesada.',
+      'Vidros e esquadrias com resíduo de obra valem um item à parte.',
+      'Combine se os produtos de limpeza estão incluídos ou se o cliente fornece.',
+    ],
+    perguntas: [
+      ['Quanto cobrar por m² de limpeza pós-obra?', 'Varia com a região e o estado da obra. Cadastre o seu preço por m² uma vez: ele fica salvo para os próximos orçamentos.'],
+      ['Como cobrar uma equipe por dia?', 'Use o item diária de auxiliar, com a quantidade de pessoas e de dias. O total sai automático.'],
+    ],
+  },
+  {
+    id: 'fretes',
+    slug: 'fretes-e-mudancas',
+    para: 'fretes e mudanças',
+    busca: 'modelo de orçamento de frete e mudança',
+    descricao:
+      'Modelo de orçamento de frete e mudança grátis: km rodado, caminhão com equipe, ajudantes, montagem de móveis e içamento. Envie pelo WhatsApp.',
+    intro:
+      'Mudança tem distância, volume, andar e móveis para desmontar. O modelo junta tudo num documento claro, com a data agendada e o que está incluído, para não haver surpresa no dia.',
+    dicas: [
+      'Pergunte o andar e se há elevador. Escada e içamento por corda são cobrados à parte.',
+      'Cobre o frete por km rodado e some pedágios nas observações.',
+      'Desmontagem e montagem de móveis vão por peça.',
+      'Combine o valor da hora parada se o cliente atrasar a liberação do imóvel.',
+    ],
+    perguntas: [
+      ['Como calcular o valor de um frete?', 'Multiplique o seu valor por km pela distância de ida e volta e some ajudantes e pedágios. No modelo, cada parte é um item.'],
+      ['Posso cobrar sinal para agendar a mudança?', 'Sim. O orçamento sai com QR Code Pix e você pode cobrar só o sinal para reservar a data.'],
+    ],
+  },
+  {
+    id: 'cftv',
+    slug: 'instalacao-de-cameras',
+    para: 'instalação de câmeras',
+    busca: 'modelo de orçamento de instalação de câmeras',
+    descricao:
+      'Modelo de orçamento de instalação de câmeras e CFTV grátis: câmeras, DVR, HD, cabos e configuração no celular. Envie pelo WhatsApp com Pix.',
+    intro:
+      'Orçamento de câmeras mistura equipamento e serviço, e o cliente quer comparar. O modelo separa câmeras, gravador, HD e cabos da mão de obra, e mostra o total de cada parte.',
+    dicas: [
+      'Informe a resolução das câmeras e quantos dias de gravação o HD guarda.',
+      'Passagem de cabo se cobra por metro. Meça antes de fechar o preço.',
+      'Inclua a configuração do acesso pelo celular: é o que o cliente mais valoriza.',
+      'Ofereça manutenção periódica como um item opcional.',
+    ],
+    perguntas: [
+      ['Quanto cobrar por câmera instalada?', 'Depende do tipo de câmera e da distância do cabo. Cadastre o seu preço por câmera e por metro de cabo: eles ficam salvos.'],
+      ['Equipamento entra no orçamento?', 'Sim, como material. O cliente vê separado o que é equipamento e o que é instalação.'],
+    ],
+  },
+  {
+    id: 'energia-solar',
+    slug: 'energia-solar',
+    para: 'energia solar',
+    busca: 'modelo de orçamento de energia solar',
+    descricao:
+      'Modelo de orçamento de energia solar grátis: limpeza de placas, manutenção, instalação por kWp e homologação. Envie pelo WhatsApp e receba por Pix.',
+    intro:
+      'Limpeza e manutenção de placas solares viraram serviço recorrente. O modelo traz limpeza por placa, inspeção, instalação por kWp e homologação, para orçar desde a visita até o sistema completo.',
+    dicas: [
+      'Cobre a limpeza por placa e informe a frequência recomendada.',
+      'Instalação se orça por kWp. Separe placas, inversor e estrutura como material.',
+      'Deixe claro quem cuida da homologação na concessionária.',
+      'Ofereça um contrato de manutenção anual no mesmo orçamento.',
+    ],
+    perguntas: [
+      ['Quanto cobrar para limpar placas solares?', 'O mais comum é cobrar por placa, com um valor mínimo por visita. Cadastre o seu preço uma vez e ele aparece nos próximos orçamentos.'],
+      ['Como orçar um sistema completo?', 'Use a instalação por kWp e acrescente placas, inversor e estrutura como material. O total separa equipamento e serviço.'],
+    ],
+  },
+  {
+    id: 'mecanico',
+    slug: 'oficina-mecanica',
+    para: 'oficina mecânica',
+    busca: 'modelo de orçamento para oficina mecânica',
+    descricao:
+      'Modelo de orçamento para oficina mecânica grátis: revisão, freios, troca de óleo, diagnóstico, peças e mão de obra. O cliente aprova pelo link.',
+    intro:
+      'Em oficina, o cliente precisa autorizar antes de você trocar a peça. Com o orçamento pelo link, ele vê peças e mão de obra separadas e aprova pelo celular, e fica registrado.',
+    dicas: [
+      'Separe sempre peças e mão de obra. É o que o cliente compara.',
+      'Escreva o modelo, o ano e a placa do veículo nas observações.',
+      'Cobre o diagnóstico com scanner como item próprio.',
+      'Só compre a peça depois da aprovação pelo link.',
+    ],
+    perguntas: [
+      ['Como fazer orçamento de oficina mecânica?', 'Liste os serviços, acrescente as peças como material e informe o prazo. O cliente recebe pelo WhatsApp e aprova pelo link.'],
+      ['Posso dar garantia diferente para peça e serviço?', 'Pode. O modelo já traz 90 dias para a mão de obra e a garantia do fabricante para as peças.'],
+    ],
+  },
+  {
+    id: 'dedetizacao',
+    slug: 'dedetizacao',
+    para: 'dedetização',
+    busca: 'modelo de orçamento de dedetização',
+    descricao:
+      'Modelo de orçamento de dedetização grátis: insetos rasteiros por m², desratização, cupins, pombos e caixa d’água. Com garantia e retorno no documento.',
+    intro:
+      'Dedetização vende confiança: o cliente quer saber o produto, a garantia e quando você volta. O modelo já traz a garantia contra reinfestação e o contrato de manutenção mensal.',
+    dicas: [
+      'Informe que os produtos são registrados na Anvisa.',
+      'Escreva as orientações de segurança: quanto tempo o cliente fica fora do imóvel.',
+      'Cobre por m² a dedetização e por serviço a desratização.',
+      'Ofereça o contrato mensal para empresas e condomínios.',
+    ],
+    perguntas: [
+      ['Como fazer orçamento de dedetização?', 'Meça a área, escolha o tipo de controle e informe a garantia. O cliente aprova pelo link e paga no Pix.'],
+      ['Qual garantia dar na dedetização?', 'O mais comum é 90 dias, com retorno gratuito se houver reinfestação. O texto já vem pronto no modelo.'],
+    ],
+  },
+  {
+    id: 'assistencia-tecnica',
+    slug: 'assistencia-tecnica',
+    para: 'assistência técnica',
+    busca: 'modelo de orçamento de assistência técnica',
+    descricao:
+      'Modelo de orçamento para assistência técnica de celular e computador grátis: diagnóstico, troca de tela e bateria, formatação e recuperação de dados.',
+    intro:
+      'Na assistência técnica, o orçamento sai depois do diagnóstico e o cliente decide se vale consertar. Com o link, ele aprova pelo celular e você só pede a peça depois do sim.',
+    dicas: [
+      'Cobre o diagnóstico e abata o valor se o conserto for aprovado.',
+      'Escreva marca, modelo e o defeito relatado nas observações.',
+      'Peças como tela, bateria e SSD vão como material.',
+      'Avise sobre o backup antes de formatar ou trocar o armazenamento.',
+    ],
+    perguntas: [
+      ['Como fazer orçamento de conserto de celular?', 'Depois do diagnóstico, escolha os serviços, acrescente a peça e envie pelo WhatsApp. O cliente aprova pelo link.'],
+      ['Qual garantia dar no conserto?', 'O modelo traz 90 dias para o serviço e para a peça trocada, como pede o Código de Defesa do Consumidor.'],
+    ],
+  },
 ]
 
 export function profissaoPorSlug(slug: string | undefined): ConteudoProfissao | undefined {
