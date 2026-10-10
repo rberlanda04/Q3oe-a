@@ -35,6 +35,22 @@ export function CalculadorasIndice() {
             </li>
           ))}
         </ul>
+        <section className="mt-14 grid max-w-3xl gap-4 text-grafite-700">
+          <h2 className="text-2xl font-extrabold text-grafite-900">Por que fazer a conta antes de passar o preço</h2>
+          <p>
+            Quem presta serviço costuma perder dinheiro em dois lugares: no material que faltou e no tempo que não entrou no preço. Faltou uma
+            lata de tinta ou uma caixa de piso, a volta à loja sai do seu bolso. Esqueceu o deslocamento e a visita para orçar, você trabalhou de
+            graça nessas horas.
+          </p>
+          <p>
+            As calculadoras resolvem as duas coisas. As de pintura e de piso dizem quanto material comprar, já com perda e demãos. A do valor da
+            hora mostra o mínimo que você precisa cobrar para tirar a renda que quer, depois de pagar transporte, ferramentas, MEI e INSS.
+          </p>
+          <p>
+            Com o número na mão, monte o orçamento no Q3 Orça: o material entra separado da mão de obra, o cliente aprova pelo link do WhatsApp e
+            paga no Pix do próprio documento.
+          </p>
+        </section>
       </main>
       <RodapeSite />
     </div>

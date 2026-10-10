@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { DIAS_PRO_BETA, DIAS_TESTE_ATUAL, MODO_BETA } from '../../config'
 import { MODELOS, modeloPorId } from '../../domain/templates'
@@ -203,7 +204,8 @@ function ComoFunciona() {
     <section id="como-funciona" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
       <p className="rotulo !text-brasa-700">Por que Q3?</p>
       <h2 className="mt-2 max-w-2xl text-4xl font-extrabold sm:text-5xl">Três toques. Do orçamento ao dinheiro na conta.</h2>
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+      <div className="mt-12 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-1">
         {passos.map(({ verbo, texto, Icone }, i) => (
           <article key={verbo} className="card relative overflow-hidden !p-7">
             <span className="absolute -top-4 -right-2 font-display text-[7rem] leading-none font-extrabold text-brasa-50" aria-hidden>
@@ -217,7 +219,49 @@ function ComoFunciona() {
           </article>
         ))}
       </div>
+      <DemoEmVideo />
+      </div>
     </section>
+  )
+}
+
+/**
+ * Demonstração de 30 segundos, com telas reais do app. Vídeo em vez de GIF: 500 KB em vez
+ * de 2,4 MB. Só baixa quando a seção aparece na tela e pausa quando sai; quem pediu menos
+ * movimento no sistema vê a capa e os controles.
+ */
+function DemoEmVideo() {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const video = ref.current
+    if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const observador = new IntersectionObserver(
+      ([entrada]) => {
+        if (entrada.isIntersecting) video.play().catch(() => {})
+        else video.pause()
+      },
+      { threshold: 0.4 },
+    )
+    observador.observe(video)
+    return () => observador.disconnect()
+  }, [])
+  return (
+    <figure className="mx-auto w-full max-w-[300px]">
+      <div className="overflow-hidden rounded-[2.2rem] border-[6px] border-grafite-900 bg-grafite-900 shadow-flutuante">
+        <video
+          ref={ref}
+          className="block aspect-[9/16] w-full"
+          src="/demo/q3orca-demo.mp4"
+          poster="/demo/q3orca-demo.webp"
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-label="Demonstração: um orçamento de pintura montado, enviado pelo WhatsApp e aprovado pelo cliente"
+        />
+      </div>
+      <figcaption className="mt-3 text-center text-sm text-grafite-500">Do orçamento à aprovação em 30 segundos</figcaption>
+    </figure>
   )
 }
 

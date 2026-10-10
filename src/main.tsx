@@ -1,31 +1,48 @@
-import { StrictMode } from 'react'
+import { lazy, StrictMode, Suspense, type ComponentType } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import './index.css'
 import { SessaoProvider, useSessao } from './lib/auth'
 import { monitorarErros } from './lib/eventos'
 import { guardarOrigemDaVisita } from './lib/origem'
-import { Admin } from './pages/Admin'
-import { Ajuda, ChamadoUsuario } from './pages/Ajuda'
-import { Catalogo } from './pages/Catalogo'
-import { Clientes } from './pages/Clientes'
-import { Editor } from './pages/Editor'
 import { Login } from './pages/Login'
-import { NovoOrcamento } from './pages/NovoOrcamento'
-import { OrcamentoPublico } from './pages/OrcamentoPublico'
-import { Orcamentos } from './pages/Orcamentos'
-import { Perfil } from './pages/Perfil'
-import { Planos } from './pages/Planos'
 import { Beta } from './pages/site/Beta'
 import { Home } from './pages/site/Home'
-import { Marca } from './pages/site/Marca'
 import { Contato } from './pages/site/Contato'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras'
-import { Layout } from './ui/Layout'
 import { Simbolo } from './ui/Logo'
 import { RolarParaTopo } from './ui/RolarParaTopo'
+
+/**
+ * Telas do app (só para quem entrou) e páginas pouco visitadas carregam sob demanda:
+ * o visitante do site não baixa o editor, o PDF e o painel admin.
+ */
+const sobDemanda = <T extends Record<string, unknown>>(carregar: () => Promise<T>, nome: keyof T) =>
+  lazy(() => carregar().then((m) => ({ default: m[nome] as ComponentType })))
+const Admin = sobDemanda(() => import('./pages/Admin'), 'Admin')
+const Ajuda = sobDemanda(() => import('./pages/Ajuda'), 'Ajuda')
+const ChamadoUsuario = sobDemanda(() => import('./pages/Ajuda'), 'ChamadoUsuario')
+const Catalogo = sobDemanda(() => import('./pages/Catalogo'), 'Catalogo')
+const Clientes = sobDemanda(() => import('./pages/Clientes'), 'Clientes')
+const Editor = sobDemanda(() => import('./pages/Editor'), 'Editor')
+const NovoOrcamento = sobDemanda(() => import('./pages/NovoOrcamento'), 'NovoOrcamento')
+const OrcamentoPublico = sobDemanda(() => import('./pages/OrcamentoPublico'), 'OrcamentoPublico')
+const Orcamentos = sobDemanda(() => import('./pages/Orcamentos'), 'Orcamentos')
+const Perfil = sobDemanda(() => import('./pages/Perfil'), 'Perfil')
+const Planos = sobDemanda(() => import('./pages/Planos'), 'Planos')
+const Marca = sobDemanda(() => import('./pages/site/Marca'), 'Marca')
+const Layout = sobDemanda(() => import('./ui/Layout'), 'Layout')
+
+/** Quem nunca entrou neste navegador é visitante: o site aparece sem esperar o login responder. */
+function provavelmenteLogado(): boolean {
+  try {
+    return localStorage.getItem('q3:logado') === '1'
+  } catch {
+    return false
+  }
+}
 
 function Abertura() {
   return (
@@ -49,7 +66,7 @@ function Entrar() {
 /** Na raiz, visitantes veem o site e profissionais logados veem o painel. */
 function Raiz() {
   const { user, carregando } = useSessao()
-  if (carregando) return <Abertura />
+  if (carregando && provavelmenteLogado()) return <Abertura />
   if (!user) {
     return (
       <Routes>
@@ -86,6 +103,7 @@ createRoot(document.getElementById('root')!).render(
     <SessaoProvider>
       <BrowserRouter>
         <RolarParaTopo />
+        <Suspense fallback={<Abertura />}>
         <Routes>
           {/* Páginas públicas: abrem sem login. */}
           <Route path="/o/:id" element={<OrcamentoPublico />} />
@@ -102,6 +120,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/entrar" element={<Entrar />} />
           <Route path="/*" element={<Raiz />} />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </SessaoProvider>
   </StrictMode>,

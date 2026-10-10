@@ -61,9 +61,9 @@ function Capa() {
         <div className="mt-8">
           <Logo tamanho={72} claro />
         </div>
-        <p className="mt-8 max-w-2xl font-display text-4xl leading-tight font-extrabold sm:text-5xl">
+        <h1 className="mt-8 max-w-2xl font-display text-4xl leading-tight font-extrabold sm:text-5xl">
           Monta. Manda. <span className="text-brasa-400">Recebe.</span>
-        </p>
+        </h1>
         <p className="mt-4 max-w-xl text-grafite-300">
           Este manual reúne as regras que fazem a Q3 Orça ser reconhecida em qualquer lugar: no celular do profissional, no WhatsApp do
           cliente e na rua.

@@ -51,7 +51,7 @@ export const PAGINAS_SEO: PaginaSeo[] = [
     caminho: '/',
     titulo: 'Q3 Orça · Orçamento rápido, aprovado pelo celular',
     descricao:
-      'Monte orçamentos profissionais em 2 minutos, envie pelo WhatsApp e receba por Pix. Grátis para eletricistas, pintores, pedreiros, diaristas e todo prestador de serviço.',
+      'Monte orçamentos profissionais em 2 minutos, envie pelo WhatsApp e receba por Pix. Grátis para eletricista, pintor, pedreiro, diarista e mais 22 profissões.',
     prioridade: 1,
     dados: [
       ORGANIZACAO,
@@ -156,7 +156,7 @@ export const PAGINAS_SEO: PaginaSeo[] = [
   {
     caminho: '/marca',
     titulo: 'Manual da marca · Q3 Orça',
-    descricao: 'Logotipo, cores, tipografia e tom de voz da marca Q3 Orça.',
+    descricao: 'Manual da marca Q3 Orça: logotipo, símbolo, cores, tipografia, tom de voz e exemplos de uso em cartazes, redes sociais e documentos.',
     prioridade: 0.3,
     dados: [ORGANIZACAO],
   },

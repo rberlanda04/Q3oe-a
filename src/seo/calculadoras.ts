@@ -49,7 +49,7 @@ export const CALCULADORAS: ConteudoCalculadora[] = [
     titulo: 'Quanto cobrar por hora de serviço: calculadora grátis',
     h1: 'Quanto cobrar por hora e por diária de serviço',
     descricao:
-      'Descubra o valor mínimo da sua hora e da sua diária a partir da renda que você quer, dos gastos do trabalho e do tempo que não é pago, como orçamento e deslocamento.',
+      'Descubra o valor mínimo da sua hora e da sua diária a partir da renda que você quer, dos gastos do trabalho e do tempo não pago, como deslocamento.',
     intro:
       'Muita gente cobra pouco porque esquece os gastos e o tempo que não vira dinheiro: visita para orçamento, trânsito, compra de material. A calculadora coloca tudo na conta.',
     modelo: 'outro',
