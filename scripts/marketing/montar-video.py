@@ -2,7 +2,8 @@
 Monta o vídeo vertical (1080x1920, para Reels, TikTok e Shorts) e um GIF a partir
 das capturas de scripts/marketing/capturar-demo.mjs.
 
-Uso: python scripts/marketing/montar-video.py PASTA_DAS_CAPTURAS PASTA_DE_SAIDA
+Uso: python scripts/marketing/montar-video.py PASTA_DAS_CAPTURAS PASTA_DE_SAIDA [NOME] [TITULO_DA_ABERTURA]
+NOME padrão: q3orca-demo. Com TITULO, a abertura vira a chamada daquela profissão.
 Requer Pillow e ffmpeg no PATH.
 """
 import json
@@ -15,6 +16,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ENTRADA = Path(sys.argv[1])
 SAIDA = Path(sys.argv[2])
 SAIDA.mkdir(parents=True, exist_ok=True)
+NOME = sys.argv[3] if len(sys.argv) > 3 else "q3orca-demo"
+TITULO = sys.argv[4] if len(sys.argv) > 4 else "Orçamento rápido, aprovado pelo celular"
 
 L, A, FPS = 1080, 1920, 30
 TRANSICAO = 0.35
@@ -88,7 +91,7 @@ def quadro_abertura():
     img = fundo()
     d = ImageDraw.Draw(img)
     marca(d, 560)
-    y = texto_centro(d, 720, "Orçamento rápido, aprovado pelo celular", negrito(96), "white", 900)
+    y = texto_centro(d, 720, TITULO, negrito(96), "white", 900)
     texto_centro(d, y + 50, "Do orçamento ao Pix em 2 minutos. Grátis.", normal(52), (200, 205, 214), 900)
     return img
 
@@ -102,7 +105,7 @@ def quadro_final():
     w = d.textlength("www.q3orca.com.br", font=f) + 120
     d.rounded_rectangle([(L - w) / 2, y + 70, (L + w) / 2, y + 190], radius=60, fill=BRASA)
     d.text(((L - w) / 2 + 60, y + 95), "www.q3orca.com.br", font=f, fill="white")
-    texto_centro(d, y + 260, "Eletricista, pintor, pedreiro, diarista e mais 14 profissões", normal(46), (200, 205, 214), 900)
+    texto_centro(d, y + 260, "Modelos prontos para 26 profissões", normal(46), (200, 205, 214), 900)
     return img
 
 
@@ -112,10 +115,10 @@ for i, item in enumerate(legendas, 1):
     quadros.append((quadro_tela(ENTRADA / item["arquivo"], item["legenda"], i, len(legendas)), item["segundos"]))
 quadros.append((quadro_final(), 3.2))
 for i, (q, _) in enumerate(quadros):
-    q.save(SAIDA / f"quadro-{i:02d}.png")
+    q.save(SAIDA / f"{NOME}-quadro-{i:02d}.png")
 
 # Vídeo: cada quadro parado pelo tempo dele, com transição suave entre eles.
-mp4 = SAIDA / "q3orca-demo.mp4"
+mp4 = SAIDA / f"{NOME}.mp4"
 ff = subprocess.Popen(
     ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{L}x{A}", "-r", str(FPS), "-i", "-",
      "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(mp4)],
@@ -133,7 +136,7 @@ ff.stdin.close()
 ff.wait()
 
 # GIF menor, para WhatsApp, e-mail e o site.
-gif = SAIDA / "q3orca-demo.gif"
+gif = SAIDA / f"{NOME}.gif"
 filtro = "fps=10,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=4"
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-vf", filtro, str(gif)], check=True)
 print(f"{mp4} e {gif}")

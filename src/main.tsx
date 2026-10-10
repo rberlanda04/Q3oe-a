@@ -25,6 +25,7 @@ import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras'
 import { Layout } from './ui/Layout'
 import { Simbolo } from './ui/Logo'
+import { RolarParaTopo } from './ui/RolarParaTopo'
 
 function Abertura() {
   return (
@@ -84,6 +85,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <SessaoProvider>
       <BrowserRouter>
+        <RolarParaTopo />
         <Routes>
           {/* Páginas públicas: abrem sem login. */}
           <Route path="/o/:id" element={<OrcamentoPublico />} />
