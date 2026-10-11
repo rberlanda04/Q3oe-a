@@ -35,7 +35,7 @@ export default defineConfig({
       // Registro do modo offline sem bloquear a primeira pintura.
       injectRegister: 'script-defer',
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icone-192.png'],
+      includeAssets: ['favicon.svg', 'favicon.ico', 'favicon-96.png', 'apple-touch-icon.png', 'icone-192.png'],
       manifest: {
         name: 'Q3 Orça - Orçamentos profissionais',
         short_name: 'Q3 Orça',
