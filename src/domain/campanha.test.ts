@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { lerCampanha, semanaDaCampanha, situacaoDaMeta, type ContaCampanha, type OrcamentoCampanha } from './campanha'
+import { cruzarVisitas, lerCampanha, semanaDaCampanha, situacaoDaMeta, type ContaCampanha, type OrcamentoCampanha } from './campanha'
 
 const DIA = 24 * 60 * 60 * 1000
 const t = (iso: string) => new Date(iso).getTime()
@@ -60,5 +60,26 @@ describe('situação da meta', () => {
     expect(situacaoDaMeta(35, 4, 10, 3)).toBe('atrasada')
     expect(situacaoDaMeta(300, 12, null, 2)).toBe('sem dado')
     expect(situacaoDaMeta(300, 12, 0, 0)).toBe('no ritmo')
+  })
+})
+
+describe('visitas da campanha', () => {
+  it('soma visitas por canal e cruza com cadastros por nicho', () => {
+    const r = cruzarVisitas('2026-10-05', [
+      { dia: '2026-10-04', fonte: 'facebook-grupo', meio: 'post-dica', campanha: 'nicho-pintor', total: 50 },
+      { dia: '2026-10-11', fonte: 'facebook-grupo', meio: 'post-dica', campanha: 'nicho-pintor', total: 8 },
+      { dia: '2026-10-12', fonte: 'facebook-grupo', meio: 'post-dica', campanha: 'nicho-pintor', total: 2 },
+      { dia: '2026-10-11', fonte: 'facebook-grupo', meio: 'post-pergunta', campanha: 'nicho-eletricista', total: 4 },
+      { dia: '2026-10-11', fonte: 'facebook', meio: 'social', campanha: '-', total: 3 },
+    ], [
+      { criadaEm: Date.UTC(2026, 9, 11, 15), fonte: 'facebook-grupo', meio: 'post-dica', campanha: 'nicho-pintor' },
+      { criadaEm: Date.UTC(2026, 9, 1), fonte: 'facebook-grupo', meio: 'post-dica', campanha: 'nicho-pintor' },
+    ])
+    expect(r.total).toBe(17)
+    expect(r.porCanal).toEqual({ 'facebook-grupo / post-dica': 10, 'facebook-grupo / post-pergunta': 4, 'facebook / social': 3 })
+    expect(r.nichos).toEqual([
+      { nicho: 'nicho-pintor', visitas: 10, cadastros: 1, conversao: 0.1 },
+      { nicho: 'nicho-eletricista', visitas: 4, cadastros: 0, conversao: 0 },
+    ])
   })
 })

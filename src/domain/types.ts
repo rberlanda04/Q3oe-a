@@ -27,6 +27,8 @@ export type ProfissaoId =
   | 'mecanico'
   | 'dedetizacao'
   | 'assistencia-tecnica'
+  | 'musica'
+  | 'teatro'
   | 'outro'
 
 export type TipoItem = 'servico' | 'material'

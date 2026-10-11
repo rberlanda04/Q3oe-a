@@ -1,4 +1,4 @@
-import { escolherOrigem, origemDaVisita, type Origem } from '../domain/origem'
+import { chaveVisita, escolherOrigem, origemDaVisita, type Origem } from '../domain/origem'
 
 // Guarda no navegador de onde veio a primeira visita (utm do QR Code, anúncio ou convite).
 // Na criação da conta, a origem vai para o perfil e o funil por canal sai do Firestore
@@ -13,6 +13,7 @@ export function guardarOrigemDaVisita() {
     const guardada = bruta ? (JSON.parse(bruta) as Origem) : null
     const escolhida = escolherOrigem(guardada, nova, VALIDADE)
     if (escolhida !== guardada) localStorage.setItem(CHAVE, JSON.stringify(escolhida))
+    contarVisita(nova)
   } catch {
     /* Navegação privada ou URL estranha: segue sem origem. */
   }
@@ -25,4 +26,30 @@ export function origemGuardada(): Origem | null {
   } catch {
     return null
   }
+}
+
+/**
+ * Soma 1 no contador anônimo de visitas daquela origem (coleção visitas, só o total).
+ * Uma vez por sessão do navegador e por origem; espera a página assentar e carrega o
+ * Firestore só nessa hora, para não pesar na abertura do site.
+ */
+function contarVisita(origem: Origem) {
+  const chave = chaveVisita(origem, Date.now())
+  if (!chave) return
+  try {
+    const marca = 'q3:visita:' + chave.id
+    if (sessionStorage.getItem(marca)) return
+    sessionStorage.setItem(marca, '1')
+  } catch {
+    return
+  }
+  setTimeout(async () => {
+    try {
+      const [{ db }, { doc, increment, setDoc }] = await Promise.all([import('./firebase'), import('firebase/firestore')])
+      const { id, ...campos } = chave
+      await setDoc(doc(db, 'visitas', id), { ...campos, total: increment(1) }, { merge: true })
+    } catch {
+      /* Sem conexão ou bloqueado: a visita só não entra na conta. */
+    }
+  }, 3000)
 }

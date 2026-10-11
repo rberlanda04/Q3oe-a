@@ -9,6 +9,8 @@ export interface ContaCampanha {
   /** utm_source / meio do primeiro acesso; vazio para contas antigas, de antes da medição. */
   fonte?: string
   meio?: string
+  /** utm_campaign do primeiro acesso, como nicho-pintor. */
+  campanha?: string
 }
 
 export interface OrcamentoCampanha {
@@ -118,4 +120,57 @@ export function situacaoDaMeta(meta: number, prazoSemana: number, realizado: num
   const completas = Math.min(Math.max(semanaAtual - 1, 0), prazoSemana)
   const esperado = Math.ceil((meta * completas) / prazoSemana)
   return realizado >= esperado ? 'no ritmo' : 'atrasada'
+}
+
+/** Total de um dia e de uma origem, como gravado na coleção visitas. */
+export interface VisitaDia {
+  dia: string
+  fonte: string
+  meio: string
+  campanha: string
+  total: number
+}
+
+export interface Nicho {
+  nicho: string
+  visitas: number
+  cadastros: number
+  /** Cadastros ÷ visitas; null sem visitas. */
+  conversao: number | null
+}
+
+export interface CruzamentoVisitas {
+  total: number
+  /** Visitas por canal, com o mesmo rótulo do funil ("fonte / meio"). */
+  porCanal: Record<string, number>
+  nichos: Nicho[]
+}
+
+/** Junta as visitas da campanha com os cadastros, por canal e por nicho (campanhas nicho-*). */
+export function cruzarVisitas(inicioISO: string, visitas: VisitaDia[], contas: ContaCampanha[]): CruzamentoVisitas {
+  const inicio = new Date(inicioISO + 'T00:00:00-03:00').getTime()
+  const daCampanha = visitas.filter((v) => v.dia >= inicioISO)
+  const porCanal: Record<string, number> = {}
+  const visitasNicho = new Map<string, number>()
+  let total = 0
+  for (const v of daCampanha) {
+    const n = Number(v.total) || 0
+    total += n
+    const canal = `${v.fonte} / ${v.meio}`
+    porCanal[canal] = (porCanal[canal] ?? 0) + n
+    if (v.campanha.startsWith('nicho-')) visitasNicho.set(v.campanha, (visitasNicho.get(v.campanha) ?? 0) + n)
+  }
+  const cadastrosNicho = new Map<string, number>()
+  for (const c of contas) {
+    if (c.criadaEm >= inicio && c.campanha?.startsWith('nicho-')) cadastrosNicho.set(c.campanha, (cadastrosNicho.get(c.campanha) ?? 0) + 1)
+  }
+  const nomes = new Set([...visitasNicho.keys(), ...cadastrosNicho.keys()])
+  const nichos = [...nomes]
+    .map((nicho) => {
+      const vis = visitasNicho.get(nicho) ?? 0
+      const cad = cadastrosNicho.get(nicho) ?? 0
+      return { nicho, visitas: vis, cadastros: cad, conversao: vis ? cad / vis : null }
+    })
+    .sort((a, b) => b.cadastros - a.cadastros || b.visitas - a.visitas)
+  return { total, porCanal, nichos }
 }

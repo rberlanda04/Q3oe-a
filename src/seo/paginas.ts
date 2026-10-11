@@ -60,7 +60,7 @@ export const PAGINAS_SEO: PaginaSeo[] = [
     caminho: '/',
     titulo: 'Q3 Orça · Orçamento rápido, aprovado pelo celular',
     descricao:
-      'Monte orçamentos profissionais em 2 minutos, envie pelo WhatsApp e receba por Pix. Grátis para eletricista, pintor, pedreiro, diarista e mais 22 profissões.',
+      'Monte orçamentos profissionais em 2 minutos, envie pelo WhatsApp e receba por Pix. Grátis para eletricista, pintor, pedreiro, diarista e mais 24 profissões.',
     prioridade: 1,
     dados: [
       ORGANIZACAO,

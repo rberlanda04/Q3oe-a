@@ -23,6 +23,9 @@ const SOCIAIS: Record<string, string> = {
   'l.instagram.com': 'instagram',
   'lm.facebook.com': 'facebook',
   'm.facebook.com': 'facebook',
+  'fb.me': 'facebook',
+  'fb.com': 'facebook',
+  'messenger.com': 'facebook',
   'wa.me': 'whatsapp',
   'web.whatsapp.com': 'whatsapp',
   'youtube.com': 'youtube',
@@ -67,4 +70,23 @@ export function escolherOrigem(guardada: Origem | null, nova: Origem, validadeMs
   if (nova.em - guardada.em > validadeMs) return nova
   if (guardada.fonte === 'direto' && nova.fonte !== 'direto') return nova
   return guardada
+}
+
+/**
+ * Contador anônimo de visitas por origem: um documento por dia e por fonte/meio/campanha,
+ * só com o total. Visita sem pista (direto) não conta: o que interessa é medir os canais.
+ */
+export interface ChaveVisita {
+  id: string
+  dia: string
+  fonte: string
+  meio: string
+  campanha: string
+}
+
+export function chaveVisita(origem: Origem, agora: number): ChaveVisita | null {
+  if (!origem.fonte || origem.fonte === 'direto') return null
+  const dia = new Date(agora).toISOString().slice(0, 10)
+  const campanha = origem.campanha || '-'
+  return { id: `${dia}__${origem.fonte}__${origem.meio}__${campanha}`, dia, fonte: origem.fonte, meio: origem.meio, campanha }
 }

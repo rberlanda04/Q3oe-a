@@ -538,6 +538,46 @@ export const PROFISSOES_SEO: ConteudoProfissao[] = [
       ['Qual garantia dar no conserto?', 'O modelo traz 90 dias para o serviço e para a peça trocada, como pede o Código de Defesa do Consumidor.'],
     ],
   },
+  {
+    id: 'musica',
+    slug: 'musica-e-shows',
+    para: 'música e shows',
+    busca: 'modelo de orçamento para show e música ao vivo',
+    descricao:
+      'Modelo de orçamento para músico, banda e DJ grátis: show por hora, casamento, sonorização e cachê por músico. Envie pelo WhatsApp e receba o sinal no Pix.',
+    intro:
+      'Show tem data marcada, repertório e equipe. O modelo organiza horas de apresentação, músicos, som e transporte num documento claro, e o sinal para reservar a data é pago no Pix do próprio orçamento.',
+    dicas: [
+      'Cobre por hora de show e deixe a hora extra com preço próprio.',
+      'Cada músico a mais é um item: o cliente entende por que a banda custa mais que o voz e violão.',
+      'Sonorização e iluminação vão separadas, porque nem todo local tem estrutura.',
+      'Peça o sinal para reservar a data. Sem sinal, a data continua livre.',
+    ],
+    perguntas: [
+      ['Quanto cobrar por hora de show?', 'Depende da formação, da cidade e do tipo de evento. Use a calculadora do valor da hora para chegar ao seu mínimo e cadastre o preço: ele fica salvo para os próximos orçamentos.'],
+      ['Como garantir a data do evento?', 'Configure o QR Code Pix para cobrar só o sinal. O cliente aprova pelo link e paga, e a data fica reservada.'],
+    ],
+  },
+  {
+    id: 'teatro',
+    slug: 'teatro-e-espetaculos',
+    para: 'teatro e espetáculos',
+    busca: 'modelo de orçamento para teatro e espetáculo',
+    descricao:
+      'Modelo de orçamento para teatro grátis: espetáculo, teatro infantil, contação de histórias, oficina, cachê de elenco, figurino e cenário. Envie pelo WhatsApp com Pix.',
+    intro:
+      'Escola, empresa e festa infantil pedem orçamento de apresentação o tempo todo. O modelo separa cachê, elenco, técnica, figurino e cenário, para quem contrata entender o valor e aprovar pelo link.',
+    dicas: [
+      'Separe o cachê da apresentação dos custos de figurino e cenário.',
+      'Informe a duração e o número de pessoas no elenco.',
+      'Sonoplastia e iluminação são itens próprios, porque dependem do espaço.',
+      'Para escolas, ofereça a oficina de teatro junto com a apresentação.',
+    ],
+    perguntas: [
+      ['Como fazer orçamento de apresentação de teatro?', 'Escolha o tipo de apresentação, some o elenco e a parte técnica e informe a data. O total sai automático e o cliente aprova pelo link.'],
+      ['Posso cobrar a remarcação?', 'Pode. O modelo já traz o texto de remarcação sem custo com 7 dias de antecedência; mude os dias como preferir.'],
+    ],
+  },
 ]
 
 export function profissaoPorSlug(slug: string | undefined): ConteudoProfissao | undefined {
