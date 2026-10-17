@@ -49,11 +49,8 @@ describe('gerador de orçamento sem cadastro', () => {
     expect(totaisDoGerador({ itens: [], desconto: { tipo: 'percentual', valor: 10 } }).total).toBe(0)
   })
 
-  it('deixa de fora as linhas em branco', () => {
-    expect(itensPreenchidos([item('', 1, 0), item('  ', 2, 0), item('Troca de disjuntor', 1, 0), item('', 1, 500)]).map((i) => i.id)).toEqual([
-      'Troca de disjuntor',
-      '',
-    ])
+  it('deixa de fora as linhas sem valor, inclusive as sugestões do modelo', () => {
+    expect(itensPreenchidos([item('', 1, 0), item('Troca de disjuntor', 1, 0), item('Visita', 1, 500)]).map((i) => i.id)).toEqual(['Visita'])
   })
 
   it('troca a profissão sem apagar o que já tem preço', () => {

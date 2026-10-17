@@ -66,9 +66,9 @@ export function trocarProfissao(form: FormGerador, profissao: ProfissaoId): Form
   }
 }
 
-/** Itens que entram no documento: os que têm descrição ou valor. */
+/** Itens que entram no documento: os que já têm valor. Sugestões do modelo sem preço ficam de fora. */
 export function itensPreenchidos(itens: ItemOrcamento[]): ItemOrcamento[] {
-  return itens.filter((i) => i.descricao.trim() || i.precoUnitarioCentavos > 0)
+  return itens.filter((i) => i.precoUnitarioCentavos > 0)
 }
 
 /** Subtotal, desconto e total do gerador, com as mesmas regras do app. */
