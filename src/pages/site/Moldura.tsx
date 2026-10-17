@@ -87,6 +87,7 @@ export function RodapeSite() {
           <a href={`${base}#como-funciona`}>Como funciona</a>
           <a href={`${base}#recursos`}>Recursos</a>
           <a href={`${base}#precos`}>Preços</a>
+          <Link to="/gerador-de-orcamento">Gerador de orçamento</Link>
           <Link to="/modelos-de-orcamento">Modelos de orçamento</Link>
           <Link to="/calculadoras">Calculadoras grátis</Link>
           <Link to="/contato">Fale conosco</Link>

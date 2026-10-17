@@ -16,7 +16,11 @@ export function ModelosIndice() {
         <h1 className="mt-4 max-w-3xl text-4xl font-extrabold sm:text-5xl">Modelos de orçamento grátis para cada profissão</h1>
         <p className="mt-4 max-w-2xl text-lg text-grafite-600">
           Escolha sua profissão. O modelo já vem com os serviços mais pedidos, você coloca seus preços e envia pelo WhatsApp, com link de
-          aprovação e QR Code Pix.
+          aprovação e QR Code Pix. Só precisa de um PDF agora? Use o{' '}
+          <Link to="/gerador-de-orcamento" className="font-semibold text-brasa-700 underline underline-offset-2">
+            gerador de orçamento sem cadastro
+          </Link>
+          .
         </p>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PROFISSOES_SEO.map((p) => {
@@ -67,6 +71,9 @@ export function ModeloProfissao() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to={chamada} className="btn-primary !px-7 !py-4 text-lg">
                 Usar este modelo grátis <IconeSeta tamanho={20} />
+              </Link>
+              <Link to={`/gerador-de-orcamento?profissao=${conteudo.id}`} className="btn-secondary !px-7 !py-4 text-lg">
+                Gerar PDF sem cadastro
               </Link>
             </div>
             <p className="mt-3 text-sm text-grafite-500">Sem cartão de crédito. Seu primeiro orçamento sai em 2 minutos.</p>
@@ -172,6 +179,11 @@ export function ModeloProfissao() {
             <li>
               <Link to="/modelos-de-orcamento" className="chip">
                 Ver todos
+              </Link>
+            </li>
+            <li>
+              <Link to="/gerador-de-orcamento" className="chip">
+                Gerador de orçamento sem cadastro
               </Link>
             </li>
           </ul>

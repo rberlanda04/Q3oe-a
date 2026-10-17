@@ -111,6 +111,11 @@ export function CalculadoraPagina() {
                 Modelos de orçamento
               </Link>
             </li>
+            <li>
+              <Link to="/gerador-de-orcamento" className="chip">
+                Gerador de orçamento
+              </Link>
+            </li>
           </ul>
         </section>
       </main>

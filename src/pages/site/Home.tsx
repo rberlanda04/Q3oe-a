@@ -324,6 +324,18 @@ function ModelosPorProfissao() {
           </li>
         ))}
       </ul>
+      <Link
+        to="/gerador-de-orcamento"
+        className="card group mt-6 flex flex-col gap-2 !p-6 transition hover:border-brasa-300 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <span>
+          <span className="block text-lg font-bold">Precisa de um orçamento agora?</span>
+          <span className="text-grafite-600">Use o gerador de orçamento grátis, sem cadastro, e baixe o PDF na hora.</span>
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1.5 font-semibold text-brasa-700">
+          Gerar orçamento <IconeSeta tamanho={18} className="transition group-hover:translate-x-0.5" />
+        </span>
+      </Link>
     </section>
   )
 }
