@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { MODELOS } from '../domain/templates'
-import { headDaPagina, PAGINAS_SEO, robotsTxt, sitemapXml } from './paginas'
+import { CAMINHO_GERADOR, headDaPagina, PAGINAS_SEO, robotsTxt, sitemapXml } from './paginas'
 import { PROFISSOES_SEO } from './profissoes'
 
 vi.mock('../lib/firebase', () => ({ db: {} }))
@@ -36,5 +36,13 @@ describe('SEO', () => {
     expect(robots).toContain('Disallow: /o/')
     expect(robots).toContain('Sitemap: https://www.q3orca.com.br/sitemap.xml')
     expect(sitemapXml('2026-09-28')).toContain('<loc>https://www.q3orca.com.br/modelo-de-orcamento/eletricista</loc>')
+  })
+
+  it('publica o gerador de orçamento no sitemap, com FAQ e fora do robots', () => {
+    const pagina = PAGINAS_SEO.find((p) => p.caminho === CAMINHO_GERADOR)!
+    expect(pagina.titulo).toMatch(/gerador de orçamento/i)
+    expect(JSON.stringify(pagina.dados)).toContain('FAQPage')
+    expect(sitemapXml('2026-10-17')).toContain(`<loc>https://www.q3orca.com.br${CAMINHO_GERADOR}</loc>`)
+    expect(robotsTxt()).not.toContain(CAMINHO_GERADOR)
   })
 })

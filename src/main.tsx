@@ -34,6 +34,7 @@ const Orcamentos = sobDemanda(() => import('./pages/Orcamentos'), 'Orcamentos')
 const Perfil = sobDemanda(() => import('./pages/Perfil'), 'Perfil')
 const Planos = sobDemanda(() => import('./pages/Planos'), 'Planos')
 const Layout = sobDemanda(() => import('./ui/Layout'), 'Layout')
+const GeradorOrcamento = sobDemanda(() => import('./pages/site/Gerador'), 'GeradorOrcamento')
 
 /** Quem nunca entrou neste navegador é visitante: o site aparece sem esperar o login responder. */
 function provavelmenteLogado(): boolean {
@@ -116,6 +117,7 @@ const app = (
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/calculadoras" element={<CalculadorasIndice />} />
           <Route path="/calculadora/:slug" element={<CalculadoraPagina />} />
+          <Route path="/gerador-de-orcamento" element={<GeradorOrcamento />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />
           <Route path="/*" element={<Raiz />} />
