@@ -2,11 +2,12 @@ import type { ReactElement } from 'react'
 import { calcularTotais } from '../domain/calc'
 import { pixDoOrcamento } from '../domain/cobranca'
 import { formatarBRL } from '../domain/money'
+import { pdfComMarcaQ3 } from '../domain/plano'
 import type { Orcamento, Pagamento, PerfilPublico } from '../domain/types'
 import type { PixPdf, TipoDocumento } from './OrcamentoPdf'
 
-/** No plano grátis, os documentos levam "feito com Q3 Orça" no rodapé. O Pro remove. */
-const marcaDagua = (perfil: PerfilPublico) => !perfil.pro
+/** No plano grátis, os documentos levam a marca d'água e o rodapé do Q3 Orça. Pro e teste não. */
+const marcaDagua = (perfil: PerfilPublico) => pdfComMarcaQ3(perfil.pro)
 
 function nomeArquivo(prefixo: string, orcamento: Orcamento, sufixo = ''): string {
   const cliente = orcamento.cliente.nome.trim().replace(/[^\p{L}\d]+/gu, '-').toLowerCase()

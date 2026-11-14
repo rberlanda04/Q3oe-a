@@ -2,7 +2,6 @@ import { onAuthStateChanged, type User } from 'firebase/auth'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ouvirAssinatura, ouvirPerfil, ouvirSouAdmin, PERFIL_VAZIO, perfilPublico, salvarPerfil, sincronizarRespostas } from '../data/repo'
 import { origemGuardada } from './origem'
-import { DIAS_TESTE_ATUAL } from '../config'
 import { situacaoPlano, type Assinatura, type SituacaoPlano } from '../domain/plano'
 import type { Perfil, PerfilPublico } from '../domain/types'
 import { auth } from './firebase'
@@ -98,7 +97,7 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
 
   const valor = useMemo(() => {
     const criadaEm = user?.metadata.creationTime ? new Date(user.metadata.creationTime).getTime() : 0
-    const plano = user ? situacaoPlano(assinatura, criadaEm, agora, DIAS_TESTE_ATUAL) : GRATIS
+    const plano = user ? situacaoPlano(assinatura, criadaEm, agora) : GRATIS
     return { user, perfil, plano, publico: perfilPublico(perfil, plano.pro), admin, carregando }
   }, [user, perfil, assinatura, admin, agora, carregando])
 

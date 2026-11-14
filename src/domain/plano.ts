@@ -1,7 +1,24 @@
 /** Planos do Q3 Orça: grátis, teste do Pro e Pro pago. */
 
-export const DIAS_TESTE_PRO = 14
 const DIA = 24 * 60 * 60 * 1000
+
+/** Teste grátis do Pro para toda conta nova, contado da criação da conta. */
+export const DIAS_TESTE_PRO = 30
+
+/** Prazo do Pro grátis de quem se cadastrou na fase beta. */
+export const DIAS_PRO_BETA = 90
+
+/**
+ * Corte entre o beta (90 dias) e o teste de 30 dias: 15/11/2026, 00:00 em Brasília.
+ * Contas criadas antes deste instante (inclusive durante todo o dia 14/11/2026)
+ * mantêm os 90 dias que receberam no cadastro.
+ */
+export const FIM_CADASTRO_BETA = Date.UTC(2026, 10, 15, 3, 0, 0)
+
+/** Dias de Pro grátis a que a conta tem direito, conforme a data de criação. */
+export function diasDeTesteDaConta(contaCriadaEm: number): number {
+  return contaCriadaEm > 0 && contaCriadaEm < FIM_CADASTRO_BETA ? DIAS_PRO_BETA : DIAS_TESTE_PRO
+}
 
 /** Documento em assinaturas/{uid}. Só o administrador escreve; o profissional apenas lê. */
 export interface Assinatura {
@@ -36,13 +53,14 @@ export type SituacaoPlano =
 
 /**
  * Decide se o profissional tem os recursos Pro agora.
- * Contas novas ganham 14 dias de teste, contados da criação da conta.
+ * Contas novas ganham DIAS_TESTE_PRO dias de teste, contados da criação da conta;
+ * contas do beta (criadas antes de FIM_CADASTRO_BETA) mantêm DIAS_PRO_BETA dias.
  */
 export function situacaoPlano(
   assinatura: Assinatura | null,
   contaCriadaEm: number,
   agora: number,
-  diasTeste: number = DIAS_TESTE_PRO,
+  diasTeste: number = diasDeTesteDaConta(contaCriadaEm),
 ): SituacaoPlano {
   if (assinatura?.plano === 'pro' && assinatura.validoAte > agora) {
     return { pro: true, motivo: 'assinatura', validoAte: assinatura.validoAte }
@@ -53,4 +71,12 @@ export function situacaoPlano(
     return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, diasTeste) }
   }
   return { pro: false, motivo: 'gratis', testeEncerrado: contaCriadaEm > 0 }
+}
+
+/**
+ * No plano grátis, os PDFs saem com a marca d'água e o rodapé do Q3 Orça.
+ * Quem tem Pro, pago ou no teste, não vê nenhum dos dois.
+ */
+export function pdfComMarcaQ3(pro: boolean | undefined): boolean {
+  return !pro
 }

@@ -1,33 +1,100 @@
 import { describe, expect, it } from 'vitest'
 import { capitalizar, cnpjValido, empresaDaResposta, formatarCnpj } from './empresa'
-import { novaValidade, situacaoPlano } from './plano'
+import { DIAS_PRO_BETA, DIAS_TESTE_PRO, diasDeTesteDaConta, FIM_CADASTRO_BETA, novaValidade, pdfComMarcaQ3, situacaoPlano } from './plano'
 
 const DIA = 24 * 60 * 60 * 1000
-const agora = Date.UTC(2026, 8, 28)
 
 describe('plano', () => {
-  it('dá 14 dias de teste do Pro para contas novas', () => {
-    expect(situacaoPlano(null, agora - 3 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 11 })
+  // Datas depois do corte do beta: contas novas, com 30 dias de teste.
+  const agora = Date.UTC(2027, 2, 20, 15)
+
+  it('dá 30 dias de teste do Pro para contas novas, contados da criação', () => {
+    expect(DIAS_TESTE_PRO).toBe(30)
+    expect(situacaoPlano(null, agora - 3 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 27 })
+    expect(situacaoPlano(null, agora - 29 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 1 })
   })
 
-  it('conta recém-criada mostra 14 dias, mesmo com relógio de referência atrasado', () => {
+  it('conta recém-criada mostra 30 dias, mesmo com relógio de referência atrasado', () => {
     const criada = agora + 5000
-    expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 14 })
+    expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
   })
 
-  it('aceita um período de teste maior, como o da fase beta', () => {
+  it('volta ao grátis quando os 30 dias acabam', () => {
+    expect(situacaoPlano(null, agora - 30 * DIA, agora)).toEqual({ pro: false, motivo: 'gratis', testeEncerrado: true })
+    expect(situacaoPlano(null, agora - 31 * DIA, agora).pro).toBe(false)
+  })
+
+  it('aceita um período de teste explícito', () => {
     expect(situacaoPlano(null, agora - 20 * DIA, agora, 90)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 70 })
-    expect(situacaoPlano(null, agora - 91 * DIA, agora, 90).pro).toBe(false)
-  })
-
-  it('volta ao grátis quando o teste acaba', () => {
-    expect(situacaoPlano(null, agora - 15 * DIA, agora)).toEqual({ pro: false, motivo: 'gratis', testeEncerrado: true })
   })
 
   it('reconhece assinatura válida e ignora a vencida', () => {
     const antiga = agora - 60 * DIA
     expect(situacaoPlano({ plano: 'pro', validoAte: agora + DIA }, antiga, agora).motivo).toBe('assinatura')
     expect(situacaoPlano({ plano: 'pro', validoAte: agora - DIA }, antiga, agora).pro).toBe(false)
+  })
+})
+
+describe('contas do beta mantêm os 90 dias', () => {
+  // 15/11/2026, 00:00 em Brasília (UTC-3).
+  const corte = Date.UTC(2026, 10, 15, 3)
+
+  it('o corte é a virada de 14 para 15/11/2026 no horário de Brasília', () => {
+    expect(FIM_CADASTRO_BETA).toBe(corte)
+    expect(DIAS_PRO_BETA).toBe(90)
+  })
+
+  it('quem se cadastrou antes do corte tem 90 dias; depois, 30', () => {
+    expect(diasDeTesteDaConta(Date.UTC(2026, 8, 1))).toBe(90)
+    expect(diasDeTesteDaConta(Date.UTC(2026, 10, 14, 12))).toBe(90) // 14/11, 9h em Brasília
+    expect(diasDeTesteDaConta(corte - 1)).toBe(90) // 14/11, 23:59:59.999 em Brasília
+    expect(diasDeTesteDaConta(corte)).toBe(30)
+    expect(diasDeTesteDaConta(Date.UTC(2027, 0, 10))).toBe(30)
+  })
+
+  it('conta do beta não perde nenhum dia: o fim continua sendo criação + 90 dias', () => {
+    const criada = Date.UTC(2026, 9, 1, 13) // 01/10/2026
+    // No dia em que a mudança entra, faltam os mesmos dias de antes.
+    const hoje = Date.UTC(2026, 10, 20, 13)
+    const antes = situacaoPlano(null, criada, hoje, 90)
+    expect(situacaoPlano(null, criada, hoje)).toEqual(antes)
+    expect(antes).toEqual({ pro: true, motivo: 'teste', diasRestantes: 40 })
+    // Continua Pro até o último instante dos 90 dias e só então vai para o grátis.
+    expect(situacaoPlano(null, criada, criada + 90 * DIA - 1).pro).toBe(true)
+    expect(situacaoPlano(null, criada, criada + 90 * DIA).pro).toBe(false)
+  })
+
+  it('conta criada no último minuto do beta ainda tem 90 dias', () => {
+    const criada = corte - 60_000
+    expect(situacaoPlano(null, criada, criada + 60 * DIA)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
+  })
+
+  it('conta criada no primeiro minuto depois do corte tem 30 dias', () => {
+    const criada = corte + 60_000
+    expect(situacaoPlano(null, criada, criada)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
+    expect(situacaoPlano(null, criada, criada + 30 * DIA).pro).toBe(false)
+  })
+
+  it('sem data de criação, não há teste', () => {
+    expect(situacaoPlano(null, 0, Date.UTC(2026, 10, 1))).toEqual({ pro: false, motivo: 'gratis', testeEncerrado: false })
+  })
+})
+
+describe('marca Q3 Orça no PDF', () => {
+  const agora = Date.UTC(2027, 2, 20, 15)
+  const marca = (plano: { pro: boolean }) => pdfComMarcaQ3(plano.pro)
+
+  it('plano grátis: PDF com marca d’água e rodapé do site', () => {
+    expect(marca(situacaoPlano(null, agora - 45 * DIA, agora))).toBe(true)
+    expect(pdfComMarcaQ3(false)).toBe(true)
+    expect(pdfComMarcaQ3(undefined)).toBe(true)
+  })
+
+  it('no teste de 30 dias ou no Pro pago: sem marca d’água e sem rodapé', () => {
+    expect(marca(situacaoPlano(null, agora - 5 * DIA, agora))).toBe(false)
+    expect(marca(situacaoPlano(null, Date.UTC(2026, 9, 1), Date.UTC(2026, 11, 20)))).toBe(false) // conta do beta, ainda nos 90 dias
+    expect(marca(situacaoPlano({ plano: 'pro', validoAte: agora + DIA }, agora - 400 * DIA, agora))).toBe(false)
+    expect(pdfComMarcaQ3(true)).toBe(false)
   })
 })
 
