@@ -49,7 +49,7 @@ export const WHATSAPP_SUPORTE = ''
  * WhatsApp do time de vendas. Quando preenchido, o botão "Quero o Pro"
  * também abre uma conversa. Vazio: o pedido fica só registrado no painel admin.
  */
-export const WHATSAPP_VENDAS = ''
+export const WHATSAPP_VENDAS = '5541998996996'
 
 /* ---------- Pagamento do Pro ---------- */
 
