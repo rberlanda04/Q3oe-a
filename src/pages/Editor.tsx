@@ -16,6 +16,7 @@ import { calcularTotais, chaveCatalogo, subtotalItem, totalRecebido } from '../d
 import { pixDoOrcamento } from '../domain/cobranca'
 import { formatarBRL } from '../domain/money'
 import { modeloPorId, UNIDADES_PADRAO, type ItemSugerido } from '../domain/templates'
+import { efeitoDoEnvio } from '../domain/envio'
 import type {
   ClienteCadastro,
   ItemCatalogo,
@@ -94,6 +95,8 @@ export function Editor() {
 interface EnvioPendente {
   arquivo: File
   texto: string
+  /** Só o PDF do orçamento conta como "enviado"; recibo, ordem e garantia não. */
+  contaComoEnviado: boolean
 }
 
 function EditorOrcamento({
@@ -210,22 +213,29 @@ function EditorOrcamento({
 
   /* ---------- Envio de documentos ---------- */
 
-  async function enviarDocumento(rotulo: string, gerar: () => Promise<File>, texto: string, marcarEnviado = false) {
+  /**
+   * Tenta enviar o arquivo e aplica o resultado. É o mesmo caminho para o primeiro toque
+   * e para o "Enviar agora" do celular, para os dois contarem o envio do mesmo jeito.
+   */
+  async function enviarEConcluir(envio: EnvioPendente) {
+    const resultado = await enviarArquivo(envio.arquivo, envio.texto, o.cliente.telefone)
+    const efeito = efeitoDoEnvio(resultado, envio.contaComoEnviado, o.status)
+    if (efeito.aguardarToque) {
+      setPendente(envio)
+      setMensagem('Documento pronto. Toque em "Enviar agora" para abrir o WhatsApp.')
+      return
+    }
+    setPendente(null)
+    setMensagem(efeito.avisarBaixado ? 'PDF baixado. Anexe o arquivo na conversa do WhatsApp que abrimos.' : '')
+    if (efeito.registrarEnviado) registrarEvento('orcamento_enviado', { forma: 'pdf', profissao: o.profissao })
+    if (efeito.marcarEnviado) alterar({ status: 'enviado', enviadoEm: Date.now() })
+  }
+
+  async function enviarDocumento(rotulo: string, gerar: () => Promise<File>, texto: string, contaComoEnviado = false) {
     setOcupado(rotulo)
     setMensagem('')
     try {
-      const arquivo = await gerar()
-      const resultado = await enviarArquivo(arquivo, texto, o.cliente.telefone)
-      if (resultado === 'precisa-toque') {
-        setPendente({ arquivo, texto })
-        setMensagem('Documento pronto. Toque em "Enviar agora" para abrir o WhatsApp.')
-        return
-      }
-      setPendente(null)
-      if (resultado === 'cancelado') return
-      if (marcarEnviado) registrarEvento('orcamento_enviado', { forma: 'pdf', profissao: o.profissao })
-      if (marcarEnviado && o.status === 'rascunho') alterar({ status: 'enviado', enviadoEm: Date.now() })
-      if (resultado === 'baixado') setMensagem('PDF baixado. Anexe o arquivo na conversa do WhatsApp que abrimos.')
+      await enviarEConcluir({ arquivo: await gerar(), texto, contaComoEnviado })
     } catch (erro) {
       console.error(erro)
       setMensagem('Não foi possível gerar o PDF. Tente novamente.')
@@ -236,11 +246,7 @@ function EditorOrcamento({
 
   async function enviarPendente() {
     if (!pendente) return
-    const resultado = await enviarArquivo(pendente.arquivo, pendente.texto, o.cliente.telefone)
-    if (resultado !== 'precisa-toque') {
-      setPendente(null)
-      setMensagem('')
-    }
+    await enviarEConcluir(pendente)
   }
 
   function validarItens(): boolean {

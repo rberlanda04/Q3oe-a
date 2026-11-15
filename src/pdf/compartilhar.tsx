@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { calcularTotais } from '../domain/calc'
 import { pixDoOrcamento } from '../domain/cobranca'
+import type { ResultadoEnvio } from '../domain/envio'
 import { formatarBRL } from '../domain/money'
 import { pdfComMarcaQ3 } from '../domain/plano'
 import type { Orcamento, Pagamento, PerfilPublico } from '../domain/types'
@@ -112,7 +113,7 @@ export function baixarArquivo(arquivo: File) {
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
 }
 
-export type ResultadoEnvio = 'compartilhado' | 'baixado' | 'cancelado' | 'precisa-toque'
+export type { ResultadoEnvio } from '../domain/envio'
 
 /**
  * No celular, abre a folha de compartilhamento nativa com o PDF anexado,
