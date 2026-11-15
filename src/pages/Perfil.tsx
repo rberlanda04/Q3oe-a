@@ -208,7 +208,7 @@ export function Perfil() {
           descricao={
             plano.pro
               ? 'Seu logo e sua cor nos orçamentos, recibos e no link do cliente, sem a marca Q3 Orça.'
-              : 'Com o Pro, seu logo e sua cor aparecem nos documentos e a marca Q3 Orça sai do rodapé.'
+              : 'Com o Pro, seu logo e sua cor aparecem nos documentos e a marca d’água do Q3 Orça sai dos PDFs.'
           }
         >
           <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-start">

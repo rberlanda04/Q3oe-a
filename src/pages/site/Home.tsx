@@ -356,7 +356,7 @@ function Precos() {
               '12 modelos de profissão',
               'Envio pelo WhatsApp e link de aprovação',
               'QR Code Pix, recibo e garantia',
-              'Marca Q3 Orça no rodapé do PDF',
+              "Marca d'água e link do Q3 Orça no PDF",
             ]}
             chamada={
               <Link to="/entrar?modo=criar" className="btn-primary w-full">

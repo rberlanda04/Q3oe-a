@@ -81,7 +81,7 @@ export function ReciboPdf({ orcamento: o, perfil: p, pagamento, marcaDagua }: Pr
           </Text>
         </View>
 
-        <Rodape marcaDagua={marcaDagua} />
+        <Rodape marcaDagua={marcaDagua} feitoCom="Recibo feito" />
       </Page>
     </Document>
   )

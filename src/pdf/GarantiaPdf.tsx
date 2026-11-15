@@ -61,7 +61,7 @@ export function GarantiaPdf({ orcamento: o, perfil: p, dataConclusao, marcaDagua
         />
 
         <Assinaturas esquerda={p.nome || 'Prestador'} direita={o.cliente.nome || 'Cliente'} />
-        <Rodape marcaDagua={marcaDagua} />
+        <Rodape marcaDagua={marcaDagua} feitoCom="Termo de garantia feito" />
       </Page>
     </Document>
   )

@@ -45,7 +45,7 @@ export const CAMINHO_GERADOR = '/gerador-de-orcamento'
 /** Dúvidas da página do gerador de orçamento sem cadastro. */
 export const PERGUNTAS_GERADOR: [string, string][] = [
   ['Preciso me cadastrar para gerar o orçamento?', 'Não. Escolha a profissão, preencha o cliente, os itens e os valores, e baixe o PDF. Nada fica salvo: ao fechar a página, o orçamento some.'],
-  ['O gerador de orçamento é grátis?', 'É. Gerar, baixar e imprimir não custa nada e não tem limite. O PDF sai com a marca do Q3 Orça no rodapé.'],
+  ['O gerador de orçamento é grátis?', 'É. Gerar, baixar e imprimir não custa nada e não tem limite. O PDF sai com a marca d’água e o link do Q3 Orça.'],
   ['Como fazer um orçamento fácil e rápido?', 'Comece pelo modelo da sua profissão: os serviços mais pedidos já vêm na lista. Ajuste a quantidade e o valor de cada item, coloque o desconto, se houver, e confira o total na prévia.'],
   ['Os dados que eu digito vão para algum lugar?', 'Não. O gerador funciona só no seu navegador. Cliente, itens e valores não são enviados nem guardados pelo Q3 Orça.'],
   ['O que muda quando eu crio a conta grátis?', 'Você envia o orçamento por link no WhatsApp, o cliente aprova pelo celular e você acompanha a resposta. Clientes, preços e orçamentos ficam salvos, e o documento ganha QR Code Pix, recibo e garantia.'],

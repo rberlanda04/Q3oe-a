@@ -24,7 +24,7 @@ const RECURSOS_PRO = [
   'Seu logo no orçamento, recibo, ordem de serviço e garantia',
   'Sua cor de marca nos documentos e no link do cliente',
   'Nome da empresa, razão social, site e Instagram no cabeçalho',
-  'Sem a marca Q3 Orça no rodapé',
+  "Sem a marca d'água e o link do Q3 Orça nos PDFs",
   'Página de aprovação com a sua cara',
 ]
 

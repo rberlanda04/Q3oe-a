@@ -115,6 +115,38 @@ describe('PDFs', () => {
   }, 30_000)
 })
 
+describe('marca do plano grátis no PDF', () => {
+  const linkRodape = 'q3orca.com.br/?utm_source=pdf&utm_medium=rodape-gratis'
+  const contar = (buffer: Buffer, trecho: string) => buffer.toString('latin1').split(trecho).length - 1
+  // Itens suficientes para o orçamento ocupar mais de uma página.
+  const longo: Orcamento = {
+    ...orcamento,
+    itens: Array.from({ length: 45 }, (_, i) => ({
+      id: String(i + 1),
+      descricao: `Item de serviço número ${i + 1}`,
+      quantidade: 1 + (i % 4),
+      unidade: 'un',
+      precoUnitarioCentavos: 2500 + i * 100,
+      tipo: 'servico' as const,
+    })),
+  }
+
+  it('grátis: rodapé com link do site em todas as páginas', async () => {
+    const buffer = await renderToBuffer(<OrcamentoPdf orcamento={longo} perfil={perfil} marcaDagua />)
+    validarPdf(buffer)
+    const paginas = (buffer.toString('latin1').match(/\/Type\s*\/Page(?!s)/g) ?? []).length
+    expect(paginas).toBeGreaterThan(1)
+    expect(contar(buffer, linkRodape)).toBe(paginas)
+    salvar('orcamento-gratis.pdf', buffer)
+  }, 30_000)
+
+  it('Pro ou teste: sem link do Q3 Orça no rodapé', async () => {
+    const buffer = await renderToBuffer(<OrcamentoPdf orcamento={longo} perfil={{ ...perfil, pro: true }} marcaDagua={false} />)
+    validarPdf(buffer)
+    expect(contar(buffer, linkRodape)).toBe(0)
+  }, 30_000)
+})
+
 describe('mensagens do WhatsApp', () => {
   it('monta mensagens e telefone', () => {
     expect(mensagemWhatsApp(orcamento, perfil)).toContain('Olá, Maria!')

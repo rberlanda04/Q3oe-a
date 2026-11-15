@@ -156,7 +156,7 @@ export function OrcamentoPdf({ orcamento: o, perfil: p, marcaDagua, tipo = 'orca
         ) : null}
 
         <Assinaturas esquerda={p.nome || 'Prestador'} direita={o.cliente.nome || 'Cliente'} />
-        <Rodape marcaDagua={marcaDagua} />
+        <Rodape marcaDagua={marcaDagua} feitoCom={ordem ? 'Ordem de serviço feita' : 'Orçamento feito'} />
       </Page>
     </Document>
   )

@@ -1,4 +1,4 @@
-import { Circle, Font, Image, Path, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer'
+import { Font, Image, Link, StyleSheet, Text, View } from '@react-pdf/renderer'
 import { SITE_URL } from '../config'
 import { coresDoDocumento } from '../domain/cores'
 import type { PerfilPublico } from '../domain/types'
@@ -13,9 +13,12 @@ export const AZUL = '#c43e0c'
 export const BRASA = '#ff5a1f'
 export const GRAFITE = '#1b1f2a'
 export const CINZA = '#5b6372'
-/** Tons bem claros da marca d'água: aparecem, mas não competem com o texto. */
-const MARCA_DAGUA_FUNDO = '#fff1ea'
-const MARCA_DAGUA_TEXTO = '#ede8e2'
+/**
+ * Cinza da marca d'água. Já é claro sozinho e ainda recebe transparência:
+ * se o leitor de PDF ignorar a opacidade, continua sem competir com o texto.
+ */
+const MARCA_DAGUA_COR = '#c4c8cf'
+const MARCA_DAGUA_OPACIDADE = 0.4
 
 export const st = StyleSheet.create({
   pagina: { padding: 36, paddingBottom: 56, fontSize: 10, fontFamily: 'Helvetica', color: GRAFITE },
@@ -30,7 +33,7 @@ export const st = StyleSheet.create({
   texto: { marginBottom: 3 },
   assinatura: { marginTop: 48, flexDirection: 'row', justifyContent: 'space-around' },
   linhaAss: { width: 200, borderTopWidth: 0.5, borderTopColor: '#0f172a', paddingTop: 4, textAlign: 'center', fontSize: 9, color: CINZA },
-  rodape: { position: 'absolute', bottom: 24, left: 36, right: 36, fontSize: 8, color: '#94a3b8', textAlign: 'center' },
+  rodape: { position: 'absolute', bottom: 24, left: 36, right: 36, fontSize: 8, color: '#94a3b8', flexDirection: 'row', justifyContent: 'center' },
 })
 
 /** Cores do documento conforme o plano: marca do profissional (Pro) ou Brasa do Q3. */
@@ -69,36 +72,42 @@ export function Cabecalho({ perfil, titulo, linhas }: { perfil: PerfilPublico; t
 
 const SITE = SITE_URL.replace(/^https?:\/\//, '')
 
-export function Rodape({ marcaDagua }: { marcaDagua: boolean }) {
+/** Link do rodapé do plano grátis, com origem medida no funil. */
+export const LINK_RODAPE_GRATIS = `${SITE_URL}/?utm_source=pdf&utm_medium=rodape-gratis`
+
+/**
+ * Rodapé de todas as páginas: número da página e, no plano grátis,
+ * "<documento> feito com Q3 Orça — www.q3orca.com.br", clicável.
+ */
+export function Rodape({ marcaDagua, feitoCom = 'Orçamento feito' }: { marcaDagua: boolean; feitoCom?: string }) {
   return (
-    <Text
-      style={st.rodape}
-      fixed
-      render={({ pageNumber, totalPages }) =>
-        `${marcaDagua ? `Feito com Q3 Orça  ·  Crie o seu grátis em ${SITE}  ·  ` : ''}Página ${pageNumber} de ${totalPages}`
-      }
-    />
+    <View style={st.rodape} fixed>
+      {marcaDagua ? (
+        <Link src={LINK_RODAPE_GRATIS} style={{ color: CINZA, textDecoration: 'none' }}>
+          {`${feitoCom} com Q3 Orça — ${SITE}`}
+        </Link>
+      ) : null}
+      {/* Separador com margem: o react-pdf corta os espaços do começo e do fim de cada texto. */}
+      {marcaDagua ? <Text style={{ marginHorizontal: 6 }}>·</Text> : null}
+      <Text render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages}`} />
+    </View>
   )
 }
 
 /**
- * Marca d'água do plano grátis: o símbolo do Q3 Orça grande, claro e na diagonal,
- * atrás do conteúdo, em todas as páginas. Fica bem visível sem atrapalhar a leitura.
+ * Marca d'água do plano grátis: "Q3 Orça" e o endereço do site, grandes, em cinza claro
+ * e transparente, na diagonal da folha, atrás do conteúdo, em todas as páginas.
  * Deve ser o primeiro filho da <Page>, para ficar por baixo do texto.
  */
 export function MarcaDagua({ ativa }: { ativa: boolean }) {
   if (!ativa) return null
+  const texto = { color: MARCA_DAGUA_COR, opacity: MARCA_DAGUA_OPACIDADE, textAlign: 'center' as const }
   return (
     <View fixed style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}>
-      {/* Cores claras em vez de transparência: leitores de PDF nem sempre aplicam opacidade em vetores. */}
-      <View style={{ alignItems: 'center', transform: 'rotate(-30deg)' }}>
-        <Svg width={240} height={240} viewBox="0 0 48 48">
-          <Rect width="48" height="48" rx="13" fill={MARCA_DAGUA_FUNDO} />
-          <Circle cx="20" cy="22.5" r="10" fill="none" stroke="#ffffff" strokeWidth={5} />
-          <Path d="M27.1 29.6 L30.8 33.3 L40.5 21.5" fill="none" stroke="#ffffff" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
-        </Svg>
-        <Text style={{ marginTop: 18, fontSize: 44, fontFamily: 'Helvetica-Bold', color: MARCA_DAGUA_TEXTO, letterSpacing: 1 }}>Q3 Orça</Text>
-        <Text style={{ marginTop: 4, fontSize: 16, fontFamily: 'Helvetica', color: MARCA_DAGUA_TEXTO }}>Plano grátis</Text>
+      {/* -55° acompanha a diagonal da folha A4 (de baixo à esquerda para cima à direita). */}
+      <View style={{ width: 700, alignItems: 'center', transform: 'rotate(-55deg)' }}>
+        <Text style={{ ...texto, fontSize: 110, fontFamily: 'Helvetica-Bold', letterSpacing: 2 }}>Q3 Orça</Text>
+        <Text style={{ ...texto, fontSize: 34, fontFamily: 'Helvetica', marginTop: 6, letterSpacing: 1 }}>{SITE}</Text>
       </View>
     </View>
   )
