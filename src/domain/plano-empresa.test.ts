@@ -10,13 +10,13 @@ describe('plano', () => {
 
   it('dá 30 dias de teste do Pro para contas novas, contados da criação', () => {
     expect(DIAS_TESTE_PRO).toBe(30)
-    expect(situacaoPlano(null, agora - 3 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 27 })
-    expect(situacaoPlano(null, agora - 29 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 1 })
+    expect(situacaoPlano(null, agora - 3 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 27, diasTeste: 30 })
+    expect(situacaoPlano(null, agora - 29 * DIA, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 1, diasTeste: 30 })
   })
 
   it('conta recém-criada mostra 30 dias, mesmo com relógio de referência atrasado', () => {
     const criada = agora + 5000
-    expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
+    expect(situacaoPlano(null, criada, agora)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30, diasTeste: 30 })
   })
 
   it('volta ao grátis quando os 30 dias acabam', () => {
@@ -25,7 +25,7 @@ describe('plano', () => {
   })
 
   it('aceita um período de teste explícito', () => {
-    expect(situacaoPlano(null, agora - 20 * DIA, agora, 90)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 70 })
+    expect(situacaoPlano(null, agora - 20 * DIA, agora, 90)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 70, diasTeste: 90 })
   })
 
   it('reconhece assinatura válida e ignora a vencida', () => {
@@ -58,7 +58,7 @@ describe('contas do beta mantêm os 90 dias', () => {
     const hoje = Date.UTC(2026, 10, 20, 13)
     const antes = situacaoPlano(null, criada, hoje, 90)
     expect(situacaoPlano(null, criada, hoje)).toEqual(antes)
-    expect(antes).toEqual({ pro: true, motivo: 'teste', diasRestantes: 40 })
+    expect(antes).toEqual({ pro: true, motivo: 'teste', diasRestantes: 40, diasTeste: 90 })
     // Continua Pro até o último instante dos 90 dias e só então vai para o grátis.
     expect(situacaoPlano(null, criada, criada + 90 * DIA - 1).pro).toBe(true)
     expect(situacaoPlano(null, criada, criada + 90 * DIA).pro).toBe(false)
@@ -66,12 +66,12 @@ describe('contas do beta mantêm os 90 dias', () => {
 
   it('conta criada no último minuto do beta ainda tem 90 dias', () => {
     const criada = corte - 60_000
-    expect(situacaoPlano(null, criada, criada + 60 * DIA)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
+    expect(situacaoPlano(null, criada, criada + 60 * DIA)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30, diasTeste: 90 })
   })
 
   it('conta criada no primeiro minuto depois do corte tem 30 dias', () => {
     const criada = corte + 60_000
-    expect(situacaoPlano(null, criada, criada)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30 })
+    expect(situacaoPlano(null, criada, criada)).toEqual({ pro: true, motivo: 'teste', diasRestantes: 30, diasTeste: 30 })
     expect(situacaoPlano(null, criada, criada + 30 * DIA).pro).toBe(false)
   })
 

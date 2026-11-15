@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { efeitoDoEnvio } from './envio'
+import { contarEnviados, efeitoDoEnvio } from './envio'
 
 describe('efeito do envio', () => {
   it('orçamento compartilhado ou baixado conta como enviado e sai do rascunho', () => {
@@ -33,5 +33,14 @@ describe('efeito do envio', () => {
     for (const resultado of ['compartilhado', 'baixado'] as const) {
       expect(efeitoDoEnvio(resultado, false, 'rascunho')).toMatchObject({ registrarEnviado: false, marcarEnviado: false })
     }
+  })
+})
+
+describe('orçamentos enviados', () => {
+  it('conta tudo o que saiu do rascunho', () => {
+    expect(contarEnviados([])).toBe(0)
+    expect(
+      contarEnviados([{ status: 'rascunho' }, { status: 'enviado', enviadoEm: 1 }, { status: 'aprovado' }, { status: 'recusado' }, { status: 'rascunho' }]),
+    ).toBe(3)
   })
 })

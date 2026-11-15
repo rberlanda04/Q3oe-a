@@ -48,7 +48,7 @@ export function novaValidade(validoAteAtual: number | null | undefined, agora: n
 
 export type SituacaoPlano =
   | { pro: true; motivo: 'assinatura'; validoAte: number }
-  | { pro: true; motivo: 'teste'; diasRestantes: number }
+  | { pro: true; motivo: 'teste'; diasRestantes: number; /** Tamanho do teste desta conta: 30 dias, ou 90 para quem veio do beta. */ diasTeste: number }
   | { pro: false; motivo: 'gratis'; testeEncerrado: boolean }
 
 /**
@@ -68,7 +68,7 @@ export function situacaoPlano(
   const fimTeste = contaCriadaEm + diasTeste * DIA
   if (contaCriadaEm > 0 && agora < fimTeste) {
     const dias = Math.ceil((fimTeste - Math.max(agora, contaCriadaEm)) / DIA)
-    return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, diasTeste) }
+    return { pro: true, motivo: 'teste', diasRestantes: Math.min(dias, diasTeste), diasTeste }
   }
   return { pro: false, motivo: 'gratis', testeEncerrado: contaCriadaEm > 0 }
 }
@@ -79,4 +79,38 @@ export function situacaoPlano(
  */
 export function pdfComMarcaQ3(pro: boolean | undefined): boolean {
   return !pro
+}
+
+/**
+ * A conta está no Pro grátis da fase beta (prazo maior que o teste comum)?
+ * Os textos de "beta" só valem para ela; conta nova vê o teste de 30 dias.
+ */
+export function testeDoBeta(plano: SituacaoPlano): boolean {
+  return plano.motivo === 'teste' && plano.diasTeste > DIAS_TESTE_PRO
+}
+
+/** Depois de dispensado, o aviso de fim do Pro fica este tempo sem aparecer. */
+export const DIAS_SEM_AVISO_FIM_DO_PRO = 7
+
+/**
+ * Mostrar o aviso "seu Pro terminou" na lista de orçamentos?
+ * Só para quem já teve Pro (teste ou assinatura) e está no grátis, e respeitando
+ * a dispensa: `dispensadoEm` é quando a pessoa fechou o aviso (0 = nunca).
+ */
+export function avisarFimDoPro(plano: SituacaoPlano, dispensadoEm: number, agora: number): boolean {
+  if (plano.pro || !plano.testeEncerrado) return false
+  // Relógio do aparelho voltou no tempo: a dispensa "no futuro" não vale.
+  const dispensado = dispensadoEm > 0 && dispensadoEm <= agora && agora - dispensadoEm < DIAS_SEM_AVISO_FIM_DO_PRO * DIA
+  return !dispensado
+}
+
+/**
+ * Preços do Pro em centavos, para contas na tela de Planos.
+ * Quem cobra é o servidor (functions/src/negocio.ts); um teste garante que os valores batem.
+ */
+export const PRECOS_PRO = { mensal: 1490, anual: 9900 } as const
+
+/** Quanto o plano anual custa por mês, em centavos (R$ 99 por ano = R$ 8,25 por mês). */
+export function mensalDoAnualCentavos(anualCentavos: number = PRECOS_PRO.anual): number {
+  return Math.round(anualCentavos / 12)
 }

@@ -6,13 +6,18 @@ import { formatarBRL } from '../domain/money'
 import { modeloPorId } from '../domain/templates'
 import type { Orcamento, StatusOrcamento } from '../domain/types'
 import { DIAS_AVISO_RENOVACAO, SITE_URL } from '../config'
+import { contarEnviados } from '../domain/envio'
 import { linkWhatsAppSemContato, textoIndicacao } from '../domain/indicacao'
+import { avisarFimDoPro } from '../domain/plano'
 import { useUsuario } from '../lib/auth'
+import { avisoDispensadoEm, dispensarAviso } from '../lib/avisos'
 import { linkWhatsApp } from '../pdf/compartilhar'
 import { IconeBusca, IconeCheck, IconeMais, IconeRelogio, IconeSeta, IconeWhatsApp } from '../ui/Icones'
 import { STATUS } from '../ui/status'
 
 const DIA = 24 * 60 * 60 * 1000
+/** Nome do aviso de fim do Pro entre os avisos dispensáveis. */
+const AVISO_FIM_DO_PRO = 'fim-do-pro'
 
 function saudacao(): string {
   const hora = new Date().getHours()
@@ -26,6 +31,7 @@ export function Orcamentos() {
   const [busca, setBusca] = useState('')
   const [erro, setErro] = useState('')
   const [agora] = useState(() => Date.now())
+  const [fimDoProDispensadoEm, setFimDoProDispensadoEm] = useState(() => avisoDispensadoEm(AVISO_FIM_DO_PRO, user.uid))
 
   useEffect(() => ouvirOrcamentos(user.uid, setLista, (e) => setErro(mensagemErroLeitura(e))), [user.uid])
 
@@ -67,6 +73,13 @@ export function Orcamentos() {
   ]
   const onboarding = lista !== null && passos.some((p) => !p.feito)
   const primeiroNome = perfil.nome.trim().split(/\s+/)[0]
+  const enviados = contarEnviados(lista ?? [])
+
+  function dispensarFimDoPro() {
+    const quando = Date.now()
+    dispensarAviso(AVISO_FIM_DO_PRO, user.uid, quando)
+    setFimDoProDispensadoEm(quando)
+  }
 
   return (
     <div className="space-y-6">
@@ -99,6 +112,24 @@ export function Orcamentos() {
           </span>
           <IconeSeta tamanho={18} className="shrink-0" />
         </Link>
+      )}
+
+      {avisarFimDoPro(plano, fimDoProDispensadoEm, agora) && (
+        <section className="rounded-cartao bg-regua-300 p-4 text-grafite-900">
+          <p className="text-sm">
+            <strong>Seu Pro terminou.</strong>{' '}
+            {enviados > 0 ? `Você já enviou ${enviados} ${enviados === 1 ? 'orçamento' : 'orçamentos'} pelo Q3 Orça. ` : ''}
+            Agora os PDFs saem com a marca do Q3 Orça no fundo e no rodapé. Com o Pro, voltam a sair só com a sua marca.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Link to="/planos" className="btn-primary !px-4 !py-2 text-sm">
+              Ver o Pro <IconeSeta tamanho={16} />
+            </Link>
+            <button type="button" className="rounded-full px-3 py-2 text-sm font-semibold text-grafite-700 hover:underline" onClick={dispensarFimDoPro}>
+              Agora não
+            </button>
+          </div>
+        </section>
       )}
 
       {onboarding && (

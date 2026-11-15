@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   DIAS_AVISO_RENOVACAO,
-  DIAS_PRO_BETA,
   DIAS_TESTE_ATUAL,
   MODO_BETA,
   LINK_PAGAMENTO_ANUAL,
@@ -13,6 +12,8 @@ import {
   WHATSAPP_VENDAS,
 } from '../config'
 import { registrarInteressePro } from '../data/repo'
+import { formatarBRL } from '../domain/money'
+import { mensalDoAnualCentavos, testeDoBeta } from '../domain/plano'
 import { useUsuario } from '../lib/auth'
 import { registrarEvento } from '../lib/eventos'
 import { linkWhatsApp } from '../pdf/compartilhar'
@@ -83,15 +84,16 @@ export function Planos() {
 
       {plano.motivo === 'teste' && (
         <p className="rounded-cartao bg-regua-100 p-4 text-sm">
-          {MODO_BETA ? (
+          {MODO_BETA && testeDoBeta(plano) ? (
             <>
-              Você está na <strong>fase de testes</strong>: o Pro é grátis por {DIAS_PRO_BETA} dias, sem cobrança. Faltam {plano.diasRestantes}{' '}
+              Você está na <strong>fase de testes</strong>: o Pro é grátis por {plano.diasTeste} dias, sem cobrança. Faltam {plano.diasRestantes}{' '}
               {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Sua opinião vale ouro: use "Dar opinião" para contar o que achou.
             </>
           ) : (
             <>
-              Você está no <strong>teste grátis do Pro</strong>. Faltam {plano.diasRestantes} {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Depois
-              disso, seus documentos voltam para o modelo grátis, e seu logo continua salvo para quando você assinar.
+              Você está no <strong>teste grátis do Pro</strong>, de {plano.diasTeste} dias. Faltam {plano.diasRestantes}{' '}
+              {plano.diasRestantes === 1 ? 'dia' : 'dias'}. Depois disso, seus documentos voltam para o modelo grátis, com a marca do Q3 Orça, e
+              seu logo continua salvo para quando você assinar.
             </>
           )}
         </p>
@@ -128,7 +130,7 @@ export function Planos() {
                   onClick={() => setEscolha('anual')}
                   titulo="Anual"
                   preco={PRECO_ANUAL}
-                  detalhe="por ano · economize 44%"
+                  detalhe={`por ano · ${formatarBRL(mensalDoAnualCentavos())} por mês · economize 44%`}
                 />
                 <Opcao ativa={escolha === 'mensal'} onClick={() => setEscolha('mensal')} titulo="Mensal" preco={PRECO_MENSAL} detalhe="por mês" />
               </div>

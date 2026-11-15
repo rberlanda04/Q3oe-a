@@ -1,5 +1,5 @@
 /** Regras do envio de documentos pelo WhatsApp. */
-import type { StatusOrcamento } from './types'
+import type { Orcamento, StatusOrcamento } from './types'
 
 /**
  * Como terminou a tentativa de enviar um arquivo. 'precisa-toque' acontece no celular,
@@ -31,4 +31,9 @@ export function efeitoDoEnvio(resultado: ResultadoEnvio, contaComoEnviado: boole
     marcarEnviado: saiu && contaComoEnviado && status === 'rascunho',
     avisarBaixado: resultado === 'baixado',
   }
+}
+
+/** Quantos orçamentos já saíram do rascunho (enviados, aprovados ou recusados). */
+export function contarEnviados(orcamentos: Pick<Orcamento, 'status' | 'enviadoEm'>[]): number {
+  return orcamentos.filter((o) => o.status !== 'rascunho' || Boolean(o.enviadoEm)).length
 }
