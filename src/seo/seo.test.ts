@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
 import { MODELOS } from '../domain/templates'
 import { CAMINHO_GERADOR, headDaPagina, PAGINAS_SEO, robotsTxt, sitemapXml } from './paginas'
@@ -29,6 +30,15 @@ describe('SEO', () => {
     expect(head).toContain('og:image')
     const json = head.match(/<script type="application\/ld\+json">(.*)<\/script>/)?.[1]
     expect(() => JSON.parse(json!)).not.toThrow()
+  })
+
+  it('dá a cada profissão a própria imagem de prévia do link, e o arquivo existe', () => {
+    for (const p of PROFISSOES_SEO) {
+      const pagina = PAGINAS_SEO.find((x) => x.caminho === `/modelo-de-orcamento/${p.slug}`)!
+      expect(headDaPagina(pagina)).toContain(`<meta property="og:image" content="https://www.q3orca.com.br/og/${p.slug}.jpg" />`)
+      expect(existsSync(`public/og/${p.slug}.jpg`), p.slug).toBe(true)
+    }
+    expect(headDaPagina(PAGINAS_SEO[0])).toContain('content="https://www.q3orca.com.br/og-imagem.png"')
   })
 
   it('bloqueia orçamentos de clientes e área logada no robots.txt', () => {

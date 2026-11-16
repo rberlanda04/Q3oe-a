@@ -11,6 +11,8 @@ export interface PaginaSeo {
   /** Dados estruturados (schema.org) em JSON-LD. */
   dados: object[]
   prioridade: number
+  /** Imagem da prévia do link (1200 × 630), a partir da raiz do site. Sem ela, vale a imagem geral. */
+  imagem?: string
 }
 
 const ORGANIZACAO = {
@@ -127,6 +129,7 @@ export const PAGINAS_SEO: PaginaSeo[] = [
       titulo: `Modelo de orçamento para ${p.para} grátis · Q3 Orça`,
       descricao: p.descricao,
       prioridade: 0.8,
+      imagem: `/og/${p.slug}.jpg`,
       dados: [
         migalhas([
           ['Início', '/'],
@@ -211,7 +214,7 @@ const escapar = (texto: string) =>
 /** Tags do <head> de uma página: título, descrição, canônico, Open Graph e JSON-LD. */
 export function headDaPagina(p: PaginaSeo): string {
   const url = `${SITE_URL}${p.caminho === '/' ? '/' : p.caminho}`
-  const imagem = `${SITE_URL}/og-imagem.png`
+  const imagem = `${SITE_URL}${p.imagem ?? '/og-imagem.png'}`
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': p.dados }).replace(/</g, '\\u003c')
   return [
     `<title>${escapar(p.titulo)}</title>`,
