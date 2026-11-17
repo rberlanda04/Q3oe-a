@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { DIAS_PRO_BETA, DIAS_TESTE_ATUAL, MODO_BETA } from '../../config'
+import { DIAS_TESTE_ATUAL, MODO_BETA } from '../../config'
 import { MODELOS, modeloPorId } from '../../domain/templates'
 import { caminhoProfissao, PERGUNTAS_HOME } from '../../seo/paginas'
 import { PROFISSOES_SEO } from '../../seo/profissoes'
@@ -46,7 +46,7 @@ function Hero() {
         <div>
           <p className="inline-flex items-center gap-2 rounded-full border border-brasa-200 bg-white px-3 py-1.5 text-sm font-semibold text-brasa-700">
             <span className="h-2 w-2 rounded-full bg-aprovado-500" />{' '}
-            {MODO_BETA ? `Fase de testes: Pro grátis por ${DIAS_PRO_BETA} dias` : 'Cliente aprova pelo link e paga no Pix'}
+            {MODO_BETA ? `Fase de testes: Pro grátis por ${DIAS_TESTE_ATUAL} dias` : 'Cliente aprova pelo link e paga no Pix'}
           </p>
           {/* No celular o título ocupa 4 linhas com a fonte da marca: a altura fica reservada para nada pular enquanto ela carrega. */}
           <h1 className="mt-6 min-h-[4.1em] text-5xl leading-[1.02] font-extrabold sm:min-h-0 sm:text-6xl lg:text-7xl">
@@ -378,7 +378,7 @@ function Precos() {
             ]}
             chamada={
               <Link to="/entrar?modo=criar" className="btn w-full bg-white text-grafite-900 hover:bg-areia-100">
-                {MODO_BETA ? `Grátis por ${DIAS_PRO_BETA} dias no beta` : `Testar grátis por ${DIAS_TESTE_ATUAL} dias`}
+                {`Testar grátis por ${DIAS_TESTE_ATUAL} dias`}
               </Link>
             }
           />

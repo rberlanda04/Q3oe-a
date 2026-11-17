@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { DIAS_PRO_BETA } from '../../config'
+import { DIAS_TESTE_ATUAL } from '../../config'
 import { IconeCheck, IconeSeta } from '../../ui/Icones'
 import { CabecalhoSite, RodapeSite, useTitulo } from './Moldura'
 
@@ -38,7 +38,7 @@ export function Beta() {
             <h2 className="text-2xl font-extrabold">O que você ganha</h2>
             <ul className="mt-4 space-y-3">
               {[
-                `Plano Pro grátis por ${DIAS_PRO_BETA} dias, com seu logo e sua cor nos documentos`,
+                `Plano Pro grátis por ${DIAS_TESTE_ATUAL} dias, com seu logo e sua cor nos documentos`,
                 'Orçamentos ilimitados, link de aprovação, Pix, recibo e garantia',
                 'Contato direto com quem faz o app: sua sugestão é lida',
                 'Seus orçamentos e clientes continuam salvos depois dos testes',
@@ -84,7 +84,7 @@ export function Beta() {
           <div className="mt-6 space-y-3">
             {(
               [
-                ['É grátis mesmo?', `Sim. Durante os testes, nada é cobrado. O Pro fica liberado por ${DIAS_PRO_BETA} dias a partir do cadastro.`],
+                ['É grátis mesmo?', `Sim. Durante os testes, nada é cobrado. O Pro fica liberado por ${DIAS_TESTE_ATUAL} dias a partir do cadastro.`],
                 ['E depois dos testes?', 'O plano grátis continua grátis para sempre. O Pro passa a ser opcional, e você decide se quer assinar.'],
                 ['Pode ter falhas?', 'Pode. É uma versão de testes. Se algo der errado, avise pelo "Dar opinião" e corrigimos o quanto antes.'],
                 ['Meus dados ficam seguros?', 'Sim. Só você vê seus orçamentos e clientes, e pode baixar ou apagar tudo quando quiser em "Meus dados".'],

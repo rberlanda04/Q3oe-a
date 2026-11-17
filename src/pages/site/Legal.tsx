@@ -113,7 +113,7 @@ export function Termos() {
           <li>Contas novas ganham {DIAS_TESTE_PRO} dias de Pro grátis, sem cobrança automática ao final.</li>
           {MODO_BETA && (
             <li>
-              Durante a fase de testes, o Q3 Orça é oferecido como versão beta: contas novas têm {DIAS_PRO_BETA} dias de Pro grátis, sem cobrança, e
+              Durante a fase de testes, o Q3 Orça é oferecido como versão beta: quem se cadastrou até 14/11/2026 tem {DIAS_PRO_BETA} dias de Pro grátis, sem cobrança, e
               o serviço pode mudar ou apresentar falhas enquanto é aprimorado com a ajuda de quem testa.
             </li>
           )}
