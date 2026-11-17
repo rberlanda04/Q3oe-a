@@ -76,8 +76,8 @@ try {
 
   await passo('buscar dados públicos pelo CNPJ', async () => {
     await page.getByRole('link', { name: 'Meus dados' }).click()
-    // Fase beta: 90 dias de Pro grátis; fora do beta: 14 dias de teste.
-    await page.getByText(/Pro grátis no beta: 90 dias|Teste Pro: 14 dias/).waitFor()
+    // Contas novas: Teste Pro com os dias do teste (30); contas do beta: Pro grátis no beta.
+    await page.getByText(/Pro grátis no beta: \d+ dias|Teste Pro: 30 dias/).waitFor()
     await page.getByLabel('CPF ou CNPJ').fill('00.000.000/0001-91')
     await page.getByRole('button', { name: /Buscar CNPJ/ }).click()
     await page.getByText(/Dados públicos preenchidos/).waitFor({ timeout: 20000 })
@@ -100,8 +100,13 @@ try {
 
   await passo('pedido de assinatura Pro é registrado', async () => {
     await page.getByRole('link', { name: /Pro grátis no beta|Teste Pro/ }).first().click()
+    // Sem pagamento online, o pedido abre o WhatsApp de vendas (WHATSAPP_VENDAS) numa aba nova.
+    const vendas = ctx.waitForEvent('page')
     await page.getByRole('button', { name: 'Quero o Pro' }).click()
     await page.getByText('Pedido recebido!').waitFor({ timeout: 15000 })
+    const wa = await vendas
+    if (!wa.url().includes('5541998996996')) throw new Error('WhatsApp de vendas inesperado: ' + wa.url())
+    await wa.close()
     await page.screenshot({ path: join(PASTA, 'tela-planos.png'), fullPage: true })
   })
 
