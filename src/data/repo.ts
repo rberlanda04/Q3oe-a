@@ -127,6 +127,7 @@ export function criarOrcamento(
   perfil: Perfil,
   profissao: ProfissaoId,
   cliente?: ClienteCadastro,
+  doRascunho?: Partial<Pick<Orcamento, 'cliente' | 'itens' | 'desconto' | 'condicoesPagamento' | 'prazoExecucao' | 'validadeDias' | 'garantia' | 'observacoes'>>,
 ): string {
   const ref = doc(orcamentosCol(uid))
   const modelo = modeloPorId(profissao)
@@ -152,6 +153,7 @@ export function criarOrcamento(
     pagamentos: [],
     criadoEm: agora,
     atualizadoEm: agora,
+    ...doRascunho,
   }
   gravar(setDoc(ref, orcamento))
   return ref.id

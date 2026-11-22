@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  camposDoRascunho,
   formInicial,
+  lerRascunho,
+  perfilDoRascunho,
+  temConteudo,
   itensIniciais,
   itensPreenchidos,
   linkCadastroGerador,
@@ -83,5 +87,42 @@ describe('gerador de orçamento sem cadastro', () => {
     expect(url.searchParams.get('modo')).toBe('criar')
     expect(url.searchParams.get('modelo')).toBe('pintor')
     expect(origemDaVisita(url.href, '', 0, 'www.q3orca.com.br')).toMatchObject({ fonte: 'gerador', meio: 'site', campanha: 'gerador-sem-cadastro' })
+  })
+})
+
+describe('rascunho do gerador levado para a conta', () => {
+  const T = Date.UTC(2026, 10, 22, 15)
+  const preenchido = () => {
+    const f = formInicial('pintor')
+    f.cliente.nome = ' Ana '
+    f.profissional = { nome: 'João Pinturas', telefone: '41999990000', cidade: 'Curitiba' }
+    f.itens[0] = { ...f.itens[0], precoUnitarioCentavos: 25000 }
+    return f
+  }
+  it('só guarda quando há valor ou cliente', () => {
+    expect(temConteudo(formInicial('pintor'))).toBe(false)
+    expect(temConteudo(preenchido())).toBe(true)
+  })
+  it('lê o rascunho válido e recusa vencido, de outra versão ou quebrado', () => {
+    const bruto = JSON.stringify({ versao: 1, em: T, form: preenchido() })
+    expect(lerRascunho(bruto, T + 1000)?.cliente.nome).toBe(' Ana ')
+    expect(lerRascunho(bruto, T + 8 * 24 * 3600 * 1000)).toBeNull()
+    expect(lerRascunho(JSON.stringify({ versao: 2, em: T, form: preenchido() }), T)).toBeNull()
+    expect(lerRascunho(JSON.stringify({ versao: 1, em: T, form: { ...preenchido(), profissao: 'astronauta' } }), T)).toBeNull()
+    expect(lerRascunho('{quebrado', T)).toBeNull()
+    expect(lerRascunho(null, T)).toBeNull()
+  })
+  it('leva só os itens com valor e o cliente sem espaços', () => {
+    const c = camposDoRascunho(preenchido())
+    expect(c.cliente.nome).toBe('Ana')
+    expect(c.itens).toHaveLength(1)
+    expect(c.itens[0].precoUnitarioCentavos).toBe(25000)
+  })
+  it('preenche o perfil só onde está vazio', () => {
+    expect(perfilDoRascunho(preenchido(), { nome: '', telefone: '4130000000', cidade: '' })).toEqual({ nome: 'João Pinturas', cidade: 'Curitiba' })
+  })
+  it('o link de cadastro avisa que há rascunho', () => {
+    expect(linkCadastroGerador('pintor', true)).toContain('&rascunho=1&')
+    expect(linkCadastroGerador('pintor')).not.toContain('rascunho')
   })
 })

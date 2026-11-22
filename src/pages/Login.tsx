@@ -113,7 +113,11 @@ export function Login() {
           </Link>
           <h1 className="text-3xl font-extrabold">{modo === 'entrar' ? 'Que bom te ver!' : 'Crie sua conta grátis'}</h1>
           <p className="mt-1 text-grafite-500">
-            {modo === 'entrar' ? 'Entre para ver seus orçamentos.' : 'Seu primeiro orçamento sai em 2 minutos.'}
+            {modo === 'entrar'
+              ? 'Entre para ver seus orçamentos.'
+              : parametros.get('rascunho') === '1'
+                ? 'O orçamento que você fez no gerador já entra salvo na conta.'
+                : 'Seu primeiro orçamento sai em 2 minutos.'}
           </p>
 
           <div className="mt-8 space-y-4">

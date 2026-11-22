@@ -61,7 +61,8 @@ function Entrar() {
   if (!user) return <Login />
   // Veio de uma página de modelo: abre direto um orçamento daquela profissão.
   const modelo = parametros.get('modelo')
-  return <Navigate to={modelo ? `/novo?modelo=${encodeURIComponent(modelo)}` : '/'} replace />
+  const rascunho = parametros.get('rascunho') === '1' ? '&rascunho=1' : ''
+  return <Navigate to={modelo ? `/novo?modelo=${encodeURIComponent(modelo)}${rascunho}` : '/'} replace />
 }
 
 /** Na raiz, visitantes veem o site e profissionais logados veem o painel. */

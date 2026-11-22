@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { criarOrcamento, ouvirClientes } from '../data/repo'
+import { criarOrcamento, ouvirClientes, salvarPerfil } from '../data/repo'
+import { camposDoRascunho, perfilDoRascunho } from '../domain/gerador'
 import { MODELOS } from '../domain/templates'
 import type { ClienteCadastro } from '../domain/types'
 import { useUsuario } from '../lib/auth'
+import { tomarRascunho } from '../lib/rascunhoGerador'
 import { IconeVoltar } from '../ui/Icones'
 
 export function NovoOrcamento() {
@@ -15,12 +17,24 @@ export function NovoOrcamento() {
   const [cliente, setCliente] = useState<ClienteCadastro | undefined>()
   const criado = useRef(false)
 
+  const comRascunho = parametros.get('rascunho') === '1'
+
   // Chegou de uma página "modelo de orçamento para ...": já abre o orçamento daquela profissão.
+  // Veio do gerador sem cadastro: o que a pessoa digitou lá vira este primeiro orçamento.
   useEffect(() => {
-    if (!modeloPedido || criado.current) return
+    if (criado.current) return
+    const rascunho = comRascunho ? tomarRascunho() : null
+    if (rascunho) {
+      criado.current = true
+      const perfilNovo = perfilDoRascunho(rascunho, perfil)
+      if (Object.keys(perfilNovo).length) salvarPerfil(user.uid, perfilNovo)
+      navegar(`/orcamento/${criarOrcamento(user.uid, perfil, rascunho.profissao, undefined, camposDoRascunho(rascunho))}`, { replace: true })
+      return
+    }
+    if (!modeloPedido) return
     criado.current = true
     navegar(`/orcamento/${criarOrcamento(user.uid, perfil, modeloPedido.id)}`, { replace: true })
-  }, [modeloPedido, navegar, perfil, user.uid])
+  }, [comRascunho, modeloPedido, navegar, perfil, user.uid])
 
   useEffect(() => {
     if (!clienteId) return

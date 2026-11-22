@@ -6,6 +6,7 @@ import {
   itemVazio,
   itensPreenchidos,
   linkCadastroGerador,
+  temConteudo,
   orcamentoDoGerador,
   perfilDoGerador,
   totaisDoGerador,
@@ -14,6 +15,7 @@ import {
 } from '../../domain/gerador'
 import { formatarBRL, formatarQuantidade } from '../../domain/money'
 import { contarEtapa } from '../../lib/origem'
+import { guardarRascunho } from '../../lib/rascunhoGerador'
 import { MODELOS, modeloPorId, UNIDADES_PADRAO } from '../../domain/templates'
 import type { ItemOrcamento, ProfissaoId } from '../../domain/types'
 import { caminhoProfissao, PERGUNTAS_GERADOR } from '../../seo/paginas'
@@ -56,7 +58,8 @@ export function GeradorOrcamento() {
   const totais = totaisDoGerador(form)
   const unidades = [...new Set([...modelo.unidades, ...UNIDADES_PADRAO])]
   const sugestoes = modelo.itens.filter((s) => !form.itens.some((i) => i.descricao === s.descricao)).slice(0, 6)
-  const chamada = linkCadastroGerador(form.profissao)
+  const comConteudo = temConteudo(form)
+  const chamada = linkCadastroGerador(form.profissao, comConteudo)
 
   const mudar = <K extends keyof FormGerador>(campo: K, valor: FormGerador[K]) => setForm((f) => ({ ...f, [campo]: valor }))
   const mudarItem = (id: string, parcial: Partial<ItemOrcamento>) =>
@@ -256,8 +259,15 @@ export function GeradorOrcamento() {
                   </li>
                 ))}
               </ul>
-              <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary mt-5 w-full">
-                Criar conta grátis <IconeSeta tamanho={18} />
+              <Link
+                to={chamada}
+                onClick={() => {
+                  contarEtapa('clique-cadastro')
+                  if (comConteudo) guardarRascunho(form)
+                }}
+                className="btn-primary mt-5 w-full"
+              >
+                {comConteudo ? 'Salvar este orçamento na conta grátis' : 'Criar conta grátis'} <IconeSeta tamanho={18} />
               </Link>
             </div>
           </div>

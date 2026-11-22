@@ -1,7 +1,7 @@
 import { calcularTotais, PIX_PADRAO } from './calc'
 import { UTM_GERADOR } from './indicacao'
-import { modeloPorId } from './templates'
-import type { Cliente, Desconto, ItemOrcamento, Orcamento, PerfilPublico, ProfissaoId, Totais } from './types'
+import { MODELOS, modeloPorId } from './templates'
+import type { Cliente, Desconto, ItemOrcamento, Orcamento, Perfil, PerfilPublico, ProfissaoId, Totais } from './types'
 
 /**
  * Gerador de orçamento sem cadastro (/gerador-de-orcamento): tudo fica na memória do
@@ -121,6 +121,68 @@ export function perfilDoGerador(form: FormGerador): PerfilPublico {
 }
 
 /** Cadastro a partir do gerador: abre o app já no modelo da profissão, com a origem medida no funil. */
-export function linkCadastroGerador(profissao: ProfissaoId): string {
-  return `/entrar?modo=criar&modelo=${encodeURIComponent(profissao)}&${UTM_GERADOR}`
+export function linkCadastroGerador(profissao: ProfissaoId, comRascunho = false): string {
+  return `/entrar?modo=criar&modelo=${encodeURIComponent(profissao)}${comRascunho ? '&rascunho=1' : ''}&${UTM_GERADOR}`
+}
+
+/*
+ * Rascunho do gerador levado para a conta nova: ao clicar em criar conta, o formulário fica
+ * guardado no navegador; depois do cadastro ele vira o primeiro orçamento, sem redigitar.
+ */
+export const VALIDADE_RASCUNHO_MS = 7 * 24 * 60 * 60 * 1000
+
+export interface RascunhoGerador {
+  versao: 1
+  em: number
+  form: FormGerador
+}
+
+/** Vale a pena guardar: algum item com valor ou o nome do cliente preenchido. */
+export function temConteudo(form: Pick<FormGerador, 'itens' | 'cliente'>): boolean {
+  return form.itens.some((i) => i.precoUnitarioCentavos > 0) || form.cliente.nome.trim() !== ''
+}
+
+/** Lê o rascunho guardado; null se não existir, estiver vencido ou com formato estranho. */
+export function lerRascunho(bruto: string | null, agora: number): FormGerador | null {
+  if (!bruto) return null
+  try {
+    const r = JSON.parse(bruto) as Partial<RascunhoGerador>
+    const f = r.form
+    if (r.versao !== 1 || typeof r.em !== 'number' || agora - r.em > VALIDADE_RASCUNHO_MS || r.em > agora + 60_000) return null
+    if (!f || !MODELOS.some((m) => m.id === f.profissao) || !Array.isArray(f.itens) || !f.cliente || !f.profissional || !f.desconto) return null
+    const itens = f.itens
+      .filter((i) => i && typeof i.descricao === 'string' && Number.isFinite(i.quantidade) && Number.isInteger(i.precoUnitarioCentavos))
+      .slice(0, 100)
+    return { ...formInicial(f.profissao), ...f, itens }
+  } catch {
+    return null
+  }
+}
+
+/** Campos do orçamento que vêm do rascunho (o resto segue o padrão da conta). */
+export function camposDoRascunho(form: FormGerador): Pick<
+  Orcamento,
+  'cliente' | 'itens' | 'desconto' | 'condicoesPagamento' | 'prazoExecucao' | 'validadeDias' | 'garantia' | 'observacoes'
+> {
+  const o = orcamentoDoGerador(form, 0)
+  return {
+    cliente: o.cliente,
+    itens: o.itens,
+    desconto: o.desconto,
+    condicoesPagamento: o.condicoesPagamento,
+    prazoExecucao: o.prazoExecucao,
+    validadeDias: o.validadeDias || 15,
+    garantia: o.garantia,
+    observacoes: o.observacoes,
+  }
+}
+
+/** Nome, telefone e cidade do profissional vão para o perfil só onde o perfil ainda está vazio. */
+export function perfilDoRascunho(form: FormGerador, perfil: Pick<Perfil, 'nome' | 'telefone' | 'cidade'>): Partial<Perfil> {
+  const novo: Partial<Perfil> = {}
+  for (const campo of ['nome', 'telefone', 'cidade'] as const) {
+    const valor = form.profissional[campo].trim()
+    if (valor && !perfil[campo]?.trim()) novo[campo] = valor
+  }
+  return novo
 }
