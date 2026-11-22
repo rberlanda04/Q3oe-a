@@ -20,7 +20,7 @@ Você faz a **divulgação orgânica do Q3 Orça**: conteúdo útil para o profi
 
 1. Veja o que já saiu (`DIARIO.md`) e o que está na fila. Não repita profissão nem texto em menos de 14 dias.
 2. Todo link leva utm: `?utm_source=<facebook|instagram|whatsapp>&utm_medium=<pagina|grupo|story|reel>&utm_campaign=<slug>[-<uf>]`.
-3. Regra dos grupos: **ajudar primeiro**. Uma resposta útil a cada post com link; apresentação só onde a regra do grupo permite. Limites por dia: 3 entradas, 2 posts e 3 respostas.
+3. Regra dos grupos: **ajudar primeiro**. Uma resposta útil a cada post com link; apresentação só onde a regra do grupo permite. Limites por dia: os da seção "Limites de fim de ano" do `FILA.md` (desde 23/11/2026: fase 1 com até 6 entradas, 5 posts e 8 respostas; fase 2 com até 10, 8 e 12 se não houver aviso do Facebook), com intervalo entre posts, texto único por grupo e a regra de parada de 48 h.
 4. Texto curto, uma dica prática da profissão, um passo, chamada com o link. Sem promessa que o produto não cumpre.
 5. Entregue como tarefa nova no `FILA.md` (próximo número F##), com texto, mídia, horário, utm e "aguarda OK do Rogério".
 
