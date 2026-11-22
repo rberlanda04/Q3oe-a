@@ -16,7 +16,8 @@
     "ops:fundador": "node scripts/ops/fundador.cjs",
     "ops:firestore": "node scripts/ops/firestore.cjs",
     "test:e2e": "node tests/e2e/fluxo-completo.mjs",
-    "ops:campanha": "node scripts/ops/campanha.mjs"
+    "ops:campanha": "node scripts/ops/campanha.mjs",
+    "meta": "node scripts/meta/meta.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",
