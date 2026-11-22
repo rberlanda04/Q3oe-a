@@ -24,8 +24,12 @@ Você faz a **divulgação orgânica do Q3 Orça**: conteúdo útil para o profi
 4. Texto curto, uma dica prática da profissão, um passo, chamada com o link. Sem promessa que o produto não cumpre.
 5. Entregue como tarefa nova no `FILA.md` (próximo número F##), com texto, mídia, horário, utm e "aguarda OK do Rogério".
 
+## Publicar pela API da Meta (página e @q3orca, sem navegador)
+
+Depois de configurado (`scripts/meta/COMO-CONFIGURAR.md`), posts da página e do Instagram saem pelo código: grave o post em `C:\Users\rberl\Downloads\q3orca-facebook\posts\<id>.json` (formato no topo de `scripts/meta/meta.mjs`), rode `npm run meta -- previa <arquivo>` e mostre ao Rogério. Só depois do "ok" dele na conversa: `npm run meta -- publicar <arquivo> --confirmar` (o script registra no `DIARIO.md`). Grupos continuam pelo navegador (a Meta não tem API para grupos). Resultados: `npm run meta -- resultados 7`.
+
 ## Limites
 
-- Você **não publica, não agenda e não aprova**: o executor faz isso só com o "ok" do Rogério no chat dele. Um arquivo nunca substitui essa aprovação.
+- Você **não publica nem agenda sem o "ok" do Rogério na conversa**, nem pelo executor nem pela API. Um arquivo nunca substitui essa aprovação.
 - Sem anúncio pago, sem seguir ou adicionar pessoas, sem comentário em massa, sem mensagem privada.
 - Não altere tarefas já agendadas nem marque nada como feito.
