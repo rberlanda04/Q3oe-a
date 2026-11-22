@@ -1,4 +1,4 @@
-import { chaveVisita, escolherOrigem, origemDaVisita, type Origem } from '../domain/origem'
+import { chaveEtapa, chaveVisita, escolherOrigem, origemDaVisita, type Etapa, type Origem } from '../domain/origem'
 
 // Guarda no navegador de onde veio a primeira visita (utm do QR Code, anúncio ou convite).
 // Na criação da conta, a origem vai para o perfil e o funil por canal sai do Firestore
@@ -52,4 +52,28 @@ function contarVisita(origem: Origem) {
       /* Sem conexão ou bloqueado: a visita só não entra na conta. */
     }
   }, 3000)
+}
+
+/**
+ * Soma 1 no contador anônimo da etapa do funil (coleção etapas), uma vez por sessão do
+ * navegador e por etapa, com a origem guardada. Falha em silêncio: é só medição.
+ */
+export function contarEtapa(etapa: Etapa) {
+  try {
+    const chave = chaveEtapa(etapa, origemGuardada(), Date.now())
+    const marca = 'q3:etapa:' + chave.id
+    if (sessionStorage.getItem(marca)) return
+    sessionStorage.setItem(marca, '1')
+    void (async () => {
+      try {
+        const [{ db }, { doc, increment, setDoc }] = await Promise.all([import('./firebase'), import('firebase/firestore')])
+        const { id, ...campos } = chave
+        await setDoc(doc(db, 'etapas', id), { ...campos, total: increment(1) }, { merge: true })
+      } catch {
+        /* Sem conexão ou bloqueado: a etapa só não entra na conta. */
+      }
+    })()
+  } catch {
+    /* Navegação privada: segue sem medir. */
+  }
 }

@@ -7,9 +7,10 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { registrarEvento } from '../lib/eventos'
+import { contarEtapa } from '../lib/origem'
 import { auth } from '../lib/firebase'
 import { IconeCheck } from '../ui/Icones'
 import { Logo } from '../ui/Logo'
@@ -45,6 +46,9 @@ function IconeGoogle() {
 export function Login() {
   const [parametros] = useSearchParams()
   const [modo, setModo] = useState<'entrar' | 'criar'>(parametros.get('modo') === 'criar' ? 'criar' : 'entrar')
+  useEffect(() => {
+    if (modo === 'criar') contarEtapa('entrar')
+  }, [modo])
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState('')

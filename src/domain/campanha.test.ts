@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cruzarVisitas, lerCampanha, semanaDaCampanha, situacaoDaMeta, type ContaCampanha, type OrcamentoCampanha } from './campanha'
+import { cruzarVisitas, lerCampanha, semanaDaCampanha, situacaoDaMeta, type ContaCampanha, type OrcamentoCampanha, funilDeEtapas } from './campanha'
 
 const DIA = 24 * 60 * 60 * 1000
 const t = (iso: string) => new Date(iso).getTime()
@@ -80,6 +80,24 @@ describe('visitas da campanha', () => {
     expect(r.nichos).toEqual([
       { nicho: 'nicho-pintor', visitas: 10, cadastros: 1, conversao: 0.1 },
       { nicho: 'nicho-eletricista', visitas: 4, cadastros: 0, conversao: 0 },
+    ])
+  })
+})
+
+describe('funil de etapas do site', () => {
+  it('soma por canal, ignora dias antigos e etapas desconhecidas', () => {
+    const e = (dia: string, etapa: string, fonte: string, total: number) => ({ dia, etapa, fonte, meio: 'pagina', campanha: 'pintor', total })
+    const linhas = funilDeEtapas('2026-11-22', [
+      e('2026-11-22', 'modelo', 'facebook', 5),
+      e('2026-11-23', 'modelo', 'facebook', 2),
+      e('2026-11-23', 'pdf', 'facebook', 1),
+      e('2026-11-21', 'modelo', 'facebook', 9),
+      e('2026-11-22', 'outra', 'facebook', 3),
+      e('2026-11-22', 'gerador', 'google', 1),
+    ])
+    expect(linhas).toEqual([
+      { canal: 'facebook / pagina', modelo: 7, gerador: 0, pdf: 1, 'clique-cadastro': 0, entrar: 0 },
+      { canal: 'google / pagina', modelo: 0, gerador: 1, pdf: 0, 'clique-cadastro': 0, entrar: 0 },
     ])
   })
 })

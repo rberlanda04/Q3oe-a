@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chaveVisita, escolherOrigem, origemDaVisita } from './origem'
+import { chaveEtapa, chaveVisita, escolherOrigem, origemDaVisita } from './origem'
 
 const HOST = 'q3orca.web.app'
 const T = 1_700_000_000_000
@@ -43,5 +43,14 @@ describe('contador de visitas', () => {
     expect(chaveVisita(origemDaVisita('https://www.q3orca.com.br/', '', T, 'www.q3orca.com.br'), T)).toBeNull()
     const fb = origemDaVisita('https://www.q3orca.com.br/', 'https://l.facebook.com/l.php?u=x', T, 'www.q3orca.com.br')
     expect(chaveVisita(fb, T)?.id).toBe('2026-10-11__facebook__social__-')
+  })
+})
+
+describe('contador de etapas do funil', () => {
+  const T = Date.UTC(2026, 10, 22, 15)
+  it('usa a origem guardada e cai em "direto" sem origem', () => {
+    const o = origemDaVisita('https://www.q3orca.com.br/modelo-de-orcamento/pintor?utm_source=facebook&utm_medium=pagina&utm_campaign=pintor', '', T, 'www.q3orca.com.br')
+    expect(chaveEtapa('pdf', o, T)).toEqual({ id: '2026-11-22__pdf__facebook__pagina__pintor', dia: '2026-11-22', etapa: 'pdf', fonte: 'facebook', meio: 'pagina', campanha: 'pintor' })
+    expect(chaveEtapa('gerador', null, T).id).toBe('2026-11-22__gerador__direto__-__-')
   })
 })

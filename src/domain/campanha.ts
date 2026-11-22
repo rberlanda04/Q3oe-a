@@ -174,3 +174,26 @@ export function cruzarVisitas(inicioISO: string, visitas: VisitaDia[], contas: C
     .sort((a, b) => b.cadastros - a.cadastros || b.visitas - a.visitas)
   return { total, porCanal, nichos }
 }
+
+/** Total de um dia, de uma etapa e de uma origem, como gravado na coleção etapas. */
+export interface EtapaDia extends VisitaDia {
+  etapa: string
+}
+
+export const ORDEM_ETAPAS = ['modelo', 'gerador', 'pdf', 'clique-cadastro', 'entrar'] as const
+
+export type LinhaEtapas = { canal: string } & Record<(typeof ORDEM_ETAPAS)[number], number>
+
+/** Soma as etapas do funil do site por canal ("fonte / meio") desde a data dada, canal com mais passagens primeiro. */
+export function funilDeEtapas(desdeISO: string, etapas: EtapaDia[]): LinhaEtapas[] {
+  const linhas = new Map<string, LinhaEtapas>()
+  for (const e of etapas) {
+    if (e.dia < desdeISO || !(ORDEM_ETAPAS as readonly string[]).includes(e.etapa)) continue
+    const canal = `${e.fonte} / ${e.meio}`
+    const linha = linhas.get(canal) ?? { canal, modelo: 0, gerador: 0, pdf: 0, 'clique-cadastro': 0, entrar: 0 }
+    linha[e.etapa as (typeof ORDEM_ETAPAS)[number]] += Number(e.total) || 0
+    linhas.set(canal, linha)
+  }
+  const soma = (l: LinhaEtapas) => ORDEM_ETAPAS.reduce((t, k) => t + l[k], 0)
+  return [...linhas.values()].sort((a, b) => soma(b) - soma(a))
+}

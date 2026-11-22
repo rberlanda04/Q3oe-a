@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { modeloPorId } from '../../domain/templates'
+import { contarEtapa } from '../../lib/origem'
 import { caminhoProfissao } from '../../seo/paginas'
 import { profissaoPorSlug, PROFISSOES_SEO } from '../../seo/profissoes'
 import { IconeCheck, IconeSeta } from '../../ui/Icones'
@@ -52,6 +54,7 @@ export function ModeloProfissao() {
   const { slug } = useParams()
   const conteudo = profissaoPorSlug(slug)
   useTitulo(conteudo ? `Modelo de orçamento para ${conteudo.para} grátis · Q3 Orça` : 'Q3 Orça')
+  useEffect(() => contarEtapa('modelo'), [])
   if (!conteudo) return <Navigate to="/modelos-de-orcamento" replace />
   const modelo = modeloPorId(conteudo.id)
   const chamada = `/entrar?modo=criar&modelo=${conteudo.id}`
@@ -69,7 +72,7 @@ export function ModeloProfissao() {
             </h1>
             <p className="mt-5 text-lg text-grafite-600">{conteudo.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to={chamada} className="btn-primary !px-7 !py-4 text-lg">
+              <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary !px-7 !py-4 text-lg">
                 Usar este modelo grátis <IconeSeta tamanho={20} />
               </Link>
               <Link to={`/gerador-de-orcamento?profissao=${conteudo.id}`} className="btn-secondary !px-7 !py-4 text-lg">
@@ -163,7 +166,7 @@ export function ModeloProfissao() {
         <section className="mx-auto max-w-6xl px-5 pb-20">
           <div className="rounded-[2rem] bg-grafite-900 px-8 py-12 text-center text-white">
             <h2 className="mx-auto max-w-2xl text-3xl font-extrabold sm:text-4xl">Faça seu orçamento de {conteudo.para} agora</h2>
-            <Link to={chamada} className="btn-primary mt-6 !px-8 !py-4 text-lg">
+            <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary mt-6 !px-8 !py-4 text-lg">
               Começar grátis <IconeSeta tamanho={20} />
             </Link>
           </div>

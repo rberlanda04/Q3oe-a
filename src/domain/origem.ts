@@ -90,3 +90,28 @@ export function chaveVisita(origem: Origem, agora: number): ChaveVisita | null {
   const campanha = origem.campanha || '-'
   return { id: `${dia}__${origem.fonte}__${origem.meio}__${campanha}`, dia, fonte: origem.fonte, meio: origem.meio, campanha }
 }
+
+/**
+ * Etapas do funil anônimo do site, contadas como as visitas: um documento por dia, etapa e
+ * origem guardada (a primeira com pista), só com o total. Aqui vale também o "direto", porque
+ * a pergunta é onde as pessoas param, não só de qual canal vieram.
+ */
+export const ETAPAS = ['modelo', 'gerador', 'pdf', 'clique-cadastro', 'entrar'] as const
+export type Etapa = (typeof ETAPAS)[number]
+
+export interface ChaveEtapa {
+  id: string
+  dia: string
+  etapa: Etapa
+  fonte: string
+  meio: string
+  campanha: string
+}
+
+export function chaveEtapa(etapa: Etapa, origem: Origem | null, agora: number): ChaveEtapa {
+  const dia = new Date(agora).toISOString().slice(0, 10)
+  const fonte = origem?.fonte || 'direto'
+  const meio = origem?.meio || '-'
+  const campanha = origem?.campanha || '-'
+  return { id: `${dia}__${etapa}__${fonte}__${meio}__${campanha}`, dia, etapa, fonte, meio, campanha }
+}

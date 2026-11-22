@@ -103,6 +103,24 @@ service cloud.firestore {
 
     // Contador anônimo de visitas por origem (dia, fonte, meio, campanha e o total).
     // Qualquer visitante soma 1; ninguém lê, a não ser o admin. Sem dado pessoal.
+    match /etapas/{id} {
+      function camposOk(d) {
+        return d.keys().hasOnly(['dia', 'etapa', 'fonte', 'meio', 'campanha', 'total'])
+          && d.dia is string && d.dia.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && d.etapa in ['modelo', 'gerador', 'pdf', 'clique-cadastro', 'entrar']
+          && d.fonte is string && d.fonte.matches('^[a-z0-9._-]{1,60}$')
+          && d.meio is string && d.meio.matches('^[a-z0-9._-]{1,60}$')
+          && d.campanha is string && d.campanha.matches('^[a-z0-9._-]{1,60}$')
+          && id == d.dia + '__' + d.etapa + '__' + d.fonte + '__' + d.meio + '__' + d.campanha;
+      }
+      allow create: if camposOk(request.resource.data) && request.resource.data.total == 1;
+      allow update: if camposOk(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['total'])
+        && request.resource.data.total == resource.data.total + 1;
+      allow read: if admin();
+      allow delete: if false;
+    }
+
     match /visitas/{id} {
       function camposOk(d) {
         return d.keys().hasOnly(['dia', 'fonte', 'meio', 'campanha', 'total'])

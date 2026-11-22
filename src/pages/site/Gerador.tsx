@@ -1,4 +1,4 @@
-import { useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { dataValidade, subtotalItem } from '../../domain/calc'
 import {
@@ -13,6 +13,7 @@ import {
   type FormGerador,
 } from '../../domain/gerador'
 import { formatarBRL, formatarQuantidade } from '../../domain/money'
+import { contarEtapa } from '../../lib/origem'
 import { MODELOS, modeloPorId, UNIDADES_PADRAO } from '../../domain/templates'
 import type { ItemOrcamento, ProfissaoId } from '../../domain/types'
 import { caminhoProfissao, PERGUNTAS_GERADOR } from '../../seo/paginas'
@@ -49,6 +50,7 @@ export function GeradorOrcamento() {
   const [gerando, setGerando] = useState(false)
   const [erro, setErro] = useState('')
   const proximoId = useRef(100)
+  useEffect(() => contarEtapa('gerador'), [])
 
   const modelo = modeloPorId(form.profissao)
   const totais = totaisDoGerador(form)
@@ -75,6 +77,7 @@ export function GeradorOrcamento() {
       a.download = arquivo.name
       a.click()
       setTimeout(() => URL.revokeObjectURL(url), 10_000)
+      contarEtapa('pdf')
     } catch {
       setErro('Não deu para gerar o PDF agora. Use "Imprimir" e escolha "Salvar como PDF".')
     } finally {
@@ -253,7 +256,7 @@ export function GeradorOrcamento() {
                   </li>
                 ))}
               </ul>
-              <Link to={chamada} className="btn-primary mt-5 w-full">
+              <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary mt-5 w-full">
                 Criar conta grátis <IconeSeta tamanho={18} />
               </Link>
             </div>

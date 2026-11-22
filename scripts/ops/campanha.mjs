@@ -5,7 +5,7 @@
  */
 import { createRequire } from 'node:module'
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { cruzarVisitas, lerCampanha, situacaoDaMeta } from '../../src/domain/campanha.ts'
+import { cruzarVisitas, funilDeEtapas, lerCampanha, situacaoDaMeta } from '../../src/domain/campanha.ts'
 
 const require = createRequire(import.meta.url)
 const { firestore, contas } = require('./google.cjs')
@@ -14,11 +14,12 @@ const config = JSON.parse(readFileSync(new URL('campanha/campanha.json', raiz), 
 const soJson = process.argv.includes('--json')
 
 const agora = Date.now()
-const [usuarios, perfis, orcs, visitas] = await Promise.all([
+const [usuarios, perfis, orcs, visitas, etapas] = await Promise.all([
   contas.todas(),
   firestore.listarTodos('users'),
   firestore.grupo('orcamentos', ['status', 'criadoEm', 'enviadoEm']),
   firestore.listarTodos('visitas').catch(() => []),
+  firestore.listarTodos('etapas').catch(() => []),
 ])
 const origemDe = new Map(perfis.map((p) => [p.id, p.origem]))
 const listaContas = usuarios
@@ -48,7 +49,9 @@ leitura.canais = leitura.canais.map((c) => ({ ...c, visitas: cruz.porCanal[c.can
 for (const [canal, n] of Object.entries(cruz.porCanal)) {
   if (!leitura.canais.some((c) => c.canal === canal)) leitura.canais.push({ canal, cadastros: 0, criaramOrcamento: 0, enviaram: 0, tiveramAprovacao: 0, visitas: n })
 }
-const resultado = { campanha: config.nome, data: new Date(agora).toISOString().slice(0, 10), ...leitura, visitasTotal: cruz.total, nichos: cruz.nichos, metas,
+// Etapas do site (coleção etapas, desde 22/11/2026): onde quem chega para no caminho até a conta.
+const etapasSite = funilDeEtapas(config.inicio, etapas)
+const resultado = { etapasSite, campanha: config.nome, data: new Date(agora).toISOString().slice(0, 10), ...leitura, visitasTotal: cruz.total, nichos: cruz.nichos, metas,
   cronogramaDaSemana: config.cronograma.find((c) => c.semana === leitura.semana) ?? null }
 
 mkdirSync(new URL('campanha/leituras/', raiz), { recursive: true })
@@ -59,7 +62,7 @@ writeFileSync(new URL(`campanha/leituras/${resultado.data}.json`, raiz), JSON.st
 const painel = {
   campanha: config.nome, praca: config.praca, inicio: config.inicio, totalSemanas: config.semanas,
   semana: leitura.semana, atualizadoEm: agora, metas, canais: leitura.canais, semanas: leitura.semanas,
-  visitasTotal: cruz.total, nichos: cruz.nichos,
+  visitasTotal: cruz.total, nichos: cruz.nichos, etapasSite,
   cronograma: config.cronograma, cronogramaDaSemana: resultado.cronogramaDaSemana,
   links: config.canais.map(({ descricao, link, fonte, meio }) => ({ descricao, link, fonte, meio })),
   numeros: {
@@ -82,6 +85,10 @@ if (soJson) {
   if (cruz.nichos.length) {
     console.log('Por nicho:')
     console.table(cruz.nichos.map((n) => ({ Nicho: n.nicho, Visitas: n.visitas, Cadastros: n.cadastros, Conversão: n.conversao == null ? '-' : `${(n.conversao * 100).toFixed(1)}%` })))
+  }
+  if (etapasSite.length) {
+    console.log('Etapas no site (abriu modelo → gerador → baixou PDF → clicou em cadastrar → abriu o cadastro):')
+    console.table(etapasSite.map((l) => ({ Canal: l.canal, Modelo: l.modelo, Gerador: l.gerador, PDF: l.pdf, 'Clicou cadastrar': l['clique-cadastro'], 'Abriu cadastro': l.entrar })))
   }
   if (resultado.cronogramaDaSemana) console.log(`Foco da semana: ${resultado.cronogramaDaSemana.foco}: ${resultado.cronogramaDaSemana.entregas.join('; ')}`)
 }
