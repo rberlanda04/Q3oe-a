@@ -27,6 +27,7 @@ const senha = `Teste-${Math.random().toString(36).slice(2)}-9`
 
 const browser = await chromium.launch()
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true })
+await ctx.addInitScript(() => localStorage.setItem('q3:teste', '1'))
 const page = await ctx.newPage()
 const erros = []
 page.on('pageerror', (e) => erros.push('pageerror: ' + e.message))
@@ -60,7 +61,8 @@ try {
     await page.goto(BASE + '/modelo-de-orcamento/pintor', { waitUntil: 'load' })
     await page.getByRole('heading', { name: /Modelo de orçamento para pintor/ }).waitFor()
     await page.screenshot({ path: join(PASTA, 'tela-modelo-pintor.png'), fullPage: true })
-    await page.getByRole('link', { name: /Usar este modelo grátis/ }).click()
+    await page.getByRole('link', { name: /Fazer meu orçamento agora/ }).first().waitFor()
+    await page.locator('main').getByRole('link', { name: 'Criar conta grátis' }).first().click()
     await page.getByText('Ao criar a conta, você concorda com os').waitFor()
     await page.getByLabel('E-mail').fill(email)
     await page.getByLabel('Senha').fill(senha)

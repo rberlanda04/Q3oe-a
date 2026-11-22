@@ -11,7 +11,9 @@ const email = `teste-automatizado-${Date.now()}@example.com`
 const senha = `Teste-${Math.random().toString(36).slice(2)}-9`
 
 const browser = await chromium.launch()
-const page = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage()
+const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+await ctx.addInitScript(() => localStorage.setItem('q3:teste', '1'))
+const page = await ctx.newPage()
 let falhou = false
 try {
   await page.goto(BASE + '/gerador-de-orcamento?profissao=pintor', { waitUntil: 'load' })

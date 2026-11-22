@@ -6,6 +6,15 @@ import { chaveEtapa, chaveVisita, escolherOrigem, origemDaVisita, type Etapa, ty
 const CHAVE = 'q3:origem'
 const VALIDADE = 90 * 24 * 60 * 60 * 1000
 
+/** Navegador marcado pelos testes automáticos (localStorage q3:teste = 1): não conta visita nem etapa. */
+function ehTeste(): boolean {
+  try {
+    return localStorage.getItem('q3:teste') === '1'
+  } catch {
+    return false
+  }
+}
+
 export function guardarOrigemDaVisita() {
   try {
     const nova = origemDaVisita(location.href, document.referrer, Date.now(), location.hostname)
@@ -35,7 +44,7 @@ export function origemGuardada(): Origem | null {
  */
 function contarVisita(origem: Origem) {
   const chave = chaveVisita(origem, Date.now())
-  if (!chave) return
+  if (!chave || ehTeste()) return
   try {
     const marca = 'q3:visita:' + chave.id
     if (sessionStorage.getItem(marca)) return
@@ -59,6 +68,7 @@ function contarVisita(origem: Origem) {
  * navegador e por etapa, com a origem guardada. Falha em silêncio: é só medição.
  */
 export function contarEtapa(etapa: Etapa) {
+  if (ehTeste()) return
   try {
     const chave = chaveEtapa(etapa, origemGuardada(), Date.now())
     const marca = 'q3:etapa:' + chave.id

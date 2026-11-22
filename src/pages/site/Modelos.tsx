@@ -72,14 +72,14 @@ export function ModeloProfissao() {
             </h1>
             <p className="mt-5 text-lg text-grafite-600">{conteudo.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary !px-7 !py-4 text-lg">
-                Usar este modelo grátis <IconeSeta tamanho={20} />
+              <Link to={`/gerador-de-orcamento?profissao=${conteudo.id}`} className="btn-primary !px-7 !py-4 text-lg">
+                Fazer meu orçamento agora <IconeSeta tamanho={20} />
               </Link>
-              <Link to={`/gerador-de-orcamento?profissao=${conteudo.id}`} className="btn-secondary !px-7 !py-4 text-lg">
-                Gerar PDF sem cadastro
+              <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-secondary !px-7 !py-4 text-lg">
+                Criar conta grátis
               </Link>
             </div>
-            <p className="mt-3 text-sm text-grafite-500">Sem cartão de crédito. Seu primeiro orçamento sai em 2 minutos.</p>
+            <p className="mt-3 text-sm text-grafite-500">Sem cadastro e sem cartão. Preencha, baixe o PDF e mande no WhatsApp em 2 minutos.</p>
           </div>
 
           <figure className="rounded-cartao border border-areia-200 bg-white p-6 shadow-flutuante" aria-label="Exemplo de orçamento">
@@ -166,8 +166,8 @@ export function ModeloProfissao() {
         <section className="mx-auto max-w-6xl px-5 pb-20">
           <div className="rounded-[2rem] bg-grafite-900 px-8 py-12 text-center text-white">
             <h2 className="mx-auto max-w-2xl text-3xl font-extrabold sm:text-4xl">Faça seu orçamento de {conteudo.para} agora</h2>
-            <Link to={chamada} onClick={() => contarEtapa('clique-cadastro')} className="btn-primary mt-6 !px-8 !py-4 text-lg">
-              Começar grátis <IconeSeta tamanho={20} />
+            <Link to={`/gerador-de-orcamento?profissao=${conteudo.id}`} className="btn-primary mt-6 !px-8 !py-4 text-lg">
+              Fazer meu orçamento agora <IconeSeta tamanho={20} />
             </Link>
           </div>
           <h2 className="mt-14 text-xl font-bold">Modelos para outras profissões</h2>
