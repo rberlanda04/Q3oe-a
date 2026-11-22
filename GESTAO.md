@@ -1,4 +1,4 @@
-﻿# Gestão do Q3 Orça
+# Gestão do Q3 Orça
 
 Painel único de andamento do projeto. O agente `gerente-q3orca` lê este arquivo no início de cada sessão e atualiza ao final. Status possíveis: **Feito**, **Em andamento**, **A fazer**, **Bloqueado**, **Aguardando dono**.
 
