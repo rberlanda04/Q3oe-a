@@ -122,3 +122,17 @@ pronto e QR Codes por canal. Cada cadastro novo guarda o canal de origem (utm do
 | 2026-10-03 | Curitiba como primeira praça | Escolha do dono; ecossistema local forte (Balaroti PRO, Salas do Empreendedor) |
 | 2026-10-03 | Pix desligado no site até a chave de produção | Com chave de teste, o QR Code não recebe dinheiro de verdade |
 | 2026-10-03 | Beta aberto em q3orca.web.app, com Pro grátis por 90 dias | Domínio próprio ainda pendente; oferta de Fundador automática |
+
+## Fila técnica (mantida pelo cto-q3orca; no máximo 5)
+
+| # | Problema medido | Mudança | Situação |
+|---|---|---|---|
+| T1 | Facebook trouxe 60 visitas e 2 cadastros; não sabíamos em que etapa a pessoa para | Contador anônimo de etapas (modelo, gerador, PDF, clique, cadastro) e tabela no `ops:campanha` | Feito local (0603ebe); aguarda "pode publicar" |
+| T2 | Quem usa o gerador sem cadastro perde o orçamento ao criar a conta | Levar o rascunho do gerador para a conta nova como primeiro orçamento | Próximo |
+| T3 | Tabela "Por nicho" vazia: `cruzarVisitas` só conta campanhas `nicho-*`, os posts usam o slug da profissão | Aceitar o slug da profissão como nicho | A fazer |
+| T4 | `npm run test:regras` não roda (sem Java) | Instalar Java 21 no PC (pede OK do Rogério) | Bloqueado |
+
+## Financeiro (mantido pelo cfo-q3orca)
+
+Leitura de 22/11/2026: 16 contas, 0 assinantes Pro, MRR R$ 0. Custo fixo perto de zero (Firebase; domínio anual). Cobrança automática desligada (`PIX_ATIVO_EM_PRODUCAO = false`): o Pro é vendido pelo WhatsApp de vendas e ativado no `/admin`. Pix Automático e nota fiscal dependem do CNPJ (MEI ainda não aberto). Primeiro momento de venda: fim do Pro grátis das contas do beta, a partir de janeiro de 2027.
+

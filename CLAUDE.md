@@ -10,6 +10,7 @@ Toda comunicação com o dono do projeto e todo texto do produto são em **portu
 |---|---|
 | `GUIA-DE-TESTES.md` | Como conduzir a fase beta: convites, acompanhamento, gravidade de problemas e como encerrar |
 | `GESTAO.md` | Painel de gestão: frentes, tarefas, responsáveis e status. **Fonte da verdade do andamento.** |
+| `ORGANOGRAMA.md` | Estrutura de agentes (CTO, dev, CFO, marketing, campanha, conteúdo, sucesso do cliente), quem decide o quê e como se passam o trabalho |
 | `ESTRATEGIA-DE-LANCAMENTO.md` | Diagnóstico de prontidão, público-alvo, fases e roteiros |
 | `ESTRATEGIA-CURITIBA.md` | Lançamento na primeira praça: parceiros, metas e cronograma |
 | `campanha/campanha.json` | Plano da campanha em dados (metas, cronograma, canais e links utm), lido pelo `ops:campanha` e pelo agente `campanha-q3orca` |
