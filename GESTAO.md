@@ -1,4 +1,4 @@
-# Gestão do Q3 Orça
+﻿# Gestão do Q3 Orça
 
 Painel único de andamento do projeto. O agente `gerente-q3orca` lê este arquivo no início de cada sessão e atualiza ao final. Status possíveis: **Feito**, **Em andamento**, **A fazer**, **Bloqueado**, **Aguardando dono**.
 
@@ -128,7 +128,7 @@ pronto e QR Codes por canal. Cada cadastro novo guarda o canal de origem (utm do
 | # | Problema medido | Mudança | Situação |
 |---|---|---|---|
 | T1 | Facebook trouxe 60 visitas e 2 cadastros; não sabíamos em que etapa a pessoa para | Contador anônimo de etapas (modelo, gerador, PDF, clique, cadastro) e tabela no `ops:campanha` | Publicado em 22/11/2026 |
-| T2 | Quem usa o gerador sem cadastro perde o orçamento ao criar a conta | Levar o rascunho do gerador para a conta nova como primeiro orçamento | Feito local (9eabb73), testado no canal; aguarda "pode publicar" |
+| T2 | Quem usa o gerador sem cadastro perde o orçamento ao criar a conta | Levar o rascunho do gerador para a conta nova como primeiro orçamento | Publicado em 22/11/2026 |
 | T3 | Tabela "Por nicho" vazia: `cruzarVisitas` só conta campanhas `nicho-*`, os posts usam o slug da profissão | Aceitar o slug da profissão como nicho | A fazer |
 | T4 | `npm run test:regras` não roda (sem Java) | Instalar Java 21 no PC (pede OK do Rogério) | Bloqueado |
 
