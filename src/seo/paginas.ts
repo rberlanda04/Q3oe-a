@@ -1,6 +1,7 @@
 import { SITE_URL } from '../config'
 import { MODELOS } from '../domain/templates'
 import { CALCULADORAS, caminhoCalculadora } from './calculadoras'
+import { caminhoGuia, GUIAS } from './guias'
 import { PROFISSOES_SEO, type ConteudoProfissao } from './profissoes'
 
 /** Metadados de cada página pública pré-renderizada. */
@@ -168,6 +169,21 @@ export const PAGINAS_SEO: PaginaSeo[] = [
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
         },
         faq(c.perguntas),
+      ],
+    }),
+  ),
+  ...GUIAS.map(
+    (g): PaginaSeo => ({
+      caminho: caminhoGuia(g),
+      titulo: `${g.titulo} · Q3 Orça`,
+      descricao: g.descricao,
+      prioridade: 0.8,
+      dados: [
+        migalhas([
+          ['Início', '/'],
+          [g.h1, caminhoGuia(g)],
+        ]),
+        faq(g.perguntas),
       ],
     }),
   ),

@@ -13,6 +13,7 @@ import { Marca } from './pages/site/Marca'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
 import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras'
+import { GuiaPagina } from './pages/site/Guias'
 import { Simbolo } from './ui/Logo'
 import { RolarParaTopo } from './ui/RolarParaTopo'
 
@@ -118,6 +119,8 @@ const app = (
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/calculadoras" element={<CalculadorasIndice />} />
           <Route path="/calculadora/:slug" element={<CalculadoraPagina />} />
+          <Route path="/quanto-cobrar/:slug" element={<GuiaPagina />} />
+          <Route path="/como-fazer/:slug" element={<GuiaPagina />} />
           <Route path="/gerador-de-orcamento" element={<GeradorOrcamento />} />
           <Route path="/site" element={<Home />} />
           <Route path="/entrar" element={<Entrar />} />

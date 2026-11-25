@@ -121,3 +121,34 @@ export function calcularValorHora(e: EntradaHora): ResultadoHora {
     valorDiaria: arredondar(valorHora * positivo(e.horasPorDia)),
   }
 }
+
+export interface EntradaPrecoM2 {
+  /** Quanto você quer ganhar por dia de trabalho (a sua diária). */
+  diaria: number
+  /** Quantos m² você pinta num dia, já com as demãos e a preparação. */
+  m2PorDia: number
+  /** Material por m², quando você fornece (0 se o cliente compra). */
+  materialPorM2: number
+  /** Área a pintar, já sem portas e janelas. */
+  area: number
+}
+
+export interface ResultadoPrecoM2 {
+  maoDeObraM2: number
+  precoM2: number
+  dias: number
+  total: number
+}
+
+/** Preço da pintura por m² a partir da diária e da produtividade do próprio profissional. */
+export function calcularPrecoM2(e: EntradaPrecoM2): ResultadoPrecoM2 {
+  const produtividade = positivo(e.m2PorDia)
+  const maoDeObraM2 = produtividade ? positivo(e.diaria) / produtividade : 0
+  const precoM2 = maoDeObraM2 + positivo(e.materialPorM2)
+  return {
+    maoDeObraM2: arredondar(maoDeObraM2),
+    precoM2: arredondar(precoM2),
+    dias: produtividade ? Math.ceil((positivo(e.area) / produtividade) * 10) / 10 : 0,
+    total: arredondar(precoM2 * positivo(e.area)),
+  }
+}

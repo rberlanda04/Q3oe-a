@@ -11,6 +11,7 @@ import { CalculadoraPagina, CalculadorasIndice } from './pages/site/Calculadoras
 import { Home } from './pages/site/Home'
 import { Contato } from './pages/site/Contato'
 import { GeradorOrcamento } from './pages/site/Gerador'
+import { GuiaPagina } from './pages/site/Guias'
 import { Privacidade, Termos } from './pages/site/Legal'
 import { Marca } from './pages/site/Marca'
 import { ModeloProfissao, ModelosIndice } from './pages/site/Modelos'
@@ -34,6 +35,8 @@ export function render(url: string): string {
           <Route path="/modelo-de-orcamento/:slug" element={<ModeloProfissao />} />
           <Route path="/calculadoras" element={<CalculadorasIndice />} />
           <Route path="/calculadora/:slug" element={<CalculadoraPagina />} />
+          <Route path="/quanto-cobrar/:slug" element={<GuiaPagina />} />
+          <Route path="/como-fazer/:slug" element={<GuiaPagina />} />
           {/* No navegador esta rota é sob demanda: a hidratação espera o código chegar e mantém este HTML na tela. */}
           <Route path="/gerador-de-orcamento" element={<GeradorOrcamento />} />
         </Routes>

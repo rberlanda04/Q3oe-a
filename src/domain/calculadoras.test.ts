@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calcularPintura, calcularPiso, calcularValorHora, rejunteKgPorM2 } from './calculadoras'
+import { calcularPintura, calcularPiso, calcularPrecoM2, calcularValorHora, rejunteKgPorM2 } from './calculadoras'
 
 describe('calculadora de pintura', () => {
   it('desconta portas e janelas e soma as demãos', () => {
@@ -44,5 +44,16 @@ describe('calculadora do valor da hora', () => {
 
   it('sem horas de trabalho, o valor é zero', () => {
     expect(calcularValorHora({ rendaDesejada: 4000, custosMensais: 0, diasPorSemana: 0, horasPorDia: 8, tempoNaoPago: 0 }).valorHora).toBe(0)
+  })
+})
+
+describe('preço da pintura por m² pela diária', () => {
+  it('divide a diária pelos m² do dia e soma o material', () => {
+    expect(calcularPrecoM2({ diaria: 300, m2PorDia: 40, materialPorM2: 5, area: 80 })).toEqual({ maoDeObraM2: 7.5, precoM2: 12.5, dias: 2, total: 1000 })
+  })
+
+  it('sem material e com produtividade vazia não quebra', () => {
+    expect(calcularPrecoM2({ diaria: 300, m2PorDia: 40, materialPorM2: Number.NaN, area: 30 })).toMatchObject({ precoM2: 7.5, dias: 0.8, total: 225 })
+    expect(calcularPrecoM2({ diaria: 300, m2PorDia: 0, materialPorM2: 0, area: 30 })).toEqual({ maoDeObraM2: 0, precoM2: 0, dias: 0, total: 0 })
   })
 })
