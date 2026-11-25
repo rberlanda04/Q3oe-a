@@ -131,9 +131,14 @@ export function Planos() {
                   titulo="Anual"
                   preco={PRECO_ANUAL}
                   detalhe={`por ano · ${formatarBRL(mensalDoAnualCentavos())} por mês · economize 44%`}
+                  selo="Oferta de lançamento"
                 />
                 <Opcao ativa={escolha === 'mensal'} onClick={() => setEscolha('mensal')} titulo="Mensal" preco={PRECO_MENSAL} detalhe="por mês" />
               </div>
+              <p className="mt-4 rounded-xl bg-brasa-500/15 p-3 text-sm text-white">
+                <strong className="text-brasa-300">Oferta de lançamento:</strong> no anual, você paga {PRECO_ANUAL} uma vez e fica 12 meses
+                com o Pro. Sai por {formatarBRL(mensalDoAnualCentavos())} por mês, 44% menos que pagar mês a mês.
+              </p>
               <button className="btn-primary mt-5 w-full !py-4 text-lg" disabled={estado === 'enviando'} onClick={quero}>
                 {PAGAMENTO_PIX_ATIVO ? (
                   <>
@@ -180,7 +185,7 @@ export function Planos() {
   )
 }
 
-function Opcao(props: { ativa: boolean; onClick: () => void; titulo: string; preco: string; detalhe: string }) {
+function Opcao(props: { ativa: boolean; onClick: () => void; titulo: string; preco: string; detalhe: string; selo?: string }) {
   return (
     <button
       type="button"
@@ -189,6 +194,7 @@ function Opcao(props: { ativa: boolean; onClick: () => void; titulo: string; pre
       onClick={props.onClick}
       className={`rounded-2xl border-2 p-4 text-left transition ${props.ativa ? 'border-brasa-500 bg-white/10' : 'border-white/15 hover:border-white/40'}`}
     >
+      {props.selo && <span className="mb-2 inline-block rounded-full bg-brasa-500 px-2 py-0.5 text-xs font-bold text-white">{props.selo}</span>}
       <p className="text-sm font-semibold text-grafite-300">{props.titulo}</p>
       <p className="font-display text-2xl font-extrabold">{props.preco}</p>
       <p className="text-xs text-grafite-300">{props.detalhe}</p>
