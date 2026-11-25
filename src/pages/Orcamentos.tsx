@@ -5,10 +5,10 @@ import { calcularTotais, totalRecebido } from '../domain/calc'
 import { formatarBRL } from '../domain/money'
 import { modeloPorId } from '../domain/templates'
 import type { Orcamento, StatusOrcamento } from '../domain/types'
-import { DIAS_AVISO_RENOVACAO, SITE_URL } from '../config'
+import { DIAS_AVISO_RENOVACAO, PRECO_ANUAL, PRECO_MENSAL, SITE_URL } from '../config'
 import { contarEnviados } from '../domain/envio'
 import { linkWhatsAppSemContato, textoIndicacao } from '../domain/indicacao'
-import { avisarFimDoPro } from '../domain/plano'
+import { avisarFimDoBeta, avisarFimDoPro, testeDoBeta, type MarcoAvisoFimDoBeta } from '../domain/plano'
 import { useUsuario } from '../lib/auth'
 import { avisoDispensadoEm, dispensarAviso } from '../lib/avisos'
 import { linkWhatsApp } from '../pdf/compartilhar'
@@ -18,6 +18,8 @@ import { STATUS } from '../ui/status'
 const DIA = 24 * 60 * 60 * 1000
 /** Nome do aviso de fim do Pro entre os avisos dispensáveis. */
 const AVISO_FIM_DO_PRO = 'fim-do-pro'
+/** Aviso de fim do Pro grátis do beta: um nome por marco (30, 15 e 3 dias), dispensado em separado. */
+const avisoFimDoBeta = (marco: MarcoAvisoFimDoBeta) => `fim-do-beta-${marco}`
 
 function saudacao(): string {
   const hora = new Date().getHours()
@@ -32,6 +34,8 @@ export function Orcamentos() {
   const [erro, setErro] = useState('')
   const [agora] = useState(() => Date.now())
   const [fimDoProDispensadoEm, setFimDoProDispensadoEm] = useState(() => avisoDispensadoEm(AVISO_FIM_DO_PRO, user.uid))
+  const [, setFimDoBetaDispensado] = useState(0)
+  const marcoFimDoBeta = avisarFimDoBeta(plano, (marco) => avisoDispensadoEm(avisoFimDoBeta(marco), user.uid) > 0)
 
   useEffect(() => ouvirOrcamentos(user.uid, setLista, (e) => setErro(mensagemErroLeitura(e))), [user.uid])
 
@@ -81,6 +85,12 @@ export function Orcamentos() {
     setFimDoProDispensadoEm(quando)
   }
 
+  function dispensarFimDoBeta(marco: MarcoAvisoFimDoBeta) {
+    const quando = Date.now()
+    dispensarAviso(avisoFimDoBeta(marco), user.uid, quando)
+    setFimDoBetaDispensado(quando)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -102,7 +112,31 @@ export function Orcamentos() {
         </Link>
       )}
 
-      {plano.motivo === 'teste' && plano.diasRestantes <= 5 && (
+      {plano.motivo === 'teste' && marcoFimDoBeta !== null && (
+        <section className="rounded-cartao bg-regua-300 p-4 text-grafite-900">
+          <p className="text-sm">
+            <strong>
+              Seu Pro grátis do beta acaba em {plano.diasRestantes} {plano.diasRestantes === 1 ? 'dia' : 'dias'}.
+            </strong>{' '}
+            Obrigado por testar o Q3 Orça! Para continuar com seu logo e sua cor nos documentos, o Pro custa {PRECO_MENSAL} por mês ou{' '}
+            {PRECO_ANUAL} por ano. Se não assinar, nada se perde: você segue no plano grátis e seu logo fica salvo.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Link to="/planos" className="btn-primary !px-4 !py-2 text-sm">
+              Ver como assinar <IconeSeta tamanho={16} />
+            </Link>
+            <button
+              type="button"
+              className="rounded-full px-3 py-2 text-sm font-semibold text-grafite-700 hover:underline"
+              onClick={() => dispensarFimDoBeta(marcoFimDoBeta)}
+            >
+              Agora não
+            </button>
+          </div>
+        </section>
+      )}
+
+      {plano.motivo === 'teste' && !testeDoBeta(plano) && plano.diasRestantes <= 5 && (
         <Link to="/planos" className="flex items-center justify-between gap-3 rounded-cartao bg-regua-300 p-4 text-grafite-900">
           <span className="text-sm">
             <strong>

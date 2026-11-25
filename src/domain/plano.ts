@@ -114,3 +114,30 @@ export const PRECOS_PRO = { mensal: 1490, anual: 9900 } as const
 export function mensalDoAnualCentavos(anualCentavos: number = PRECOS_PRO.anual): number {
   return Math.round(anualCentavos / 12)
 }
+
+/** Marcos (dias antes do fim) em que avisamos quem está no Pro grátis do beta. */
+export const MARCOS_AVISO_FIM_DO_BETA = [30, 15, 3] as const
+export type MarcoAvisoFimDoBeta = (typeof MARCOS_AVISO_FIM_DO_BETA)[number]
+
+/**
+ * Em que marco do aviso de fim do Pro grátis do beta a conta está agora:
+ * 30 (faltam de 16 a 30 dias), 15 (de 4 a 15) ou 3 (de 1 a 3).
+ * Fora do Pro grátis do beta, ou com mais de 30 dias pela frente, não há aviso (null).
+ * O fim vem de situacaoPlano: criação da conta + diasTeste (90 no beta).
+ */
+export function marcoAvisoFimDoBeta(plano: SituacaoPlano): MarcoAvisoFimDoBeta | null {
+  if (!testeDoBeta(plano) || plano.motivo !== 'teste') return null
+  let marco: MarcoAvisoFimDoBeta | null = null
+  for (const m of MARCOS_AVISO_FIM_DO_BETA) if (plano.diasRestantes <= m) marco = m
+  return marco
+}
+
+/**
+ * Mostrar o aviso de fim do Pro grátis do beta? Cada marco aparece uma vez:
+ * "Agora não" esconde só o marco atual, e o aviso volta no marco seguinte.
+ * `marcoDispensado` diz se o profissional já fechou o aviso naquele marco.
+ */
+export function avisarFimDoBeta(plano: SituacaoPlano, marcoDispensado: (marco: MarcoAvisoFimDoBeta) => boolean): MarcoAvisoFimDoBeta | null {
+  const marco = marcoAvisoFimDoBeta(plano)
+  return marco !== null && !marcoDispensado(marco) ? marco : null
+}
