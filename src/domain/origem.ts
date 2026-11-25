@@ -29,8 +29,35 @@ const SOCIAIS: Record<string, string> = {
   'wa.me': 'whatsapp',
   'web.whatsapp.com': 'whatsapp',
   'youtube.com': 'youtube',
+  'youtu.be': 'youtube',
   'tiktok.com': 'tiktok',
   'linkedin.com': 'linkedin',
+}
+
+/** Diretórios de software: cada um é uma fonte própria, com o meio "diretorio". */
+const DIRETORIOS: Record<string, string> = {
+  'b2bstack.com.br': 'b2bstack',
+  'capterra.com.br': 'capterra',
+  'capterra.com': 'capterra',
+  'g2.com': 'g2',
+}
+
+/**
+ * Nomes curtos das fontes que chegam escritas de jeitos diferentes no utm_source
+ * (domínio, abreviação), para cada canal aparecer numa linha só do ops:campanha.
+ */
+const APELIDOS: Record<string, string> = {
+  'tiktok.com': 'tiktok',
+  'youtube.com': 'youtube',
+  'youtu.be': 'youtube',
+  yt: 'youtube',
+  'b2bstack.com.br': 'b2bstack',
+  b2b_stack: 'b2bstack',
+  'b2b-stack': 'b2bstack',
+  'capterra.com.br': 'capterra',
+  'capterra.com': 'capterra',
+  'g2.com': 'g2',
+  g2crowd: 'g2',
 }
 
 const limpar = (v: string | null | undefined) =>
@@ -46,7 +73,8 @@ export function origemDaVisita(url: string, referrer: string, agora: number, hos
   const p = u.searchParams
   const pagina = u.pathname.slice(0, 120)
   if (p.get('utm_source')) {
-    return { fonte: limpar(p.get('utm_source')), meio: limpar(p.get('utm_medium')) || 'nao-informado', campanha: limpar(p.get('utm_campaign')), pagina, em: agora }
+    const fonte = limpar(p.get('utm_source'))
+    return { fonte: APELIDOS[fonte.replace(/^www\./, '')] ?? fonte, meio: limpar(p.get('utm_medium')) || 'nao-informado', campanha: limpar(p.get('utm_campaign')), pagina, em: agora }
   }
   let host = ''
   try {
@@ -56,6 +84,8 @@ export function origemDaVisita(url: string, referrer: string, agora: number, hos
   }
   if (!host || host === hostProprio.replace(/^www\./, '')) return { fonte: 'direto', meio: 'nenhum', campanha: '', pagina, em: agora }
   if (BUSCADORES.some((b) => host.includes(b))) return { fonte: host.split('.').find((x) => x !== 'www') ?? host, meio: 'organico', campanha: '', pagina, em: agora }
+  const diretorio = Object.entries(DIRETORIOS).find(([dom]) => host === dom || host.endsWith(`.${dom}`))
+  if (diretorio) return { fonte: diretorio[1], meio: 'diretorio', campanha: '', pagina, em: agora }
   const social = Object.entries(SOCIAIS).find(([dom]) => host === dom || host.endsWith(`.${dom}`))
   if (social) return { fonte: social[1], meio: 'social', campanha: '', pagina, em: agora }
   return { fonte: limpar(host), meio: 'referencia', campanha: '', pagina, em: agora }

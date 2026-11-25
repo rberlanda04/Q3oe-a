@@ -18,6 +18,30 @@ describe('origem da visita', () => {
   })
 })
 
+describe('canais novos (Q3-10): cada um na sua linha, sem virar "outros"', () => {
+  it('diretórios de software pelo site que trouxe ficam com meio "diretorio"', () => {
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://www.b2bstack.com.br/product/q3-orca', T, HOST)).toMatchObject({ fonte: 'b2bstack', meio: 'diretorio' })
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://www.capterra.com.br/software/1/q3', T, HOST)).toMatchObject({ fonte: 'capterra', meio: 'diretorio' })
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://www.capterra.com/p/1/q3', T, HOST)).toMatchObject({ fonte: 'capterra', meio: 'diretorio' })
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://www.g2.com/products/q3', T, HOST)).toMatchObject({ fonte: 'g2', meio: 'diretorio' })
+  })
+  it('TikTok e YouTube pelo site que trouxe, inclusive links curtos', () => {
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://vm.tiktok.com/abc', T, HOST)).toMatchObject({ fonte: 'tiktok', meio: 'social' })
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://youtu.be/abc', T, HOST)).toMatchObject({ fonte: 'youtube', meio: 'social' })
+    expect(origemDaVisita('https://q3orca.web.app/', 'https://m.youtube.com/watch', T, HOST)).toMatchObject({ fonte: 'youtube', meio: 'social' })
+  })
+  it('utm com domínio ou apelido vira o nome curto; meios diretorio, parceiro e seo passam como vieram', () => {
+    const fonte = (s: string, m: string) => origemDaVisita(`https://q3orca.web.app/?utm_source=${s}&utm_medium=${m}`, '', T, HOST)
+    expect(fonte('www.capterra.com.br', 'diretorio')).toMatchObject({ fonte: 'capterra', meio: 'diretorio' })
+    expect(fonte('G2.com', 'diretorio')).toMatchObject({ fonte: 'g2', meio: 'diretorio' })
+    expect(fonte('b2b-stack', 'diretorio')).toMatchObject({ fonte: 'b2bstack' })
+    expect(fonte('yt', 'video')).toMatchObject({ fonte: 'youtube' })
+    expect(fonte('TikTok', 'video')).toMatchObject({ fonte: 'tiktok' })
+    expect(fonte('sebrae', 'parceiro')).toMatchObject({ fonte: 'sebrae', meio: 'parceiro' })
+    expect(fonte('site', 'seo')).toMatchObject({ fonte: 'site', meio: 'seo' })
+  })
+})
+
 describe('primeiro acesso vale', () => {
   const dia = 24 * 60 * 60 * 1000
   const cartaz = { fonte: 'balaroti', meio: 'cartaz', campanha: '', pagina: '/', em: T }

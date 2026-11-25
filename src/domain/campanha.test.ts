@@ -101,3 +101,15 @@ describe('funil de etapas do site', () => {
     ])
   })
 })
+
+describe('canais separados no ops:campanha (Q3-10)', () => {
+  it('tiktok, youtube, diretórios, parceiro e seo saem cada um na sua linha', () => {
+    const fontes: [string, string][] = [['tiktok', 'video'], ['youtube', 'video'], ['b2bstack', 'diretorio'], ['capterra', 'diretorio'], ['g2', 'diretorio'], ['sebrae', 'parceiro'], ['site', 'seo']]
+    const r = cruzarVisitas('2026-11-01', fontes.map(([fonte, meio]) => ({ dia: '2026-11-25', fonte, meio, campanha: '-', total: 2 })), [])
+    expect(Object.keys(r.porCanal).sort()).toEqual(fontes.map(([f, m]) => `${f} / ${m}`).sort())
+    expect(Object.keys(r.porCanal).some((c) => /outros/.test(c))).toBe(false)
+    const contas: ContaCampanha[] = fontes.map(([fonte, meio], i) => ({ uid: `u${i}`, criadaEm: t('2026-11-20T10:00:00'), ultimoLogin: 0, fonte, meio }))
+    const leitura = lerCampanha('2026-11-01', contas, [], t('2026-11-25T10:00:00'))
+    expect(leitura.canais.map((c) => c.canal).sort()).toEqual(fontes.map(([f, m]) => `${f} / ${m}`).sort())
+  })
+})
