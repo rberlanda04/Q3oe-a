@@ -120,6 +120,12 @@ export interface Orcamento {
 export interface Perfil {
   /** De onde veio o cadastro (primeiro acesso), gravado na criação da conta. */
   origem?: import('./origem').Origem
+  /** Aceita receber modelos e dicas por e-mail (consentimento, LGPD). Ausente = não aceitou. */
+  aceitaEmail?: boolean
+  /** Quando marcou ou desmarcou a caixa, em milissegundos. */
+  aceitaEmailEm?: number
+  /** Onde a escolha foi feita. */
+  aceitaEmailOrigem?: import('./consentimento').OrigemConsentimento
   /** Nome da empresa (nome fantasia) ou do profissional. */
   nome: string
   razaoSocial: string
