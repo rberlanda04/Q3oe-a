@@ -217,6 +217,10 @@ export function Privacidade() {
           <li><strong>Resposta do cliente:</strong> quando ele aprova ou recusa pelo link, guardamos a resposta, o nome informado e o horário.</li>
           <li><strong>Pedido do Pro e pagamentos:</strong> nome, e-mail, telefone, plano escolhido e o registro de cada Pix pago.</li>
           <li><strong>Suporte e contato:</strong> as mensagens que você envia pela central de ajuda ou pelo formulário do site.</li>
+          <li>
+            <strong>Preferência de e-mail:</strong> se você marcar a caixa "Quero receber modelos e dicas por e-mail", guardamos essa escolha,
+            a data e onde ela foi feita (cadastro, gerador ou "Meus dados").
+          </li>
           <li><strong>Uso do site:</strong> páginas visitadas e ações como "orçamento enviado", sem o conteúdo dos orçamentos.</li>
         </ul>
       </section>
@@ -227,6 +231,12 @@ export function Privacidade() {
           <li>Prestar o serviço: montar, enviar e acompanhar orçamentos, com base na execução do contrato.</li>
           <li>Atender pedidos de assinatura e de suporte.</li>
           <li>Entender o uso do produto para melhorá-lo, com base no nosso legítimo interesse.</li>
+          <li>
+            Enviar por e-mail modelos de orçamento, dicas e novidades do Q3 Orça, só para quem marcou a caixa "Quero receber modelos e dicas
+            por e-mail" no cadastro, no gerador ou em "Meus dados", com base no seu consentimento. A caixa vem sempre desmarcada. Você pode
+            sair a qualquer momento pelo link de descadastro que vai em todo e-mail ou desmarcando a caixa em "Meus dados", e isso não afeta a
+            sua conta. Mandamos no máximo um e-mail por semana.
+          </li>
           <li>Cumprir obrigações legais e regulatórias.</li>
         </ul>
         <p className="mt-3">Não vendemos dados e não usamos os dados dos seus clientes para marketing.</p>
@@ -242,6 +252,10 @@ export function Privacidade() {
           <li>
             <strong>AbacatePay:</strong> processa o pagamento do Pro por Pix. Recebe o valor e um identificador interno da sua conta, não os dados
             dos seus orçamentos.
+          </li>
+          <li>
+            <strong>Serviço de envio de e-mail:</strong> quando começarmos a enviar os e-mails de modelos e dicas, um serviço especializado fará o
+            envio. Ele recebe só o seu nome, e-mail e profissão, e o nome dele será informado aqui antes do primeiro envio.
           </li>
           <li><strong>Google Analytics:</strong> estatísticas de uso do site, com identificadores de navegador.</li>
           <li><strong>Google Fonts:</strong> as fontes do site, o que envia seu endereço IP ao Google.</li>
