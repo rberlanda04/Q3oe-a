@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { exportarDados, salvarPerfil } from '../data/repo'
+import { registroConsentimento, TEXTO_CAIXA_EMAIL } from '../domain/consentimento'
 import { contraste, coresDoDocumento, hexValido } from '../domain/cores'
 import { cnpjValido } from '../domain/empresa'
 import { detectarTipoChave, gerarPixCopiaECola, TIPOS_CHAVE, type TipoChavePix } from '../domain/pix'
@@ -412,6 +413,15 @@ export function Perfil() {
           </Link>
           .
         </p>
+        <label className="flex cursor-pointer items-start gap-2 text-sm font-normal text-grafite-700">
+          <input
+            type="checkbox"
+            className="mt-0.5 !h-4 !w-4 shrink-0 !p-0 accent-brasa-600"
+            checked={perfil.aceitaEmail === true}
+            onChange={(e) => salvarPerfil(user.uid, registroConsentimento(e.target.checked, 'perfil', Date.now()))}
+          />
+          <span>{TEXTO_CAIXA_EMAIL}</span>
+        </label>
         <button className="btn-secondary w-full" disabled={exportando} onClick={exportar}>
           {exportando ? 'Preparando...' : 'Baixar meus dados'}
         </button>

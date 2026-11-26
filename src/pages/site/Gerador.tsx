@@ -15,7 +15,8 @@ import {
 } from '../../domain/gerador'
 import { formatarBRL, formatarQuantidade } from '../../domain/money'
 import { contarEtapa } from '../../lib/origem'
-import { guardarRascunho } from '../../lib/rascunhoGerador'
+import { guardarEscolhaEmail, guardarRascunho } from '../../lib/rascunhoGerador'
+import { TEXTO_CAIXA_EMAIL } from '../../domain/consentimento'
 import { MODELOS, modeloPorId, UNIDADES_PADRAO } from '../../domain/templates'
 import type { ItemOrcamento, ProfissaoId } from '../../domain/types'
 import { caminhoProfissao, PERGUNTAS_GERADOR } from '../../seo/paginas'
@@ -51,6 +52,8 @@ export function GeradorOrcamento() {
   const setForm = (mudanca: (f: FormGerador) => FormGerador) => setEditado((f) => mudanca(f ?? form))
   const [gerando, setGerando] = useState(false)
   const [erro, setErro] = useState('')
+  // Caixa opcional de e-mail: sempre começa desmarcada (consentimento, LGPD).
+  const [aceitaEmail, setAceitaEmail] = useState(false)
   const proximoId = useRef(100)
   useEffect(() => contarEtapa('gerador'), [])
 
@@ -264,11 +267,23 @@ export function GeradorOrcamento() {
                 onClick={() => {
                   contarEtapa('clique-cadastro')
                   if (comConteudo) guardarRascunho(form)
+                  guardarEscolhaEmail(comConteudo && aceitaEmail)
                 }}
                 className="btn-primary mt-5 w-full"
               >
                 {comConteudo ? 'Salvar este orçamento na conta grátis' : 'Criar conta grátis'} <IconeSeta tamanho={18} />
               </Link>
+              {comConteudo && (
+                <label className="mt-4 flex cursor-pointer items-start gap-2 text-sm font-normal text-grafite-300">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 !h-4 !w-4 shrink-0 !p-0 accent-brasa-600"
+                    checked={aceitaEmail}
+                    onChange={(e) => setAceitaEmail(e.target.checked)}
+                  />
+                  <span>{TEXTO_CAIXA_EMAIL}</span>
+                </label>
+              )}
             </div>
           </div>
         </section>

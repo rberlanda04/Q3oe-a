@@ -9,7 +9,10 @@ import {
 } from 'firebase/auth'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { salvarPerfil } from '../data/repo'
+import { consentimentoNaCriacao, TEXTO_CAIXA_EMAIL } from '../domain/consentimento'
 import { registrarEvento } from '../lib/eventos'
+import { escolhaEmailDoGerador, esquecerEscolhaEmail } from '../lib/rascunhoGerador'
 import { contarEtapa } from '../lib/origem'
 import { auth } from '../lib/firebase'
 import { IconeCheck } from '../ui/Icones'
@@ -54,6 +57,17 @@ export function Login() {
   const [erro, setErro] = useState('')
   const [aviso, setAviso] = useState('')
   const [enviando, setEnviando] = useState(false)
+  // Caixa opcional de e-mail: desmarcada, a não ser que a pessoa já tenha marcado no gerador.
+  const [marcadoNoGerador] = useState(escolhaEmailDoGerador)
+  const [aceitaEmail, setAceitaEmail] = useState(marcadoNoGerador)
+
+  /** Conta acabou de ser criada: grava o consentimento (só se marcado) e limpa a escolha guardada. */
+  function contaCriada(uid: string, metodo: 'email' | 'google') {
+    registrarEvento('conta_criada', { metodo })
+    const consentimento = consentimentoNaCriacao(aceitaEmail, marcadoNoGerador && aceitaEmail, Date.now())
+    if (consentimento) salvarPerfil(uid, consentimento)
+    esquecerEscolhaEmail()
+  }
 
   async function executar(acao: () => Promise<unknown>) {
     setErro('')
@@ -73,7 +87,7 @@ export function Login() {
     executar(() =>
       modo === 'entrar'
         ? signInWithEmailAndPassword(auth, email, senha)
-        : createUserWithEmailAndPassword(auth, email, senha).then(() => registrarEvento('conta_criada', { metodo: 'email' })),
+        : createUserWithEmailAndPassword(auth, email, senha).then((r) => contaCriada(r.user.uid, 'email')),
     )
   }
 
@@ -121,6 +135,12 @@ export function Login() {
           </p>
 
           <div className="mt-8 space-y-4">
+            {modo === 'criar' && (
+              <label className="flex cursor-pointer items-start gap-2 rounded-xl bg-white px-3 py-2.5 text-sm font-normal text-grafite-700 shadow-cartao">
+                <input type="checkbox" className="mt-0.5 !h-4 !w-4 shrink-0 !p-0 accent-brasa-600" checked={aceitaEmail} onChange={(e) => setAceitaEmail(e.target.checked)} />
+                <span>{TEXTO_CAIXA_EMAIL}</span>
+              </label>
+            )}
             <p className="text-center text-xs text-grafite-500">
               Entrando com Google, você concorda com os <Link to="/termos" className="underline">Termos</Link> e a{' '}
               <Link to="/privacidade" className="underline">Privacidade</Link>.
@@ -131,7 +151,7 @@ export function Login() {
               onClick={() =>
                 executar(async () => {
                   const resultado = await signInWithPopup(auth, new GoogleAuthProvider())
-                  if (getAdditionalUserInfo(resultado)?.isNewUser) registrarEvento('conta_criada', { metodo: 'google' })
+                  if (getAdditionalUserInfo(resultado)?.isNewUser) contaCriada(resultado.user.uid, 'google')
                 })
               }
             >

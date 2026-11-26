@@ -64,7 +64,7 @@ try {
     await page.getByRole('link', { name: /Fazer meu orçamento agora/ }).first().waitFor()
     await page.locator('main').getByRole('link', { name: 'Criar conta grátis' }).first().click()
     await page.getByText('Ao criar a conta, você concorda com os').waitFor()
-    await page.getByLabel('E-mail').fill(email)
+    await page.getByLabel('E-mail', { exact: true }).fill(email)
     await page.getByLabel('Senha').fill(senha)
     await page.getByRole('button', { name: 'Criar conta grátis' }).click()
     await page.getByText('Orçamento nº 2026-0001').waitFor({ timeout: 20000 })
