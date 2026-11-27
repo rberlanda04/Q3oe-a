@@ -77,4 +77,4 @@ export const PRECO_MENSAL = 'R$ 14,90'
 export const PRECO_ANUAL = 'R$ 99'
 
 /** Data de vigência dos termos e da política. Atualize sempre que mudar o texto. */
-export const VIGENCIA_DOCUMENTOS_LEGAIS = '28 de setembro de 2026'
+export const VIGENCIA_DOCUMENTOS_LEGAIS = '27 de novembro de 2026'

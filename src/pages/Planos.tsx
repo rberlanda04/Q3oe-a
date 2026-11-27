@@ -131,12 +131,12 @@ export function Planos() {
                   titulo="Anual"
                   preco={PRECO_ANUAL}
                   detalhe={`por ano · ${formatarBRL(mensalDoAnualCentavos())} por mês · economize 44%`}
-                  selo="Oferta de lançamento"
+                  selo="Mais econômico"
                 />
                 <Opcao ativa={escolha === 'mensal'} onClick={() => setEscolha('mensal')} titulo="Mensal" preco={PRECO_MENSAL} detalhe="por mês" />
               </div>
               <p className="mt-4 rounded-xl bg-brasa-500/15 p-3 text-sm text-white">
-                <strong className="text-brasa-300">Oferta de lançamento:</strong> no anual, você paga {PRECO_ANUAL} uma vez e fica 12 meses
+                <strong className="text-brasa-300">Plano anual:</strong> você paga {PRECO_ANUAL} uma vez e fica 12 meses
                 com o Pro. Sai por {formatarBRL(mensalDoAnualCentavos())} por mês, 44% menos que pagar mês a mês.
               </p>
               <button className="btn-primary mt-5 w-full !py-4 text-lg" disabled={estado === 'enviando'} onClick={quero}>
